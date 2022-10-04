@@ -1,4 +1,4 @@
-from src.main.system_controller import SystemController
+from src.main.controlador_sistema import ControladorSistema
 
 if __name__ == '__main__':
-    SystemController().init_system()
+    ControladorSistema().init_system()

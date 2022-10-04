@@ -1,4 +1,4 @@
-from tela_abstrata import Tela
+from src.domain.views.tela_abstrata import Tela
 import PySimpleGUI as sg
 
 class TelaListaEntidades(Tela):
@@ -26,6 +26,7 @@ class TelaListaEntidades(Tela):
     def open(self):
         while True:
             botao, valores = super().read()
-            if botao == 'return' or botao == None or botao == sg.WIN_CLOSED:
+            if botao == 'return' or botao is None or botao == sg.WIN_CLOSED:
+                super().close()
                 break
         return botao
