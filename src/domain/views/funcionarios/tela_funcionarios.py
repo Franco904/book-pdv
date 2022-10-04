@@ -18,7 +18,7 @@ class TelaFuncionarios(Tela):
                 ]
 
         super().__init__(sg.Window("Módulo Funcionários", layout=layout, resizable=False, modal=True, finalize=True, element_justification='c'), (300,180))
-
+        
     def open(self):
         while True:
             botao, valores = super().read()

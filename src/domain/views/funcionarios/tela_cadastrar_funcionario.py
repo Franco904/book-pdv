@@ -10,7 +10,7 @@ import PySimpleGUI as sg
 import re
 
 class TelaCadastroFuncionario(Tela):
-    
+
     def __init__(self):
         pass
 
@@ -97,5 +97,5 @@ class TelaCadastroFuncionario(Tela):
             elif botao in ('return', sg.WIN_CLOSED):
                 super().close()
                 break
-
         return botao, dados
+
