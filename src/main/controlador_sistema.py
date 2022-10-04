@@ -1,14 +1,21 @@
 from src.data.database.database import Database
-from src.main.system_view import SystemView
+from src.domain.controllers.controlador_abrir_caixa import ControladorAbrirCaixa
+from src.domain.controllers.controlador_funcionarios import ControladorFuncionarios
+from src.domain.controllers.controlador_inicio import ControladorInicio
+from src.main.tela_sistema import TelaSistema
 
 
-class SystemController:
+class ControladorSistema:
     def __init__(self):
         self.__database = None
         self.__daos = {}
         self.__controllers = {}
         self.__views = {}
-        self.__system_view = None
+        self.__tela_sistema = None
+
+    @property
+    def controllers(self):
+        return self.__controllers
 
     def init_system(self):
         self.init_database()
@@ -32,30 +39,29 @@ class SystemController:
 
     def init_presenters(self):
         # Create presenters global instances
-        self.__controllers = {}
+        self.__controllers = {
+            "funcionarios": ControladorFuncionarios(self),
+            "inicio": ControladorInicio(self),
+            "caixa": ControladorAbrirCaixa(self),
+        }
 
     def init_system_view(self):
-        self.__system_view = SystemView()
+        self.__tela_sistema = TelaSistema()
 
         options = {
-            1: self.open_cadastro_usuario_view,
-            2: self.open_login_view,
+            1: self.abre_inicio,
             0: self.close_system,
         }
 
         while True:
             try:
-                options[self.__system_view.show_options()]()
+                options[self.__tela_sistema.show_options()]()
             except ValueError:
-                self.__system_view.show_message('Numeric values must be int')
+                self.__tela_sistema.show_message('Valores númericos devem ser inteiros!')
 
-    def open_cadastro_usuario_view(self):
-        # self.__controllers['cadastro_usuario_controller'].open()
-        pass
-
-    def open_login_view(self):
-        # self.__controllers['login_controller'].open()
-        pass
+    def abre_inicio(self):
+        # Move this to Login Controller later
+        self.__controllers["inicio"].abre_tela(True)
 
     def close_system(self):
         self.__database.close()

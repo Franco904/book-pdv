@@ -1,13 +1,12 @@
-class SystemView:
+class TelaSistema:
     def __init__(self):
         pass
 
     @staticmethod
     def show_options():
-        print('='*40)
-        print('[ 1 ] Cadastro Option')
-        print('[ 2 ] Login Option')
-        print('[ 0 ] Close system')
+        print('=' * 40)
+        print('[ 1 ] Início')
+        print('[ 0 ] Fechar sistema')
         print('=' * 40)
 
         opcao = int(input('Option: '))

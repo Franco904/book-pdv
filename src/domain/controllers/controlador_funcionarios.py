@@ -1,12 +1,11 @@
 import PySimpleGUI as sg
-from view.tela_funcionarios import TelaFuncionarios
+from src.domain.views.funcionarios.tela_funcionarios import TelaFuncionarios
 
-class ControladorFuncionarios():
 
+class ControladorFuncionarios:
     def __init__(self, controlador_sistema) -> None:
         self.__tela_funcionarios = TelaFuncionarios()
         self.__controlador_sistema = controlador_sistema
-
 
     @property
     def funcionarios(self):
