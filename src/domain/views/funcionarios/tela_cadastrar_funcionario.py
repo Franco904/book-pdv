@@ -90,10 +90,6 @@ class TelaCadastroFuncionario(Tela):
                 except EntradaVaziaException as g:
                     super().show_message('Campos incompletos!', g)
 
-            elif botao == 'return':
-                super().close()
-                break
-
             elif botao in ('return', sg.WIN_CLOSED):
                 super().close()
                 break
