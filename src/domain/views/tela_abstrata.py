@@ -1,16 +1,16 @@
 from abc import ABC, abstractmethod
 import PySimpleGUI as sg
 
-class Tela(ABC):
 
+class Tela(ABC):
     @abstractmethod
     def __init__(self, window, tamanho=None):
         self.__window = window
-        if tamanho != None:
+        if tamanho is not None:
             self.__window.set_min_size(tamanho)
 
     @abstractmethod
-    def init_components(self):
+    def init_components(self, values: list = None):
         pass
 
     @abstractmethod

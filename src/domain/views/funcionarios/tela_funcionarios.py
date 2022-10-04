@@ -1,5 +1,6 @@
-from tela_abstrata import Tela
+from src.domain.views.tela_abstrata import Tela
 import PySimpleGUI as sg
+
 
 class TelaFuncionarios(Tela):
 
