@@ -21,8 +21,6 @@ class ControladorAbrirCaixa:
     def abrir_caixa(self, values):
         print(values)
 
-        caixa =
-
     def retornar(self):
         self.__tela_caixa.close()
         self.__controlador_sistema.controllers["inicio"].abre_tela(True)
