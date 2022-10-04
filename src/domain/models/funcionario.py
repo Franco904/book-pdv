@@ -3,12 +3,12 @@ from abc import ABC, abstractmethod
 class Funcionario(ABC):
 
     @abstractmethod
-    def __init__(self, nome: str, cpf: str, email:str, telefone:str, password:str, cargo: str):
+    def __init__(self, nome: str, cpf: str, email:str, telefone:str, senha:str, cargo: str):
         self.__nome = None
         self.__cpf = None
         self.__email = None
         self.__telefone = None
-        self.__password = None
+        self.__senha = None
         self.__cargo = None
         if isinstance(nome, str):
             self.__nome = nome
@@ -18,8 +18,8 @@ class Funcionario(ABC):
             self.__email = email
         if isinstance(telefone, str):
             self.__telefone = telefone
-        if isinstance(password, str):
-            self.__password = password
+        if isinstance(senha, str):
+            self.__senha = senha
         if isinstance(cargo, str):
             self.__cargo = cargo
 
@@ -64,9 +64,9 @@ class Funcionario(ABC):
             self.__telefone = telefone
 
     @property
-    def password(self):
-        return self.__password
-    @password.setter
-    def password(self, password: str):
-        if isinstance(password, str):
-            self.__password = password
+    def senha(self):
+        return self.__senha
+    @senha.setter
+    def senha(self, senha: str):
+        if isinstance(senha, str):
+            self.__senha = senha
