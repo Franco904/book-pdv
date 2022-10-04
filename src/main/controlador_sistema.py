@@ -50,7 +50,8 @@ class ControladorSistema:
 
         options = {
             1: self.abre_inicio,
-            0: self.close_system,
+            2: self.abre_funcionarios,
+            0: self.close_system
         }
 
         while True:
@@ -62,6 +63,9 @@ class ControladorSistema:
     def abre_inicio(self):
         # Move this to Login Controller later
         self.__controllers["inicio"].abre_tela(True)
+
+    def abre_funcionarios(self):
+        self.__controllers['funcionarios'].abre_tela()
 
     def close_system(self):
         self.__database.close()
