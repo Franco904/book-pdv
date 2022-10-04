@@ -26,7 +26,7 @@ class ControladorInicio:
     def retornar(self):
         self.__tela_inicio.close()
 
-    def abre_tela(self, isOperador = False):
+    def abre_tela(self, is_operador = False):
         opcoesOperador = {
             1: self.abre_historico,
             2: self.retornar,
@@ -41,14 +41,14 @@ class ControladorInicio:
         }
 
         while True:
-            self.__tela_inicio.init_components(isOperador)
+            self.__tela_inicio.init_components(is_operador)
 
             opcao_escolhida = self.__tela_inicio.open()
 
             if opcao_escolhida in (0, None or sg.WIN_CLOSED):
                 self.retornar()
                 break
-            elif isOperador:
+            elif is_operador:
                 opcoesOperador[opcao_escolhida]()
             else:
                 opcoesSupervisor[opcao_escolhida]()

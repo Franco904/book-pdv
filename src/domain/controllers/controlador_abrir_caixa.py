@@ -1,4 +1,5 @@
-from src.domain.entities.tables.caixa_fisico import CaixaFisico
+from src.domain.entities.caixa import Caixa
+from src.domain.entities.extrato_caixa import ExtratoCaixa
 from src.domain.views.caixa.tela_abrir_caixa import TelaAbrirCaixa
 
 
@@ -8,18 +9,33 @@ class ControladorAbrirCaixa:
         self.__controlador_sistema = controlador_sistema
         self.__caixas_fisicos = None
 
-        self.loadCaixasFisicos()
+        self.load_caixas_fisicos()
 
-    def loadCaixasFisicos(self):
+    def load_caixas_fisicos(self):
         # Change this to get the data from DAO (Caixas)
         self.__caixas_fisicos = [
-            CaixaFisico(1, 'Caixa 1'),
-            CaixaFisico(2, 'Caixa 2'),
-            CaixaFisico(3, 'Caixa 3'),
+            Caixa(1, 'Caixa 1'),
+            Caixa(2, 'Caixa 2'),
+            Caixa(3, 'Caixa 3'),
         ]
 
     def abrir_caixa(self, values):
-        print(values)
+        if values is None:
+            return
+
+        filtered = list(filter(lambda caixa: caixa.nome == values["nome_caixa"], self.__caixas_fisicos))
+        if filtered is None:
+            return
+
+        caixa = filtered[0]
+        extrato = ExtratoCaixa(
+            caixa.id,
+            values["data_abertura"],
+            values["saldo_abertura"],
+            values["observacoes"]
+        )
+
+        # TODO: Gravar extrato no banco para posterior acesso no fechamento de caixa/relatórios
 
     def retornar(self):
         self.__tela_caixa.close()

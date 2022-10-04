@@ -7,16 +7,18 @@ class TelaInicio(Tela):
     def __init__(self):
         pass
 
-    def init_components(self, isOperador = False):
+    def init_components(self, is_operador = False):
         nomeFuncionario = "Carlos Alberto Sampaio"
         cargoFuncionario = "Operador de caixa"
 
         btnOptions = {
-            "main": "Novo" if isOperador else "Manejar funcionários",
-            "first": "Histórico de caixas" if isOperador else "Relatórios de vendas",
+            "main": "Novo" if is_operador else "Manejar funcionários",
+            "first": "Histórico de caixas" if is_operador else "Relatórios de vendas",
             "second": "Produtos",
             "third": "Sair"
         }
+
+        mainMsg = "Clique no botão abaixo para realizar uma abertura de caixa" if is_operador else "Clique no botão abaixo para gerenciar funcionários cadastrados"
 
         sg.theme("Reddit")
         layout = [
@@ -24,13 +26,13 @@ class TelaInicio(Tela):
             [sg.Text(cargoFuncionario, size=(20, 1))],
 
             [sg.Submit(btnOptions["first"], key="1", button_color='green', pad=(5, 15)),
-             sg.Text("       Clique no botão abaixo para realizar uma abertura de caixa", size=(48, 1),
+             sg.Text(f"       {mainMsg}", size=(48, 1),
                      justification='center')],
-            [sg.Submit(btnOptions["second"] if not isOperador else btnOptions["third"],
+            [sg.Submit(btnOptions["second"] if not is_operador else btnOptions["third"],
                        key="2", button_color='green'),
-             sg.Text("                                                                  "),
+             sg.Push(),
              sg.Submit(btnOptions["main"], key="3", button_color='green')],
-            [sg.Submit(btnOptions["third"], key="4", button_color='green', visible=not isOperador)],
+            [sg.Submit(btnOptions["third"], key="4", button_color='green', visible=not is_operador)],
         ]
 
         super().__init__(sg.Window("Início", layout=layout, resizable=False, finalize=True), (500, 50))
