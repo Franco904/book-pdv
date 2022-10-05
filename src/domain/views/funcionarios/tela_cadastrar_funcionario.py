@@ -14,16 +14,24 @@ class TelaCadastroFuncionario(Tela):
     def __init__(self):
         pass
 
-    def init_components(self, alterar=False):
+    def init_components(self, alterar=False, dados_funcionario: [] = None):
 
         sg.theme("Reddit")
 
-        dados_funcionario = [
+        dados_funcionario_novo = [
             [sg.Text("Nome:", size=(10, 1)), sg.InputText(key='nome', size=(40, 1))],
             [sg.Text("CPF:", size=(10, 1)), sg.InputText(key='cpf', size=(40, 1))],
             [sg.Text("E-mail:", size=(10, 1)), sg.InputText(key='email', size=(40, 1))],
             [sg.Text("Telefone:", size=(10, 1)), sg.InputText(key='telefone', size=(40, 1))]
         ]
+
+        if dados_funcionario is not None:
+            dados_funcionario_alterar = [
+                [sg.Text("Nome:", size=(10, 1)), sg.InputText(f"{dados_funcionario[0]}", key='nome', size=(40, 1))],
+                [sg.Text("CPF:", size=(10, 1)), sg.InputText(f"{dados_funcionario[1]}", key='cpf', size=(40, 1))],
+                [sg.Text("E-mail:", size=(10, 1)), sg.InputText(f"{dados_funcionario[2]}", key='email', size=(40, 1))],
+                [sg.Text("Telefone:", size=(10, 1)), sg.InputText(f"{dados_funcionario[3]}", key='telefone', size=(40, 1))]
+            ]
 
         buttons = [
             [sg.Cancel("Voltar", button_color='gray', key='return', size=(12,1)),
@@ -31,7 +39,7 @@ class TelaCadastroFuncionario(Tela):
         ]
 
         layout = [
-                    dados_funcionario,
+                    dados_funcionario_novo,
                     [sg.Text("  ")],
                     [sg.Text("Cargo: (Apenas um)")],
                     
@@ -40,7 +48,7 @@ class TelaCadastroFuncionario(Tela):
                     [sg.Text("  ")],
                     buttons,
                 ] if not alterar else [
-                    dados_funcionario,
+                    dados_funcionario_alterar,
                     [sg.Text("  ")],
                     buttons,
                 ]
@@ -48,7 +56,7 @@ class TelaCadastroFuncionario(Tela):
         super().__init__(sg.Window("Novo funcionário" if not alterar else "Alterar funcionário", layout=layout, resizable=False, finalize=True), (400, 200 if not alterar else 150))
 
 
-    def open(self):
+    def open(self, alterar= False):
         while True:
             botao, dados = super().read()
             if botao == 'enviar':
@@ -68,10 +76,13 @@ class TelaCadastroFuncionario(Tela):
                                     raise NomeInvalidoException
                                 elif dados['telefone'].isnumeric() is False or (not len(dados['telefone']) >= 6 and len(dados['telefone']) <= 15):
                                     raise TelefoneInvalidoException
-                                elif dados['operador'] is False and dados['supervisor'] is False:
-                                    raise CargoInvalidoException
+                                elif not alterar:
+                                    if dados['operador'] is False and dados['supervisor'] is False:
+                                        raise CargoInvalidoException
+                                    dados['cargo'] = 'operador' if dados['operador'] else 'supervisor'
+                                    break
                                 else:
-                                    super().close()
+                                    #super().close()
                                     break
                         except CPFInvalidoException as e:
                             super().show_message('Código inválido!', e)

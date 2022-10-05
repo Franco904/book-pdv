@@ -1,3 +1,3 @@
 class CPFJaCadastradoException(Exception):
-    def __init__(self, codigo: str):
-        super().__init__(f"\nO CPF {codigo} já esta cadastrado!")
+    def __init__(self, cpf: str):
+        super().__init__(f"\nO CPF {cpf} já esta cadastrado!")
