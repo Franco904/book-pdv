@@ -3,6 +3,7 @@ from src.domain.controllers.controlador_abrir_caixa import ControladorAbrirCaixa
 from src.domain.controllers.controlador_funcionarios import ControladorFuncionarios
 from src.domain.controllers.controlador_inicio import ControladorInicio
 from src.main.tela_sistema import TelaSistema
+from src.data.dao.funcionario_dao import FuncionarioDAO
 
 
 class ControladorSistema:
@@ -21,26 +22,27 @@ class ControladorSistema:
         self.init_database()
         self.init_daos()
         self.init_views()
-        self.init_presenters()
+        self.init_controllers()
         self.init_system_view()
 
     def init_database(self):
         # Create database global instance
         self.__database = Database()
-        self.__database.create()
 
     def init_daos(self):
         # Create daos global instances
-        self.__daos = {}
+        self.__daos = {
+            "funcionario_dao": FuncionarioDAO(self.__database)
+        }
 
     def init_views(self):
         # Create views global instances
         self.__views = {}
 
-    def init_presenters(self):
-        # Create presenters global instances
+    def init_controllers(self):
+        # Create controllers global instances
         self.__controllers = {
-            "funcionarios": ControladorFuncionarios(self),
+            "funcionarios": ControladorFuncionarios(self, self.__daos['funcionario_dao']),
             "inicio": ControladorInicio(self),
             "caixa": ControladorAbrirCaixa(self),
         }
@@ -49,8 +51,7 @@ class ControladorSistema:
         self.__tela_sistema = TelaSistema()
 
         options = {
-            1: self.abre_inicio,
-            2: self.abre_funcionarios,
+            1: self.abre_funcionarios,
             0: self.close_system
         }
 
@@ -59,13 +60,6 @@ class ControladorSistema:
                 options[self.__tela_sistema.show_options()]()
             except ValueError:
                 self.__tela_sistema.show_message('Valores númericos devem ser inteiros!')
-
-    def abre_inicio(self):
-        # Move this to Login Controller later
-        self.__controllers["inicio"].abre_tela(is_operador=True)
-
-    def abre_funcionarios(self):
-        self.__controllers['funcionarios'].abre_tela()
 
     def abre_funcionarios(self):
         self.__controllers['funcionarios'].abre_tela()

@@ -20,14 +20,19 @@ class ControladorAbrirCaixa:
         self.__caixas = [Caixa(1), Caixa(2), Caixa(3)]
 
     def abre_tela(self, operador_caixa: OperadorCaixa):
-        caixas_ids = list(map(lambda caixa: caixa.id, self.__caixas))
+        caixas_disponiveis = list(
+            filter(lambda caixa: caixa.operador_caixa is None or caixa.operador_caixa.cpf != operador_caixa.cpf,
+                   self.__caixas)
+        )
+        caixas_ids = list(map(lambda caixa: caixa.id, caixas_disponiveis))
 
         self.__tela_caixa.init_components(caixas_ids, self.__data_abertura)
-        result = self.__tela_caixa.open(self.__caixas)
-        result["values"]["saldo_abertura"] = result["saldo_abertura"]
+        result = self.__tela_caixa.open(caixas_disponiveis)
 
-        if result["option"] == 0:
+        if result["option"] == 0 or result["values"] is None:
             return self.retornar()
+
+        result["values"]["saldo_abertura"] = result["saldo_abertura"]
 
         self.abrir_caixa(result["values"], operador_caixa)
 

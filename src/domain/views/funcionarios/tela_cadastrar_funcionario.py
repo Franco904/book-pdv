@@ -71,7 +71,8 @@ class TelaCadastroFuncionario(Tela):
                                 elif dados['operador'] is False and dados['supervisor'] is False:
                                     raise CargoInvalidoException
                                 else:
-                                    super().close()
+                                    dados['cargo'] = 'operador' if dados['operador'] else 'supervisor'
+                                    #super().close()
                                     break
                         except CPFInvalidoException as e:
                             super().show_message('Código inválido!', e)
