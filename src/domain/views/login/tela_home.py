@@ -11,8 +11,8 @@ class TelaHome(Tela):
         sg.theme("Reddit")
         layout = [
                     [sg.Cancel("Entrar", key='entrar', button_color='green', size=(12, 1))],
-                    [sg.Text("  "],
-                    [sg.Cancel('Fechar', key='close ', button_color='green', size=(12, 1))]
+                    [sg.Text("  ")],
+                    [sg.Cancel('Fechar', key='close ', button_color='gray', size=(12, 1))]
                   ]
 
         super().__init__(sg.Window("Home", layout=layout, resizable=False, modal=True, finalize=True, element_justification='c'), (200,100))

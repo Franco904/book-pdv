@@ -1,6 +1,5 @@
-from sqlalchemy import create_engine
-import sqlalchemy as db
-import pandas as pd
+import psycopg2
+from psycopg2.extras import DictCursor
 
 class Database:
     def __init__(self):
@@ -9,37 +8,48 @@ class Database:
         self.__username = "rusdkrqlyrnzgx"
         self.__password = "a7b9f182a0e99bf63b4f19c63eee7db3aa5691840897684266ee56796e9d74f8"
         self.__port = 5432
-        self.__engine = self.create_db_engine()
-        self.__metadata = db.MetaData()
+        self.__connection = None
+        self.__cursor = None
 
-    def create_db_engine(self):
-        postgres_engine = create_engine(f"postgresql://{self.__username}:{self.__password}"
-                                        f"@{self.__hostname}:{self.__port}/{self.__database}")
-        return postgres_engine
+    def connect(self):
+        self.__connection = psycopg2.connect(
+            host=self.__hostname,
+            database=self.__database,
+            user=self.__username,
+            password=self.__password,
+            port=self.__port,
+            cursor_factory=DictCursor
+        )
+        self.__cursor = self.__connection.cursor()
+
+        return [self.__connection, self.cursor]
 
     @property
-    def engine(self):
-        return self.__engine
+    def connection(self):
+        return self.__connection
 
     @property
-    def metadata(self):
-        return self.__metadata
+    def cursor(self):
+        return self.__cursor
 
-    def open_connection(self):
-        print("Conexão aberta com sucesso")
-        return self.__engine.connect()
+    def close_all(self):
+        self.close_cursor()
+        self.close_connection()
 
-    def close_db(self):
-        print("Conexão fechada com sucesso")
-        return self.__engine.dispose()
+    def close_connection(self):
+        if self.__connection is not None:
+            self.__connection.close()
+
+    def close_cursor(self):
+        if self.__cursor is not None:
+            self.__cursor.close()
 
 """
-test = Database()
-con = test.open_connection()
-x = pd.read_sql("SELECT * FROM access_control.funcionarios", con)
-print(x.columns)
-test.close_db()
+    db = Database()
+    con, cursor = db.connect()
+    cursor.execute("SELECT * FROM access_control.funcionarios")
+    colnames = [desc[0] for desc in cursor.description]
+    print(colnames)
+    db.close_all()
 """
-
-
 

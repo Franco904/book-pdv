@@ -1,15 +1,15 @@
-from src.domain.entities.caixa import Caixa
+from src.domain.models.caixa import Caixa
 
 
 class ExtratoCaixa:
-    def __init__(self, caixa: Caixa, data_abertura: str, saldo_abertura: float, observacoes: str):
+    def __init__(self, caixa: Caixa, data_abertura: str, saldo_abertura: float, observacoes: str, data_fechamento=None, saldo_fechamento=None, total_vendas=None, total_sangrias=None):
         self.__caixa = None
         self.__data_abertura = None
-        self.__data_fechamento = None
+        self.__data_fechamento = data_fechamento
         self.__saldo_abertura = None
-        self.__saldo_fechamento = None
-        self.__total_vendas = None
-        self.__total_sangrias = None
+        self.__saldo_fechamento = saldo_fechamento
+        self.__total_vendas = total_vendas
+        self.__total_sangrias = total_sangrias
         self.__observacoes = None
 
         if isinstance(caixa, Caixa):

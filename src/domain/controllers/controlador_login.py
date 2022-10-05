@@ -27,18 +27,13 @@ class ControladorLogin:
         opcoes = {1: self.entrar , 2: self.fechar}
 
         while True:
-            self.__tela_home.init_components()
-            opcao_escolhida = self.__tela_home.open()
-            self.__tela_funcionarios.close()
+            self.__tela_login.init_components()
+            opcao_escolhida = self.__tela_login.open()
+            self.__tela_login.close()
 
-            if opcao_escolhida == 5 or opcao_escolhida is None or sg.WIN_CLOSED:
-                self.__tela_funcionarios.close()
+            if opcao_escolhida == 2 or opcao_escolhida is None or sg.WIN_CLOSED:
+                self.__tela_login.close()
                 break
             else:
                 opcoes[opcao_escolhida]()
 
-    def abre_inicio(self):
-        # Implement controls to inicio
-        is_operador = True
-
-        self.__controlador_sistema.controllers["inicio"].abre_tela(is_operador=is_operador)

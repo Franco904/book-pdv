@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 
-class Funcionario(ABC):
 
+class Funcionario(ABC):
     @abstractmethod
-    def __init__(self, nome: str, cpf: str, email:str, telefone:str, senha:str, cargo: str):
+    def __init__(self, nome: str, cpf: str, email: str, telefone: str, senha: str, cargo: str):
         self.__nome = None
         self.__cpf = None
         self.__email = None

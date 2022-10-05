@@ -21,13 +21,6 @@ class ControladorFuncionarios:
         self.__funcionario_dao = funcionario_dao
         self.__controlador_sistema = controlador_sistema
 
-    @property
-    def funcionarios(self):
-        """
-            Method to get all employees from db and its attributes, in order to 
-            list them in a table.
-        """
-        pass
 
     def cadastrar_funcionario(self):
         self.__tela_cadastro_funcionario.init_components()
@@ -35,10 +28,8 @@ class ControladorFuncionarios:
         # dados: {'nome': '', 'cpf': '', 'email': '', 'telefone': '', 'operador': True, 'supervisor': False, 'cargo': 'supervisor' ou 'operador'}
         if botao == 'enviar':
             try:
-                dataframe = self.__funcionario_dao.execute_query(f"SELECT * FROM access_control.funcionarios WHERE cpf = \'{str(dados['cpf'])}\'")
-                print(dataframe.columns)
-                if not len(dataframe.index) != 0:
-                    raise CPFJaCadastradoException
+                if self.__funcionario_dao.get_by_cpf(dados['cpf']) is not None:
+                    raise CPFJaCadastradoException(dados['cpf'])
                 else:
                     if dados['cargo'] == 'supervisor':
                         funcionario = Supervisor(
@@ -46,7 +37,7 @@ class ControladorFuncionarios:
                                         dados['cpf'],
                                         dados['email'],
                                         dados['telefone'],
-                                        dados['senha']
+                                        ''
                         )
                     else:
                         funcionario = OperadorCaixa(
@@ -54,64 +45,76 @@ class ControladorFuncionarios:
                                         dados['cpf'],
                                         dados['email'],
                                         dados['telefone'],
-                                        dados['senha']
+                                        ''
                         )
-                    self.__funcionario_dao.persist_to_cache(funcionario.cpf, funcionario)
                     self.__tela_cadastro_funcionario.close()
-                    print(self.__funcionario_dao.get_all_keys())
+                    self.__funcionario_dao.persist_entity(funcionario)
             except CPFJaCadastradoException as c:
                 self.__tela_cadastro_funcionario.show_message('CPF já cadastrado', c)
                 self.__tela_cadastro_funcionario.close()
 
     def listar_funcionarios(self):
-        # verificar a existencia de funcionarios no banco, se sim:
-        # trazer a lista de funcionarios e preparar uma tabela [] e o nome das colunas ['Coluna x', 'Coluna y']
-        # abrir a tela de listagem de entidades com os parametros lista de funcionarios, colunas e o titulo
         try:
-            dataframe = self.__funcionario_dao.execute_query(f"SELECT * FROM access_control.funcionarios")
-
-            if not len(dataframe.index) != 0:
+            funcionarios = self.__funcionario_dao.get_all()
+            if len(funcionarios) == 0:
                 raise ListaVaziaException
-            lista_funcionarios = dataframe.values.tolist()
-            self.__tela_lista_entidades.init_components(lista_funcionarios, dataframe.columns, 'Lista de funcionarios')
+            lista_funcionarios = []
+            for funcionario in funcionarios:
+                lista_funcionarios.append([funcionario.nome, funcionario.telefone, funcionario.cargo, funcionario.email, funcionario.cpf])
+
+            nomes_colunas = ['Nome', 'Telefone', 'Cargo', 'E-mail', 'CPF']
+
+            self.__tela_lista_entidades.init_components(lista_funcionarios, nomes_colunas, 'Lista de funcionarios')
             botao = self.__tela_lista_entidades.open()
         except ListaVaziaException as v:
             self.__tela_funcionarios.show_message('Lista vazia!', v)
 
-        # [['Jorge', '12345678912'],['Paulo', '98798765432']], ['Nome', 'CPF'],
 
     def alterar_funcionario(self):
         self.__tela_busca_funcionario.init_components()
         botao_busca, cpf = self.__tela_busca_funcionario.open()
 
         if botao_busca == 'buscar' and cpf is not None:
-            #buscar se o cpf existe no banco e então abrir tela para inserçao de novos dados (objeto com dados antigos)
-            self.__tela_cadastro_funcionario.init_components(alterar=True)
-            botao_cadastro, novos_dados = self.__tela_cadastro_funcionario.tela_opcoes()
+            #busca se o cpf existe no banco e então abrir tela para inserçao de novos dados (objeto com dados antigos)
+            funcionario = self.__funcionario_dao.get_by_cpf(cpf)
 
-            if botao_cadastro == 'enviar':
-                self.__tela_confirmacao.init_components()
-                botao_confirmacao = self.__tela_confirmacao.open()
-                self.__tela_confirmacao.close()
-                if botao_confirmacao == 'confirmar':
-                    # persistir dados
-                    # dados: {'nome': '', 'cpf': '', 'email': '', 'telefone': '', 'operador': True, 'supervisor': False}
-                    print(botao_cadastro, novos_dados)
+            if funcionario is None:
+                self.__tela_busca_funcionario.show_message('Funcionário não encontrado',
+                                                           'Não foi encontrado um funcionário cadastrado com esse CPF.')
+            else:
+                dados_funcionario = [funcionario.nome, funcionario.cpf, funcionario.email, funcionario.telefone]
+                self.__tela_cadastro_funcionario.init_components(alterar=True, dados_funcionario=dados_funcionario)
+                botao_cadastro, novos_dados = self.__tela_cadastro_funcionario.open(alterar=True)
+
+                if botao_cadastro == 'enviar':
+
+                    self.__tela_cadastro_funcionario.close()
+                    self.__tela_confirmacao.init_components()
+                    botao_confirmacao = self.__tela_confirmacao.open()
+                    self.__tela_confirmacao.close()
+
+                    if botao_confirmacao == 'confirmar':
+                        if novos_dados['nome'] != dados_funcionario[0]:
+                            self.__funcionario_dao.update_entity(dados_funcionario[1], 'nome', novos_dados['nome'])
+                        if novos_dados['cpf'] != dados_funcionario[1]:
+                            self.__funcionario_dao.update_entity(dados_funcionario[1], 'cpf', novos_dados['cpf'])
+                        if novos_dados['email'] != dados_funcionario[2]:
+                            self.__funcionario_dao.update_entity(dados_funcionario[1], 'email', novos_dados['email'])
+                        if novos_dados['telefone'] != dados_funcionario[3]:
+                            self.__funcionario_dao.update_entity(dados_funcionario[1], 'telefone', novos_dados['telefone'])
 
     def excluir_funcionario(self):
         self.__tela_busca_funcionario.init_components()
         botao_busca, cpf = self.__tela_busca_funcionario.open()
 
         if botao_busca == 'buscar' and cpf is not None:
-            # comando para buscar no banco a existencia de um funcionario com o cpf digitado
-
-            # se encontrou o funcionario -> solicita confirmacao:
-            self.__tela_confirmacao.init_components()
-            botao_confirmacao = self.__tela_confirmacao.open()
-            self.__tela_confirmacao.close()
-            if botao_confirmacao == 'confirmar':
-                # comando para deletar funcionario no banco
-                print(cpf)
+            if self.__funcionario_dao.get_by_cpf(cpf) is not None:
+                # se encontrou o funcionario -> solicita confirmacao:
+                self.__tela_confirmacao.init_components()
+                botao_confirmacao = self.__tela_confirmacao.open()
+                self.__tela_confirmacao.close()
+                if botao_confirmacao == 'confirmar':
+                    self.__funcionario_dao.delete_entity(cpf)
 
     def retornar(self):
         self.__tela_funcionarios.close()

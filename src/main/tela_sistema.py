@@ -6,12 +6,13 @@ class TelaSistema:
     def show_options():
         print('=' * 40)
         print('[ 1 ] Funcionarios')
+        print('[ 2 ] Início')
         print('[ 0 ] Fechar sistema')
         print('=' * 40)
 
         opcao = int(input('Opção: '))
 
-        while opcao not in range(0, 2):
+        while opcao not in range(0, 3):
             opcao = int(input('Opção: '))
 
         return opcao

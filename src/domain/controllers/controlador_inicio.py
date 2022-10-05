@@ -28,14 +28,14 @@ class ControladorInicio:
     def retornar(self):
         self.__tela_inicio.close()
 
-    def abre_tela(self, is_operador = False):
-        opcoesOperador = {
+    def abre_tela(self, is_operador = True):
+        opcoes_operador = {
             1: self.abre_historico,
             2: self.retornar,
             3: self.abre_caixa,
         }
 
-        opcoesSupervisor = {
+        opcoes_supervisor = {
             1: self.abre_relatorios,
             2: self.abre_produtos,
             3: self.abre_funcionarios,
@@ -52,6 +52,6 @@ class ControladorInicio:
                 break
             elif is_operador:
                 self.__funcionario = OperadorCaixa("Franco", "12833158904", "teste@gmail", "991300904", "123123as")
-                opcoesOperador[opcao_escolhida]()
+                opcoes_operador[opcao_escolhida]()
             else:
-                opcoesSupervisor[opcao_escolhida]()
+                opcoes_supervisor[opcao_escolhida]()
