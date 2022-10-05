@@ -62,7 +62,10 @@ class ControladorSistema:
 
     def abre_inicio(self):
         # Move this to Login Controller later
-        self.__controllers["inicio"].abre_tela(True)
+        self.__controllers["inicio"].abre_tela(is_operador=True)
+
+    def abre_funcionarios(self):
+        self.__controllers['funcionarios'].abre_tela()
 
     def abre_funcionarios(self):
         self.__controllers['funcionarios'].abre_tela()
