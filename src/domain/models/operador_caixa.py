@@ -1,4 +1,4 @@
-from funcionario import Funcionario
+from src.domain.models.funcionario import Funcionario
 
 class OperadorCaixa(Funcionario):
 
