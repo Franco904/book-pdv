@@ -10,7 +10,7 @@ class Tela(ABC):
             self.__window.set_min_size(tamanho)
 
     @abstractmethod
-    def init_components(self, values: list = None):
+    def init_components(self):
         pass
 
     @abstractmethod
@@ -24,8 +24,11 @@ class Tela(ABC):
         sg.Popup(titulo, msg)
 
     def read(self):
-        botao, valores = self.__window.Read()
+        botao, valores = self.__window.read()
         return botao, valores
+
+    def update(self, key: str, value):
+        self.__window[key].update(value)
 
     def tela_opcoes(self):
         return self.open()

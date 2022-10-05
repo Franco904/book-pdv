@@ -1,18 +1,24 @@
+from src.domain.models.operador_caixa import OperadorCaixa
+
+
 class Caixa:
-    def __init__(self, id, nome):
-        self.__id = id
-        self.__nome = nome
+    def __init__(self, id: int):
+        self.__id = None
+        self.__operador_caixa = None
         self.__saldo = 0
         self.__vendas = 0
         self.__sangrias = 0
+
+        if isinstance(id, int):
+            self.__id = id
 
     @property
     def id(self):
         return self.__id
 
     @property
-    def nome(self):
-        return self.__nome
+    def operador_caixa(self):
+        return self.__operador_caixa
 
     @property
     def saldo(self):
@@ -26,18 +32,22 @@ class Caixa:
     def sangrias(self):
         return self.__sangrias
 
-    @nome.setter
-    def nome(self, nome):
-        self.__nome = nome
+    @operador_caixa.setter
+    def operador_caixa(self, operador_caixa):
+        if isinstance(operador_caixa, OperadorCaixa):
+            self.__operador_caixa = operador_caixa
 
     @saldo.setter
     def saldo(self, saldo):
-        self.__saldo = saldo
+        if isinstance(saldo, float):
+            self.__saldo = saldo
 
     @vendas.setter
     def vendas(self, vendas):
-        self.__vendas = vendas
+        if isinstance(vendas, list):
+            self.__vendas = vendas
 
     @sangrias.setter
     def sangrias(self, sangrias):
-        self.__sangrias = sangrias
+        if isinstance(sangrias, list):
+            self.__sangrias = sangrias
