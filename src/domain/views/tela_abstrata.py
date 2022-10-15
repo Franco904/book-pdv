@@ -18,7 +18,7 @@ class Tela(ABC):
         pass
 
     def close(self):
-        self.__window.Close()
+        self.__window.close()
 
     def show_message(self, titulo: str, msg):
         sg.Popup(titulo, msg)

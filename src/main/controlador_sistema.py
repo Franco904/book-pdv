@@ -24,10 +24,10 @@ class ControladorSistema:
     def init_system(self):
         self.init_database()
         self.init_daos()
+        self.init_inserts()
         self.init_views()
         self.init_controllers()
         self.init_system_view()
-        self.init_inserts()
 
     def init_database(self):
         # Create database global instance
@@ -50,13 +50,15 @@ class ControladorSistema:
         self.__controllers = {
             "funcionarios": ControladorFuncionarios(self, self.__daos["funcionario_dao"]),
             "inicio": ControladorInicio(self),
-            "caixa": ControladorAbrirCaixa(self, self.__daos["caixa_dao"], self.__daos["extrato_caixa_dao"]),
+            "abrir_caixa": ControladorAbrirCaixa(self, self.__daos["caixa_dao"], self.__daos["extrato_caixa_dao"]),
         }
 
     def init_inserts(self):
-        self.__daos["caixa_dao"].persist_entity(Caixa(1))
-        self.__daos["caixa_dao"].persist_entity(Caixa(2))
-        self.__daos["caixa_dao"].persist_entity(Caixa(3))
+        pass
+        # self.__daos["caixa_dao"].delete_all()
+        # self.__daos["caixa_dao"].persist_entity(Caixa(1))
+        # self.__daos["caixa_dao"].persist_entity(Caixa(2))
+        # self.__daos["caixa_dao"].persist_entity(Caixa(3))
 
     def init_system_view(self):
         self.__tela_sistema = TelaSistema()

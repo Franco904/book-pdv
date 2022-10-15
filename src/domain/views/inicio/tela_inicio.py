@@ -13,7 +13,7 @@ class TelaInicio(Tela):
 
         btnOptions = {
             "main": "Novo" if is_operador else "Manejar funcionários",
-            "first": "Histórico de caixas" if is_operador else "Relatórios de vendas",
+            "first": "Caixas" if is_operador else "Relatórios de vendas",
             "second": "Produtos",
             "third": "Sair"
         }
@@ -29,7 +29,7 @@ class TelaInicio(Tela):
              sg.Text(f"       {mainMsg}", size=(48, 1),
                      justification='center')],
             [sg.Submit(btnOptions["second"] if not is_operador else btnOptions["third"],
-                       key="2", button_color='green'),
+                       key="2" if not is_operador else "0", button_color='green'),
              sg.Push(),
              sg.Submit(btnOptions["main"], key="3", button_color='green')],
             [sg.Submit(btnOptions["third"], key="4", button_color='green', visible=not is_operador)],

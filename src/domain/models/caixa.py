@@ -2,7 +2,7 @@ from src.domain.models.operador_caixa import OperadorCaixa
 
 
 class Caixa:
-    def __init__(self, id, operador_caixa=None, saldo=0, vendas=None, sangrias=None):
+    def __init__(self, id, operador_caixa=None, saldo=0.0, vendas=None, sangrias=None):
         self.__id = None
         self.__operador_caixa = operador_caixa
         self.__saldo = None

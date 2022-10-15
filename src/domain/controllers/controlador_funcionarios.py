@@ -21,7 +21,6 @@ class ControladorFuncionarios:
         self.__funcionario_dao = funcionario_dao
         self.__controlador_sistema = controlador_sistema
 
-
     def cadastrar_funcionario(self):
         self.__tela_cadastro_funcionario.init_components()
         botao, dados = self.__tela_cadastro_funcionario.tela_opcoes()
@@ -68,7 +67,6 @@ class ControladorFuncionarios:
             botao = self.__tela_lista_entidades.open()
         except ListaVaziaException as v:
             self.__tela_funcionarios.show_message('Lista vazia!', v)
-
 
     def alterar_funcionario(self):
         self.__tela_busca_funcionario.init_components()

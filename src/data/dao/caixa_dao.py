@@ -1,4 +1,5 @@
 from src.data.dao.abstract_dao import AbstractDAO
+from src.data.dao.funcionario_dao import FuncionarioDAO
 from src.data.database.database import Database
 from src.domain.models.caixa import Caixa
 
@@ -15,39 +16,42 @@ class CaixaDAO(AbstractDAO):
 
     def get_all(self):
         rows = super().get_all()
-        caixas = list(map(lambda row: CaixaDAO.__parse_caixa(row), rows))
+        caixas = list(map(lambda row: self.__parse_caixa(row), rows))
 
         return caixas
 
     def get_by_id(self, id: int):
         row = super().get_by_pk("id", id)
 
-        caixa = None if row is None else CaixaDAO.__parse_caixa(row)
+        caixa = None if row is None else self.__parse_caixa(row)
         return caixa
 
     def persist_entity(self, caixa: Caixa):
         table = super().get_table()
-        columns = "id, cpf_operador, saldo"
+        columns = "id_caixa, cpf_operador, saldo"
+
+        caixa_cpf = '' if caixa.operador_caixa is None else caixa.operador_caixa.cpf
 
         super().persist(
             f""" INSERT INTO {table} ({columns}) VALUES (%s, %s, %s)""",
             (
                 caixa.id,
-                caixa.operador_caixa.cpf,
+                caixa_cpf,
                 caixa.saldo,
             ),
         )
 
     def delete_entity(self, id: int):
-        super().delete("id", id)
+        super().delete("id_caixa", id)
 
     def update_entity(self, id: int, attribute, value):
-        super().update("id", id, attribute, value)
+        super().update("id_caixa", id, attribute, value)
 
-    @staticmethod
-    def __parse_caixa(row):
-        id = row["id"]
+    def __parse_caixa(self, row):
+        id = row["id_caixa"]
         cpf_operador = row["cpf_operador"]
         saldo = row["saldo"]
 
-        return Caixa(id, cpf_operador, saldo, [], [])
+        operador_caixa = FuncionarioDAO(self.__database).get_by_cpf(cpf_operador)
+
+        return Caixa(id, operador_caixa, saldo, [], [])

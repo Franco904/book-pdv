@@ -9,8 +9,8 @@ from src.domain.exceptions.cargo_invalido_exception import CargoInvalidoExceptio
 import PySimpleGUI as sg
 import re
 
-class TelaCadastroFuncionario(Tela):
 
+class TelaCadastroFuncionario(Tela):
     def __init__(self):
         pass
 
@@ -43,7 +43,7 @@ class TelaCadastroFuncionario(Tela):
                     [sg.Text("  ")],
                     [sg.Text("Cargo: (Apenas um)")],
                     
-                    [sg.Radio('Operador de caixa', 'cargo', key='operador', enable_events=True, size=(20,1))],
+                    [sg.Radio('Operador de abrir_caixa', 'cargo', key='operador', enable_events=True, size=(20,1))],
                     [sg.Radio('Supervisor', 'cargo', key='supervisor', enable_events=True, size=(20,1))],
                     [sg.Text("  ")],
                     buttons,
