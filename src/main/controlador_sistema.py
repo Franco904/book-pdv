@@ -54,11 +54,10 @@ class ControladorSistema:
         }
 
     def init_inserts(self):
-        pass
-        # self.__daos["caixa_dao"].delete_all()
-        # self.__daos["caixa_dao"].persist_entity(Caixa(1))
-        # self.__daos["caixa_dao"].persist_entity(Caixa(2))
-        # self.__daos["caixa_dao"].persist_entity(Caixa(3))
+        self.__daos["caixa_dao"].delete_all()
+        self.__daos["caixa_dao"].persist_entity(Caixa(1))
+        self.__daos["caixa_dao"].persist_entity(Caixa(2))
+        self.__daos["caixa_dao"].persist_entity(Caixa(3))
 
     def init_system_view(self):
         self.__tela_sistema = TelaSistema()
