@@ -28,6 +28,7 @@ class ControladorSistema:
         self.init_views()
         self.init_controllers()
         self.init_system_view()
+        self.init_inserts()
 
     def init_database(self):
         # Create database global instance
