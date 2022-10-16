@@ -47,7 +47,7 @@ class TelaAbrirCaixa(Tela):
                 super().update("saldo_abertura", saldo)
                 saldo_abertura = saldo
 
-            # Abrir caixa
+            # Abrir abrir_caixa
             elif event == "1":
                 if values["caixa_id"] == "":
                     super().show_message("Atenção!", "Preencha o campo Caixa corretamente!")

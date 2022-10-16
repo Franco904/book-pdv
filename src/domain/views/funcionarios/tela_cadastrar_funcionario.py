@@ -9,8 +9,8 @@ from src.domain.exceptions.cargo_invalido_exception import CargoInvalidoExceptio
 import PySimpleGUI as sg
 import re
 
-class TelaCadastroFuncionario(Tela):
 
+class TelaCadastroFuncionario(Tela):
     def __init__(self):
         pass
 
@@ -54,7 +54,6 @@ class TelaCadastroFuncionario(Tela):
                 ]
 
         super().__init__(sg.Window("Novo funcionário" if not alterar else "Alterar funcionário", layout=layout, resizable=False, finalize=True), (400, 200 if not alterar else 150))
-
 
     def open(self, alterar= False):
         while True:
@@ -105,4 +104,3 @@ class TelaCadastroFuncionario(Tela):
                 super().close()
                 break
         return botao, dados
-

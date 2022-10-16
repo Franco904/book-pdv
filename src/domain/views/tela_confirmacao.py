@@ -1,8 +1,8 @@
 from src.domain.views.tela_abstrata import Tela
 import PySimpleGUI as sg
 
-class TelaConfirmacao(Tela):
 
+class TelaConfirmacao(Tela):
     def __init__(self):
         pass
 

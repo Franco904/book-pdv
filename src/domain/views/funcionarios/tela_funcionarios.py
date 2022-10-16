@@ -3,7 +3,6 @@ import PySimpleGUI as sg
 
 
 class TelaFuncionarios(Tela):
-
     def __init__(self):
         pass
 
