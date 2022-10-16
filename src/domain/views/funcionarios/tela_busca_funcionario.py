@@ -4,8 +4,8 @@ from src.domain.exceptions.entrada_vazia_exception import EntradaVaziaException
 from src.domain.exceptions.cpf_inexistente import CPFInexistenteException
 import PySimpleGUI as sg
 
-class TelaBuscaFuncionario(Tela):
 
+class TelaBuscaFuncionario(Tela):
     def __init__(self):
         pass
 

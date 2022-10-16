@@ -60,10 +60,9 @@ class AbstractDAO(ABC):
             if con:
                 self.__database.close_all()
 
-    def get_all(self):
-        table = f"{self.__schema}.{self.__table}" if self.__schema is not None else f"{self.__table}"
+    def get_all(self, custom_query=""):
         con, cursor = self.__database.connect()
-        cursor.execute(f"SELECT * FROM {table}")
+        cursor.execute(f"SELECT * FROM {self.get_table()}{custom_query}")
 
         rows = cursor.fetchall()
         self.__database.close_all()
@@ -72,6 +71,12 @@ class AbstractDAO(ABC):
     def delete(self, pk_name, target_pk):
         con, cursor = self.__database.connect()
         cursor.execute(f"DELETE FROM {self.get_table()} WHERE {pk_name} = '{target_pk}'")
+        con.commit()
+        self.__database.close_all()
+
+    def delete_all(self):
+        con, cursor = self.__database.connect()
+        cursor.execute(f"DELETE FROM {self.get_table()}")
         con.commit()
         self.__database.close_all()
 

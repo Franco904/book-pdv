@@ -13,7 +13,7 @@ class ExtratoCaixaDAO(AbstractDAO):
     def execute_query(self, query: str):
         super().execute_query(query)
 
-    def get_all(self):
+    def get_all(self, custom_query=""):
         rows = super().get_all()
         caixas = list(map(lambda row: ExtratoCaixaDAO.__parse_extrato_caixa(row), rows))
 

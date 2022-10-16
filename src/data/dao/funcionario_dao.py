@@ -16,7 +16,7 @@ class FuncionarioDAO(AbstractDAO):
     def execute_query(self, query: str):
         super().execute_query(query)
 
-    def get_all(self):
+    def get_all(self, custom_query=""):
         rows = super().get_all()
         funcionarios = list(map(lambda row: FuncionarioDAO.__parse_funcionario(row), rows))
 
