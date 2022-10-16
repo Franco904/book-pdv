@@ -1,6 +1,7 @@
 import psycopg2
 from psycopg2.extras import DictCursor
 
+
 class Database:
     def __init__(self):
         self.__hostname = "54.147.36.107"
@@ -43,13 +44,3 @@ class Database:
     def close_cursor(self):
         if self.__cursor is not None:
             self.__cursor.close()
-
-"""
-    db = Database()
-    con, cursor = db.connect()
-    cursor.execute("SELECT * FROM access_control.funcionarios")
-    colnames = [desc[0] for desc in cursor.description]
-    print(colnames)
-    db.close_all()
-"""
-

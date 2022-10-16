@@ -6,10 +6,10 @@ import PySimpleGUI as sg
 
 
 class TelaBuscaFuncionario(Tela):
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
-    def init_components(self):
+    def init_components(self) -> None:
         sg.theme("Reddit")
         layout = [
                     [sg.Text("  ")],
@@ -20,7 +20,7 @@ class TelaBuscaFuncionario(Tela):
 
         super().__init__(sg.Window("Buscar funcionário", layout=layout, resizable=False, modal=True, finalize=True, element_justification='c'), (200,100))
 
-    def open(self):
+    def open(self) -> tuple:
         while True:
             botao, valores = super().read()
 

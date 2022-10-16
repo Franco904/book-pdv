@@ -7,7 +7,7 @@ from src.domain.models.supervisor import Supervisor
 
 
 class FuncionarioDAO(AbstractDAO):
-    def __init__(self, database: Database):
+    def __init__(self, database: Database) -> None:
         super().__init__(database, 'access_control', 'funcionarios')
         self.__database = database
         self.__schema = super().schema
@@ -16,19 +16,19 @@ class FuncionarioDAO(AbstractDAO):
     def execute_query(self, query: str):
         super().execute_query(query)
 
-    def get_all(self, custom_query=""):
+    def get_all(self, custom_query="") -> [Funcionario]:
         rows = super().get_all()
         funcionarios = list(map(lambda row: FuncionarioDAO.__parse_funcionario(row), rows))
 
         return funcionarios
 
-    def get_by_cpf(self, cpf: str):
+    def get_by_cpf(self, cpf: str) -> Funcionario | None:
         row = super().get_by_pk("cpf", cpf)
 
         funcionario = None if row is None else FuncionarioDAO.__parse_funcionario(row)
         return funcionario
 
-    def persist_entity(self, funcionario: Funcionario):
+    def persist_entity(self, funcionario: Funcionario) -> None:
         table = super().get_table()
         columns = "cpf, nome, email, telefone, senha, cargo"
 
@@ -44,14 +44,14 @@ class FuncionarioDAO(AbstractDAO):
             ),
         )
 
-    def delete_entity(self, cpf: str):
+    def delete_entity(self, cpf: str) -> None:
         super().delete("cpf", cpf)
 
-    def update_entity(self, cpf: str, attribute, value):
+    def update_entity(self, cpf: str, attribute, value) -> None:
         super().update("cpf", cpf, attribute, value)
 
     @staticmethod
-    def __parse_funcionario(row):
+    def __parse_funcionario(row) -> Funcionario | None:
         if row is None:
             return None
 
@@ -65,7 +65,7 @@ class FuncionarioDAO(AbstractDAO):
             raise Exception
 
     @staticmethod
-    def __parse_operador_caixa(row):
+    def __parse_operador_caixa(row) -> OperadorCaixa:
         nome = row["nome"]
         cpf = row["cpf"]
         email = row["email"]
@@ -75,7 +75,7 @@ class FuncionarioDAO(AbstractDAO):
         return OperadorCaixa(nome, cpf, email, telefone, senha)
 
     @staticmethod
-    def __parse_supervisor(row):
+    def __parse_supervisor(row) -> Supervisor:
         nome = row["nome"]
         cpf = row["cpf"]
         email = row["email"]
@@ -83,5 +83,3 @@ class FuncionarioDAO(AbstractDAO):
         senha = row["senha"]
 
         return Supervisor(nome, cpf, email, telefone, senha)
-
-

@@ -11,11 +11,10 @@ import re
 
 
 class TelaCadastroFuncionario(Tela):
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
-    def init_components(self, alterar=False, dados_funcionario: [] = None):
-
+    def init_components(self, alterar=False, dados_funcionario: [] = None) -> None:
         sg.theme("Reddit")
 
         dados_funcionario_novo = [
@@ -55,7 +54,7 @@ class TelaCadastroFuncionario(Tela):
 
         super().__init__(sg.Window("Novo funcionário" if not alterar else "Alterar funcionário", layout=layout, resizable=False, finalize=True), (400, 200 if not alterar else 150))
 
-    def open(self, alterar= False):
+    def open(self, alterar=False) -> tuple:
         while True:
             botao, dados = super().read()
             if botao == 'enviar':

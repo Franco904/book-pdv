@@ -1,89 +1,106 @@
+from src.data.dao.autenticacao_dao import AutenticacaoDAO
 from src.data.dao.caixa_dao import CaixaDAO
 from src.data.dao.extrato_caixa_dao import ExtratoCaixaDAO
 from src.data.database.database import Database
 from src.domain.controllers.controlador_abrir_caixa import ControladorAbrirCaixa
+from src.domain.controllers.controlador_autenticacao import ControladorAutenticacao
 from src.domain.controllers.controlador_funcionarios import ControladorFuncionarios
 from src.domain.controllers.controlador_inicio import ControladorInicio
 from src.domain.models.caixa import Caixa
-from src.main.tela_sistema import TelaSistema
 from src.data.dao.funcionario_dao import FuncionarioDAO
+from src.domain.models.funcionario import Funcionario
+from src.main.tela_home import TelaHome
+import PySimpleGUI as sg
 
 
 class ControladorSistema:
     def __init__(self):
         self.__database = None
         self.__daos = {}
-        self.__controllers = {}
-        self.__views = {}
-        self.__tela_sistema = None
+        self.__controladores = {}
+        self.__tela_home = TelaHome()
+        self.__funcionario_logado = None
 
     @property
-    def controllers(self):
-        return self.__controllers
+    def controladores(self) -> {}:
+        return self.__controladores
 
-    def init_system(self):
+    @property
+    def funcionario_logado(self) -> Funcionario:
+        return self.__funcionario_logado
+
+    @funcionario_logado.setter
+    def funcionario_logado(self, funcionario_logado: Funcionario) -> None:
+        self.__funcionario_logado = funcionario_logado
+        self.init_controladores()
+
+    def init_sistema(self) -> None:
         self.init_database()
         self.init_daos()
         # self.init_inserts()
-        self.init_views()
-        self.init_controllers()
-        self.init_system_view()
-        self.init_inserts()
+        self.init_controlador_autenticacao()
+        self.abrir_tela_home()
 
-    def init_database(self):
-        # Create database global instance
+    def init_database(self) -> None:
+        # Cria instância global do banco de dados
         self.__database = Database()
 
-    def init_daos(self):
-        # Create daos global instances
+    def init_daos(self) -> None:
+        # Cria instâncias globais dos DAOs
         self.__daos = {
+            "autenticacao_dao": AutenticacaoDAO(self.__database),
             "funcionario_dao": FuncionarioDAO(self.__database),
             "caixa_dao": CaixaDAO(self.__database),
             "extrato_caixa_dao": ExtratoCaixaDAO(self.__database),
         }
 
-    def init_views(self):
-        # Create views global instances
-        self.__views = {}
+    def init_controlador_autenticacao(self) -> None:
+        self.__controladores["autenticacao"] = ControladorAutenticacao(self, self.__daos["autenticacao_dao"])
 
-    def init_controllers(self):
-        # Create controllers global instances
-        self.__controllers = {
-            "funcionarios": ControladorFuncionarios(self, self.__daos["funcionario_dao"]),
-            "inicio": ControladorInicio(self, self.__daos["funcionario_dao"], self.__daos["caixa_dao"]),
-            "abrir_caixa": ControladorAbrirCaixa(self, self.__daos["caixa_dao"], self.__daos["extrato_caixa_dao"]),
-        }
+    def init_controladores(self) -> None:
+        # Cria instâncias globais dos controladores
+        self.__controladores['funcionarios'] = ControladorFuncionarios(
+            self.__daos["funcionario_dao"],
+        )
+        self.__controladores['abrir_caixa'] = ControladorAbrirCaixa(
+            self.__daos["caixa_dao"],
+            self.__daos['extrato_caixa_dao'],
+            self.__funcionario_logado,
+        ),
+        self.__controladores["inicio"] = ControladorInicio(
+            self,
+            self.__controladores['funcionarios'],
+            self.__controladores['abrir_caixa'],
+            self.__daos['funcionario_dao'], self.__daos['caixa_dao'],
+            self.__funcionario_logado,
+        )
 
-    def init_inserts(self):
-        self.__daos["caixa_dao"].delete_all()
-        self.__daos["caixa_dao"].persist_entity(Caixa(1))
-        self.__daos["caixa_dao"].persist_entity(Caixa(2))
-        self.__daos["caixa_dao"].persist_entity(Caixa(3))
-        self.__daos["caixa_dao"].persist_entity(Caixa(4))
-        self.__daos["caixa_dao"].persist_entity(Caixa(5))
+    def init_inserts(self) -> None:
+        self.__daos['caixa_dao'].delete_all()
+        self.__daos['caixa_dao'].persist_entity(Caixa(1))
+        self.__daos['caixa_dao'].persist_entity(Caixa(2))
+        self.__daos['caixa_dao'].persist_entity(Caixa(3))
+        self.__daos['caixa_dao'].persist_entity(Caixa(4))
+        self.__daos['caixa_dao'].persist_entity(Caixa(5))
 
-    def init_system_view(self):
-        self.__tela_sistema = TelaSistema()
+    def entrar(self):
+        self.__controladores['autenticacao'].abrir_tela_autenticacao()
 
-        options = {
-            1: self.abre_funcionarios,
-            2: self.abre_inicio,
-            0: self.close_system
-        }
-
-        while True:
-            try:
-                options[self.__tela_sistema.show_options()]()
-            except ValueError:
-                self.__tela_sistema.show_message("Valores númericos devem ser inteiros!")
-
-    def abre_funcionarios(self):
-        self.__controllers["funcionarios"].abre_tela()
-
-    # TODO: Mover método para controlador de login
-    def abre_inicio(self):
-        self.__controllers["inicio"].abre_tela(cpf_funcionario="12345678900")  # Retirar mock
-
-    def close_system(self):
-        self.__database.close()
+    def fechar(self):
         exit(0)
+
+    def abrir_tela_home(self):
+        opcoes = {'entrar': self.entrar, 'fechar': self.fechar}
+        while True:
+            self.__tela_home.init_components()
+            opcao_escolhida = self.__tela_home.open()
+            self.__tela_home.close()
+
+            if opcao_escolhida is None or sg.WIN_CLOSED:
+                self.fechar()
+                break
+            else:
+                opcoes[opcao_escolhida]()
+
+    def abrir_inicio(self) -> None:
+        self.__controladores['inicio'].abrir_tela()

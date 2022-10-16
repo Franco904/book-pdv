@@ -24,49 +24,49 @@ class Funcionario(ABC):
             self.__cargo = cargo
 
     @property
-    def nome(self):
+    def nome(self) -> str:
         return self.__nome
     @nome.setter
-    def nome(self, nome: str):
+    def nome(self, nome: str) -> None:
         if isinstance(nome, str):
             self.__nome = nome
 
     @property
-    def cpf(self):
+    def cpf(self) -> str:
         return self.__cpf
     @cpf.setter
-    def cpf(self, cpf: str):
+    def cpf(self, cpf: str) -> None:
         if isinstance(cpf, str):
             self.__cpf = cpf
 
     @property
-    def email(self):
+    def email(self) -> str:
         return self.__email
     @email.setter
-    def email(self, email: str):
+    def email(self, email: str) -> None:
         if isinstance(email, str):
             self.__email = email
 
     @property
-    def cargo(self):
+    def cargo(self) -> str:
         return self.__cargo
     @cargo.setter
-    def cargo(self, cargo: str):
+    def cargo(self, cargo: str) -> None:
         if isinstance(cargo, str):
             self.__cargo = cargo
 
     @property
-    def telefone(self):
+    def telefone(self) -> str:
         return self.__telefone
     @telefone.setter
-    def telefone(self, telefone: str):
+    def telefone(self, telefone: str) -> None:
         if isinstance(telefone, str):
             self.__telefone = telefone
 
     @property
-    def senha(self):
+    def senha(self) -> str:
         return self.__senha
     @senha.setter
-    def senha(self, senha: str):
+    def senha(self, senha: str) -> None:
         if isinstance(senha, str):
             self.__senha = senha
