@@ -14,8 +14,8 @@ class CaixaDAO(AbstractDAO):
     def execute_query(self, query: str):
         super().execute_query(query)
 
-    def get_all(self):
-        rows = super().get_all()
+    def get_all(self, custom_query=" WHERE cpf_operador = ''"):
+        rows = super().get_all(custom_query)
         caixas = list(map(lambda row: self.__parse_caixa(row), rows))
 
         return caixas
@@ -30,7 +30,7 @@ class CaixaDAO(AbstractDAO):
         table = super().get_table()
         columns = "id_caixa, cpf_operador, saldo"
 
-        caixa_cpf = '' if caixa.operador_caixa is None else caixa.operador_caixa.cpf
+        caixa_cpf = "" if caixa.operador_caixa is None else caixa.operador_caixa.cpf
 
         super().persist(
             f""" INSERT INTO {table} ({columns}) VALUES (%s, %s, %s)""",

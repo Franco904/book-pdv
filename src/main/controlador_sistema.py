@@ -24,7 +24,7 @@ class ControladorSistema:
     def init_system(self):
         self.init_database()
         self.init_daos()
-        self.init_inserts()
+        # self.init_inserts()
         self.init_views()
         self.init_controllers()
         self.init_system_view()
@@ -50,7 +50,7 @@ class ControladorSistema:
         # Create controllers global instances
         self.__controllers = {
             "funcionarios": ControladorFuncionarios(self, self.__daos["funcionario_dao"]),
-            "inicio": ControladorInicio(self),
+            "inicio": ControladorInicio(self, self.__daos["funcionario_dao"], self.__daos["caixa_dao"]),
             "abrir_caixa": ControladorAbrirCaixa(self, self.__daos["caixa_dao"], self.__daos["extrato_caixa_dao"]),
         }
 
@@ -59,6 +59,8 @@ class ControladorSistema:
         self.__daos["caixa_dao"].persist_entity(Caixa(1))
         self.__daos["caixa_dao"].persist_entity(Caixa(2))
         self.__daos["caixa_dao"].persist_entity(Caixa(3))
+        self.__daos["caixa_dao"].persist_entity(Caixa(4))
+        self.__daos["caixa_dao"].persist_entity(Caixa(5))
 
     def init_system_view(self):
         self.__tela_sistema = TelaSistema()
@@ -80,7 +82,7 @@ class ControladorSistema:
 
     # TODO: Mover método para controlador de login
     def abre_inicio(self):
-        self.__controllers["inicio"].abre_tela()
+        self.__controllers["inicio"].abre_tela(cpf_funcionario="12345678900")  # Retirar mock
 
     def close_system(self):
         self.__database.close()

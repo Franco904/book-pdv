@@ -1,16 +1,25 @@
 import PySimpleGUI as sg
 
-from src.domain.models.operador_caixa import OperadorCaixa
+from src.data.dao.caixa_dao import CaixaDAO
+from src.data.dao.funcionario_dao import FuncionarioDAO
+from src.domain.exceptions.lista_vazia_exception import ListaVaziaException
 from src.domain.views.inicio.tela_inicio import TelaInicio
 from src.domain.views.tela_confirmacao import TelaConfirmacao
 
 
 class ControladorInicio:
-    def __init__(self, controlador_sistema) -> None:
+    def __init__(self, controlador_sistema, funcionario_dao: FuncionarioDAO, caixa_dao: CaixaDAO) -> None:
         self.__tela_inicio = TelaInicio()
         self.__tela_confirmacao = TelaConfirmacao()
         self.__controlador_sistema = controlador_sistema
         self.__funcionario = None
+        self.__funcionario_dao = None
+        self.__caixa_dao = None
+
+        if isinstance(funcionario_dao, FuncionarioDAO):
+            self.__funcionario_dao = funcionario_dao
+        if isinstance(caixa_dao, CaixaDAO):
+            self.__caixa_dao = caixa_dao
 
     def abre_caixas_abertos(self):
         # Visualização dos dados dos caixas que foram abertos
@@ -28,13 +37,21 @@ class ControladorInicio:
         self.__controlador_sistema.controllers["funcionarios"].abre_tela()
 
     def abre_caixa(self):
-        self.__controlador_sistema.controllers["abrir_caixa"].abre_tela(self.__funcionario)
+        has_caixas_to_open = len(self.__caixa_dao.get_all()) > 0
+
+        try:
+            if not has_caixas_to_open:
+                raise ListaVaziaException
+
+            self.__controlador_sistema.controllers["abrir_caixa"].abre_tela(self.__funcionario)
+        except ListaVaziaException as v:
+            self.__tela_inicio.show_message("Lista de caixas vazia", v)
+            self.retornar()
 
     def retornar(self):
         self.__tela_inicio.close()
-        exit(0)
 
-    def abre_tela(self, is_operador=True):
+    def abre_tela(self, cpf_funcionario):
         opcoes_operador = {
             1: self.abre_caixas_abertos,
             2: self.retornar,
@@ -49,7 +66,13 @@ class ControladorInicio:
         }
 
         while True:
-            self.__tela_inicio.init_components(is_operador)
+            self.__funcionario = self.__funcionario_dao.get_by_cpf(cpf_funcionario)
+            is_operador_caixa = self.__funcionario.cargo == "operador_caixa"
+
+            self.__tela_inicio.init_components(
+                nome_funcionario=self.__funcionario.nome,
+                cargo_funcionario=self.__funcionario.cargo
+            )
 
             opcao_escolhida = self.__tela_inicio.open()
 
@@ -61,8 +84,7 @@ class ControladorInicio:
                 if botao_confirmacao == 'confirmar':
                     self.retornar()
                     break
-            elif is_operador:
-                self.__funcionario = OperadorCaixa("Franco", "12833158904", "teste@gmail", "991300904", "123123as")
+            elif is_operador_caixa:
                 opcoes_operador[opcao_escolhida]()
             else:
                 opcoes_supervisor[opcao_escolhida]()

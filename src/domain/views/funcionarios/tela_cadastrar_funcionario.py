@@ -43,7 +43,7 @@ class TelaCadastroFuncionario(Tela):
                     [sg.Text("  ")],
                     [sg.Text("Cargo: (Apenas um)")],
                     
-                    [sg.Radio('Operador de abrir_caixa', 'cargo', key='operador', enable_events=True, size=(20,1))],
+                    [sg.Radio('Operador de caixa', 'cargo', key='operador', enable_events=True, size=(20,1))],
                     [sg.Radio('Supervisor', 'cargo', key='supervisor', enable_events=True, size=(20,1))],
                     [sg.Text("  ")],
                     buttons,
@@ -54,7 +54,6 @@ class TelaCadastroFuncionario(Tela):
                 ]
 
         super().__init__(sg.Window("Novo funcionário" if not alterar else "Alterar funcionário", layout=layout, resizable=False, finalize=True), (400, 200 if not alterar else 150))
-
 
     def open(self, alterar= False):
         while True:
@@ -105,4 +104,3 @@ class TelaCadastroFuncionario(Tela):
                 super().close()
                 break
         return botao, dados
-

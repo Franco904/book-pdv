@@ -60,9 +60,9 @@ class AbstractDAO(ABC):
             if con:
                 self.__database.close_all()
 
-    def get_all(self):
+    def get_all(self, custom_query=""):
         con, cursor = self.__database.connect()
-        cursor.execute(f"SELECT * FROM {self.get_table()}")
+        cursor.execute(f"SELECT * FROM {self.get_table()}{custom_query}")
 
         rows = cursor.fetchall()
         self.__database.close_all()

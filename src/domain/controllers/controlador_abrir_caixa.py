@@ -20,37 +20,33 @@ class ControladorAbrirCaixa:
 
         self.__caixas = self.__load_caixas_fisicos()
         self.__data_abertura = datetime.datetime.now().strftime("%d/%m/%Y")
+        self.__operador_caixa = None
 
     def __load_caixas_fisicos(self):
         return self.__caixa_dao.get_all()
 
     def abre_tela(self, operador_caixa: OperadorCaixa):
+        self.__operador_caixa = operador_caixa
+
         while True:
-            try:
-                if len(self.__caixas) == 0:
-                    raise ListaVaziaException
+            caixas_ids = list(map(lambda caixa: caixa.id, self.__caixas))
 
-                caixas_ids = list(map(lambda caixa: caixa.id, self.__caixas))
+            self.__tela_caixa.init_components(caixas_ids, self.__data_abertura)
+            result = self.__tela_caixa.open(self.__caixas)
 
-                self.__tela_caixa.init_components(caixas_ids, self.__data_abertura)
-                result = self.__tela_caixa.open(self.__caixas)
+            if result["option"] == 0 or result["values"] is None or sg.WIN_CLOSED:
+                self.__tela_confirmacao.init_components()
+                botao_confirmacao = self.__tela_confirmacao.open()
+                self.__tela_confirmacao.close()
 
-                if result["option"] == 0 or result["values"] is None or sg.WIN_CLOSED:
-                    self.__tela_confirmacao.init_components()
-                    botao_confirmacao = self.__tela_confirmacao.open()
-                    self.__tela_confirmacao.close()
+                if botao_confirmacao == 'confirmar':
+                    return self.retornar()
+                continue
 
-                    if botao_confirmacao == 'confirmar':
-                        return self.retornar()
-                    continue
+            result["values"]["saldo_abertura"] = result["saldo_abertura"]
 
-                result["values"]["saldo_abertura"] = result["saldo_abertura"]
-
-                self.abrir_caixa(result["values"], operador_caixa)
-                break
-            except ListaVaziaException as v:
-                self.__tela_caixa.show_message("Lista de caixas vazia", v)
-                self.retornar()
+            self.abrir_caixa(result["values"], operador_caixa)
+            break
 
     def abrir_caixa(self, values, operador_caixa: OperadorCaixa):
         if values is None:
@@ -67,10 +63,7 @@ class ControladorAbrirCaixa:
         self.__caixa_dao.update_entity(caixa.id, "cpf_operador", operador_caixa.cpf)
 
         # Atualiza na memória os caixas disponíveis para abertura
-        self.__caixas = list(
-                filter(lambda caixa: caixa.operador_caixa is None or caixa.operador_caixa.cpf != operador_caixa.cpf,
-                       self.__caixas)
-            )
+        self.__caixas = self.__load_caixas_fisicos()
 
         extrato = ExtratoCaixa(
             caixa,
@@ -83,4 +76,4 @@ class ControladorAbrirCaixa:
 
     def retornar(self):
         self.__tela_caixa.close()
-        self.__controlador_sistema.controllers["inicio"].abre_tela(True)
+        self.__controlador_sistema.controllers["inicio"].abre_tela(cpf_funcionario=self.__operador_caixa.cpf)
