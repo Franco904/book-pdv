@@ -1,8 +1,10 @@
-from src.domain.views.tela_abstrata import Tela
-import PySimpleGUI as sg
-from src.domain.exceptions.entrada_vazia_exception import EntradaVaziaException
-from src.domain.exceptions.email_invalido_exception import EmailInvalidoException
 import re
+
+import PySimpleGUI as sg
+
+from src.domain.exceptions.email_invalido_exception import EmailInvalidoException
+from src.domain.exceptions.entrada_vazia_exception import EntradaVaziaException
+from src.domain.views.tela_abstrata import Tela
 
 
 class TelaLogin(Tela):
@@ -12,11 +14,14 @@ class TelaLogin(Tela):
     def init_components(self) -> None:
         sg.theme('Reddit')
         layout = [
-                    [sg.Text('  ')],
-                    [sg.Text('Email', size=(10, 1))],
-                    [sg.InputText(key='email', size=(40, 1))],
-                    [sg.Cancel('Voltar', key='voltar', button_color='gray', size=(12, 1)), sg.Cancel('Login', key='login', button_color='green', size=(12, 1))],
-                  ]
+            [sg.Text('  ')],
+            [sg.Text('Email', size=(10, 1))],
+            [sg.InputText(key='email', size=(40, 1))],
+            [sg.Text('  ')],
+            [sg.Cancel('Voltar', key='voltar', button_color='gray', size=(12, 1)),
+             sg.Cancel('Login', key='login', button_color='green', size=(12, 1))],
+            [sg.Text('  ')],
+        ]
 
         super().__init__(sg.Window(
             "Login", layout=layout, resizable=False, modal=True, finalize=True, element_justification='c'),

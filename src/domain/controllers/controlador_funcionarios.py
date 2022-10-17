@@ -75,7 +75,7 @@ class ControladorFuncionarios:
         botao_busca, cpf = self.__tela_busca_funcionario.open()
 
         if botao_busca == 'buscar' and cpf is not None:
-            # busca se o cpf existe no banco e então abrir tela para inserçao de novos dados (objeto com dados antigos)
+            # Busca se o cpf existe no banco e então abre tela para inserção de novos dados (objeto com dados antigos)
             funcionario: Funcionario = self.__funcionario_dao.get_by_cpf(cpf)
 
             if funcionario is None:
@@ -118,13 +118,10 @@ class ControladorFuncionarios:
     def voltar(self) -> None:
         self.__tela_funcionarios.close()
 
-    def sair(self):
-        exit(0)
-
     def abre_tela(self):
         opcoes = {'cadastrar': self.cadastrar_funcionario, 'listar': self.listar_funcionarios,
                   'alterar': self.alterar_funcionario, 'excluir': self.excluir_funcionario,
-                  'voltar': self.voltar, 'sair': self.sair}
+                  'voltar': self.voltar}
 
         while True:
             self.__tela_funcionarios.init_components()
