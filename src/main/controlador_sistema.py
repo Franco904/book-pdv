@@ -48,30 +48,31 @@ class ControladorSistema:
     def init_daos(self) -> None:
         # Cria instâncias globais dos DAOs
         self.__daos = {
-            "autenticacao_dao": AutenticacaoDAO(self.__database),
-            "funcionario_dao": FuncionarioDAO(self.__database),
-            "caixa_dao": CaixaDAO(self.__database),
-            "extrato_caixa_dao": ExtratoCaixaDAO(self.__database),
+            'autenticacao_dao': AutenticacaoDAO(self.__database),
+            'funcionario_dao': FuncionarioDAO(self.__database),
+            'caixa_dao': CaixaDAO(self.__database),
+            'extrato_caixa_dao': ExtratoCaixaDAO(self.__database),
         }
 
     def init_controlador_autenticacao(self) -> None:
-        self.__controladores["autenticacao"] = ControladorAutenticacao(self, self.__daos["autenticacao_dao"])
+        self.__controladores['autenticacao'] = ControladorAutenticacao(self, self.__daos['autenticacao_dao'])
 
     def init_controladores(self) -> None:
         # Cria instâncias globais dos controladores
         self.__controladores['funcionarios'] = ControladorFuncionarios(
-            self.__daos["funcionario_dao"],
+            self.__daos['funcionario_dao'],
         )
         self.__controladores['abrir_caixa'] = ControladorAbrirCaixa(
             self.__daos["caixa_dao"],
             self.__daos['extrato_caixa_dao'],
             self.__funcionario_logado,
-        ),
+        )
         self.__controladores["inicio"] = ControladorInicio(
             self,
             self.__controladores['funcionarios'],
             self.__controladores['abrir_caixa'],
-            self.__daos['funcionario_dao'], self.__daos['caixa_dao'],
+            self.__daos['funcionario_dao'],
+            self.__daos['caixa_dao'],
             self.__funcionario_logado,
         )
 

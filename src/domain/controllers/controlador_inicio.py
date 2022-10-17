@@ -40,29 +40,28 @@ class ControladorInicio:
         if isinstance(funcionario_logado, Funcionario):
             self.__funcionario_logado = funcionario_logado
 
-    def abre_caixas_abertos(self):
+    def abrir_caixas_abertos(self):
         # Visualização dos dados dos caixas que foram abertos
         pass
 
-    def abre_relatorios(self):
+    def abrir_relatorio(self):
         # Visualização dos dados das vendas registradas
         pass
 
-    def abre_produtos(self):
+    def abrir_produtos(self):
         # Visualização dos dados dos produtos registrados
         pass
 
-    def abre_funcionarios(self):
+    def abrir_funcionarios(self):
         self.__controlador_funcionarios.abre_tela()
 
-    def abre_caixa(self):
+    def abrir_caixa(self):
         has_caixas_to_open = len(self.__caixa_dao.get_all()) > 0
 
         try:
             if not has_caixas_to_open:
                 raise ListaVaziaException
-
-            self.__controlador_abrir_caixa.abre_tela()
+            self.__controlador_abrir_caixa.abrir_tela()
         except ListaVaziaException as v:
             self.__tela_inicio.show_message("Lista de caixas vazia", v)
             self.__tela_inicio.close()
@@ -73,16 +72,16 @@ class ControladorInicio:
 
     def abrir_tela(self):
         opcoes_operador = {
-            'caixas': self.abre_caixas_abertos,
+            'caixas': self.abrir_caixas_abertos,
             'sair': self.sair,
-            'novo': self.abre_caixa
+            'novo': self.abrir_caixa,
         }
 
         opcoes_supervisor = {
-            'relatorio': self.abre_relatorios,
-            'produtos': self.abre_produtos,
-            'funcionarios': self.abre_funcionarios,
-            'sair': self.sair
+            'relatorio': self.abrir_relatorio,
+            'produtos': self.abrir_produtos,
+            'funcionarios': self.abrir_funcionarios,
+            'sair': self.sair,
         }
 
         while True:

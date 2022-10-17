@@ -5,7 +5,7 @@ from src.domain.models.extrato_caixa import ExtratoCaixa
 
 class ExtratoCaixaDAO(AbstractDAO):
     def __init__(self, database: Database):
-        super().__init__(database, 'operador_caixa', 'caixas')
+        super().__init__(database, 'operador_caixa', 'extratos_caixa')
         self.__database = database
         self.__schema = super().schema
         self.__table = super().table
@@ -13,21 +13,22 @@ class ExtratoCaixaDAO(AbstractDAO):
     def execute_query(self, query: str):
         super().execute_query(query)
 
-    def get_all(self, custom_query=""):
+    def get_all(self, custom_query=''):
         rows = super().get_all()
         caixas = list(map(lambda row: ExtratoCaixaDAO.__parse_extrato_caixa(row), rows))
 
         return caixas
 
     def get_by_id(self, caixa_id: int):
-        row = super().get_by_pk("id_caixa", caixa_id)
+        row = super().get_by_pk('id_caixa', caixa_id)
 
         caixa = None if row is None else ExtratoCaixaDAO.__parse_extrato_caixa(row)
         return caixa
 
     def persist_entity(self, extrato_caixa: ExtratoCaixa):
         table = super().get_table()
-        columns = "id_caixa, data_abertura, data_fechamento, saldo_abertura, saldo_fechamento, total_vendas, total_sangrias, observacoes"
+        columns = 'id_caixa, data_abertura, data_fechamento, saldo_abertura, saldo_fechamento, total_vendas, ' \
+                  'total_sangrias, observacoes'
 
         super().persist(
             f""" INSERT INTO {table} ({columns}) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",

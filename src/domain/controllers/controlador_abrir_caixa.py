@@ -22,7 +22,7 @@ class ControladorAbrirCaixa:
         self.__caixa_dao = None
         self.__extrato_caixa_dao = None
 
-        self.__data_abertura = datetime.datetime.now().strftime("%d/%m/%Y")
+        self.__data_abertura = datetime.datetime.now()
         self.__caixas = []
         self.__funcionario_logado = None
 
@@ -36,16 +36,16 @@ class ControladorAbrirCaixa:
     def __load_caixas_fisicos(self) -> [Caixa]:
         return self.__caixa_dao.get_all()
 
-    def abre_tela(self) -> None:
+    def abrir_tela(self) -> None:
         self.__caixas = self.__load_caixas_fisicos()
 
         while True:
             caixas_ids = list(map(lambda caixa: caixa.id, self.__caixas))
 
-            self.__tela_caixa.init_components(caixas_ids, self.__data_abertura)
-            result = self.__tela_caixa.open(self.__caixas)
+            self.__tela_caixa.init_components(caixas_ids, self.__data_abertura.strftime("%d/%m/%Y"))
+            opcao, dados = self.__tela_caixa.open(self.__caixas)
 
-            if result["option"] == 0 or result["values"] is None or sg.WIN_CLOSED:
+            if opcao == 'voltar' or dados is None or sg.WIN_CLOSED:
                 self.__tela_confirmacao.init_components()
                 botao_confirmacao = self.__tela_confirmacao.open()
                 self.__tela_confirmacao.close()
@@ -54,16 +54,18 @@ class ControladorAbrirCaixa:
                     return self.retornar()
                 continue
 
-            result["values"]["saldo_abertura"] = result["saldo_abertura"]
+            print(dados)
 
-            self.abrir_caixa(result["values"])
+            self.abrir_caixa(dados)
             break
 
-    def abrir_caixa(self, values: {}) -> None:
-        if values is None:
+    def abrir_caixa(self, dados: {}) -> None:
+        if dados is None:
             return
 
-        filtered = list(filter(lambda caixa: caixa.id == values["caixa_id"], self.__caixas))
+        print(dados)
+
+        filtered = list(filter(lambda caixa: caixa.id == dados['caixa_id'], self.__caixas))
         if filtered is None:
             return
 
@@ -71,16 +73,16 @@ class ControladorAbrirCaixa:
         caixa.operador_caixa = self.__funcionario_logado
 
         # Atualiza no banco o caixa com o operador associado
-        self.__caixa_dao.update_entity(caixa.id, "cpf_operador", self.__funcionario_logado.cpf)
+        self.__caixa_dao.update_entity(caixa.id, 'cpf_operador', self.__funcionario_logado.cpf)
 
         # Atualiza na memória os caixas disponíveis para abertura
         self.__caixas = self.__load_caixas_fisicos()
 
         extrato = ExtratoCaixa(
             caixa,
-            self.__data_abertura,
-            values["saldo_abertura"],
-            values["observacoes"]
+            self.__data_abertura.strftime("%Y-%m-%d"),
+            dados['saldo_abertura'],
+            dados['observacoes'],
         )
 
         self.__extrato_caixa_dao.persist_entity(extrato)
