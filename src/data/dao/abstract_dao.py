@@ -3,7 +3,6 @@ from abc import ABC, abstractmethod
 import psycopg2
 
 from src.data.database.database import Database
-import pandas as pd
 
 
 class AbstractDAO(ABC):
@@ -92,6 +91,6 @@ class AbstractDAO(ABC):
     def update(self, pk_name, target_pk, attribute, value):
         if self.get_by_pk(pk_name, target_pk) is not None:
             con, cursor = self.__database.connect()
-            cursor.execute(F"UPDATE {self.get_table()} SET {attribute} = {value} WHERE {pk_name} = '{target_pk}'")
+            cursor.execute(F"UPDATE {self.get_table()} SET {attribute} = '{value}' WHERE {pk_name} = '{target_pk}'")
             con.commit()
             self.__database.close_all()

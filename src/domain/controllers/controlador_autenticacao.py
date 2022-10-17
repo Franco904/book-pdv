@@ -1,12 +1,13 @@
+import bcrypt
+
 from src.data.dao.autenticacao_dao import AutenticacaoDAO
 from src.domain.exceptions.email_invalido_exception import EmailInvalidoException
 from src.domain.exceptions.falha_login_exception import FalhaLoginException
 from src.domain.exceptions.senha_atual_nao_correspondente_exception import SenhaAtualNaoCorrespondenteException
+from src.domain.models.funcionario import Funcionario
 from src.domain.views.login.tela_autenticacao import TelaLogin
 from src.domain.views.login.tela_cadastrar_senha import TelaCadastrarSenha
 from src.domain.views.login.tela_inserir_senha import TelaInserirSenha
-from src.domain.models.funcionario import Funcionario
-import bcrypt
 
 
 class ControladorAutenticacao:
@@ -49,8 +50,13 @@ class ControladorAutenticacao:
 
             if logged is not None:
                 if logged:
+                    # Defini o funcionário autenticado como o utilizador do sistema
+                    # Inicializa demais controladores do sistema para uso contínuo
                     self.__controlador_sistema.funcionario_logado = funcionario
+
                     self.__tela_inserir_senha.close()
+
+                    # Redireciona o funcionário para a tela de início relativa ao seu cargo
                     self.abrir_tela_inicio()
                 else:
                     raise FalhaLoginException
@@ -71,8 +77,10 @@ class ControladorAutenticacao:
             senha_nova = dados['senha_nova']
 
             if botao == 'salvar':
+                # Alteração de senha atual
                 if editando:
                     try:
+                        # Encripta a senha para comparação binária
                         senha_atual = senha_atual.encode('utf-8')
                         result = bcrypt.checkpw(senha_atual, funcionario.senha.encode('ascii'))
 
@@ -83,12 +91,19 @@ class ControladorAutenticacao:
                         self.__tela_cadastrar_senha.close()
                         break
 
+                # Definição de nova senha (criação/alteração)
+
+                # Gera senha em formato binário
                 bytes = senha_nova.encode('utf-8')
                 salt = bcrypt.gensalt()
                 hash_senha = bcrypt.hashpw(bytes, salt)
 
+                # Atualiza no banco o funcionario com a nova senha na forma decodificada
                 self.__autenticacao_dao.update_password(funcionario.cpf, f"{hash_senha.decode('ascii')}")
+
                 self.__tela_cadastrar_senha.close()
+
+                # Redireciona o funcionário para a tela de inserção de senha (efetuar login)
                 self.tratar_senha(funcionario.email)
                 break
             else:
@@ -104,8 +119,10 @@ class ControladorAutenticacao:
             self.abrir_cadastrar_senha(funcionario, editando=True)
 
         if evento == 'login':
+            # Encripta a senha para autenticação com comparação binária
             bytes = senha.encode('utf-8')
             result = bcrypt.checkpw(bytes, funcionario.senha.encode('ascii'))
+
             return result
 
     def abrir_tela_inicio(self) -> None:

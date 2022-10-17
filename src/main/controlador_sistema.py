@@ -1,16 +1,17 @@
+import PySimpleGUI as sg
+
 from src.data.dao.autenticacao_dao import AutenticacaoDAO
 from src.data.dao.caixa_dao import CaixaDAO
 from src.data.dao.extrato_caixa_dao import ExtratoCaixaDAO
+from src.data.dao.funcionario_dao import FuncionarioDAO
 from src.data.database.database import Database
 from src.domain.controllers.controlador_abrir_caixa import ControladorAbrirCaixa
 from src.domain.controllers.controlador_autenticacao import ControladorAutenticacao
 from src.domain.controllers.controlador_funcionarios import ControladorFuncionarios
 from src.domain.controllers.controlador_inicio import ControladorInicio
 from src.domain.models.caixa import Caixa
-from src.data.dao.funcionario_dao import FuncionarioDAO
 from src.domain.models.funcionario import Funcionario
 from src.main.tela_home import TelaHome
-import PySimpleGUI as sg
 
 
 class ControladorSistema:
@@ -32,12 +33,17 @@ class ControladorSistema:
     @funcionario_logado.setter
     def funcionario_logado(self, funcionario_logado: Funcionario) -> None:
         self.__funcionario_logado = funcionario_logado
-        self.init_controladores()
+
+        # Inicializa demais controladores se houver funcionário logado
+        if self.__funcionario_logado is not None:
+            self.init_controladores()
 
     def init_sistema(self) -> None:
         self.init_database()
         self.init_daos()
         # self.init_inserts()
+
+        # Inicializa controlador de autenticação -> Abre tela Home
         self.init_controlador_autenticacao()
         self.abrir_tela_home()
 
@@ -84,13 +90,13 @@ class ControladorSistema:
         self.__daos['caixa_dao'].persist_entity(Caixa(4))
         self.__daos['caixa_dao'].persist_entity(Caixa(5))
 
-    def entrar(self):
+    def entrar(self) -> None:
         self.__controladores['autenticacao'].abrir_tela_autenticacao()
 
-    def fechar(self):
+    def fechar(self) -> None:
         exit(0)
 
-    def abrir_tela_home(self):
+    def abrir_tela_home(self) -> None:
         opcoes = {'entrar': self.entrar, 'fechar': self.fechar}
         while True:
             self.__tela_home.init_components()

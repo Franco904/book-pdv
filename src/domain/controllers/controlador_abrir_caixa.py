@@ -1,11 +1,12 @@
 import datetime
+
 import PySimpleGUI as sg
 
 from src.data.dao.caixa_dao import CaixaDAO
 from src.data.dao.extrato_caixa_dao import ExtratoCaixaDAO
+from src.domain.models.caixa import Caixa
 from src.domain.models.extrato_caixa import ExtratoCaixa
 from src.domain.models.funcionario import Funcionario
-from src.domain.models.caixa import Caixa
 from src.domain.views.abrir_caixa.tela_abrir_caixa import TelaAbrirCaixa
 from src.domain.views.tela_confirmacao import TelaConfirmacao
 
@@ -54,16 +55,12 @@ class ControladorAbrirCaixa:
                     return self.retornar()
                 continue
 
-            print(dados)
-
             self.abrir_caixa(dados)
             break
 
     def abrir_caixa(self, dados: {}) -> None:
         if dados is None:
             return
-
-        print(dados)
 
         filtered = list(filter(lambda caixa: caixa.id == dados['caixa_id'], self.__caixas))
         if filtered is None:
@@ -85,6 +82,7 @@ class ControladorAbrirCaixa:
             dados['observacoes'],
         )
 
+        # Persiste no banco as informações do caixa no momento da abertura
         self.__extrato_caixa_dao.persist_entity(extrato)
 
     def retornar(self) -> None:

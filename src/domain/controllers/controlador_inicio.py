@@ -19,7 +19,7 @@ class ControladorInicio:
             funcionario_dao: FuncionarioDAO,
             caixa_dao: CaixaDAO,
             funcionario_logado: Funcionario,
-    ):
+    ) -> None:
         self.__tela_inicio = TelaInicio()
         self.__tela_confirmacao = TelaConfirmacao()
         self.__controlador_sistema = controlador_sistema
@@ -40,37 +40,39 @@ class ControladorInicio:
         if isinstance(funcionario_logado, Funcionario):
             self.__funcionario_logado = funcionario_logado
 
-    def abrir_caixas_abertos(self):
+    def abrir_caixas_abertos(self) -> None:
         # Visualização dos dados dos caixas que foram abertos
         pass
 
-    def abrir_relatorio(self):
+    def abrir_relatorio(self) -> None:
         # Visualização dos dados das vendas registradas
         pass
 
-    def abrir_produtos(self):
+    def abrir_produtos(self) -> None:
         # Visualização dos dados dos produtos registrados
         pass
 
-    def abrir_funcionarios(self):
+    def abrir_funcionarios(self) -> None:
         self.__controlador_funcionarios.abre_tela()
 
-    def abrir_caixa(self):
+    def abrir_caixa(self) -> None:
         has_caixas_to_open = len(self.__caixa_dao.get_all()) > 0
 
         try:
             if not has_caixas_to_open:
                 raise ListaVaziaException
+
+            # Redireciona para a tela de abertura de caixa com as opções de caixas disponíveis
             self.__controlador_abrir_caixa.abrir_tela()
         except ListaVaziaException as v:
             self.__tela_inicio.show_message("Lista de caixas vazia", v)
             self.__tela_inicio.close()
 
-    def sair(self):
+    def sair(self) -> None:
         self.__controlador_sistema.funcionario_logado = None
         self.__tela_inicio.close()
 
-    def abrir_tela(self):
+    def abrir_tela(self) -> None:
         opcoes_operador = {
             'caixas': self.abrir_caixas_abertos,
             'sair': self.sair,
@@ -87,6 +89,7 @@ class ControladorInicio:
         while True:
             is_operador_caixa = self.__funcionario_logado.cargo == 'operador_caixa'
 
+            # Inicializa componentes de início conforme o cargo do funcionário
             self.__tela_inicio.init_components(
                 nome_funcionario=self.__funcionario_logado.nome,
                 is_operador=is_operador_caixa,
