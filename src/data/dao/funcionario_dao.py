@@ -1,5 +1,6 @@
 from src.data.dao.abstract_dao import AbstractDAO
 from src.data.database.database import Database
+from src.domain.enums import CargoEnum
 from src.domain.models.funcionario import Funcionario  # Apagar
 
 from src.domain.models.operador_caixa import OperadorCaixa
@@ -30,7 +31,10 @@ class FuncionarioDAO(AbstractDAO):
 
     def persist_entity(self, funcionario: Funcionario) -> None:
         table = super().get_table()
-        columns = "cpf, nome, email, telefone, senha, cargo"
+        columns = "cpf, nome, email, telefone, senha, id_cargo"
+
+        id_cargo = CargoEnum.operador_caixa.value if funcionario.cargo == "operador_caixa" \
+            else CargoEnum.supervisor.value
 
         super().persist(
             f""" INSERT INTO {table} ({columns}) VALUES (%s, %s, %s, %s, %s, %s)""",
@@ -40,7 +44,7 @@ class FuncionarioDAO(AbstractDAO):
                 funcionario.email,
                 funcionario.telefone,
                 funcionario.senha,
-                funcionario.cargo,
+                id_cargo,
             ),
         )
 
@@ -55,10 +59,10 @@ class FuncionarioDAO(AbstractDAO):
         if row is None:
             return None
 
-        if row["cargo"] == "operador_caixa":
+        if row["id_cargo"] == CargoEnum.operador_caixa.value:
             return FuncionarioDAO.__parse_operador_caixa(row)
 
-        elif row["cargo"] == "supervisor":
+        elif row["id_cargo"] == CargoEnum.supervisor.value:
             return FuncionarioDAO.__parse_supervisor(row)
 
         else:

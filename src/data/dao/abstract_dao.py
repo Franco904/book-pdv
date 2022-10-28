@@ -59,9 +59,11 @@ class AbstractDAO(ABC):
             if con:
                 self.__database.close_all()
 
-    def get_all(self, custom_query=""):
+    def get_all(self, custom_query=None):
         con, cursor = self.__database.connect()
-        cursor.execute(f"SELECT * FROM {self.get_table()}{custom_query}")
+
+        select_query = custom_query if custom_query is not None else f"SELECT * FROM {self.get_table()}"
+        cursor.execute(select_query)
 
         rows = cursor.fetchall()
         self.__database.close_all()
@@ -79,8 +81,9 @@ class AbstractDAO(ABC):
         con.commit()
         self.__database.close_all()
 
-    def get_by_pk(self, pk_name, target_pk):
-        select_query = f"""SELECT * FROM {self.get_table()} WHERE {pk_name} = '{target_pk}'"""
+    def get_by_pk(self, pk_name, target_pk, custom_query=None):
+        select_query = custom_query if custom_query is not None else \
+            f"SELECT * FROM {self.get_table()} WHERE {pk_name} = '{target_pk}' "
 
         con, cursor = self.__database.connect()
         cursor.execute(select_query)
