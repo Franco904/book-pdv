@@ -1,8 +1,9 @@
 from src.data.dao.abstract_dao import AbstractDAO
 from src.data.database.database import Database
+from src.domain.enums import CargoEnum
+from src.domain.models.funcionario import Funcionario
 from src.domain.models.operador_caixa import OperadorCaixa
 from src.domain.models.supervisor import Supervisor
-from src.domain.models.funcionario import Funcionario
 
 
 class AutenticacaoDAO(AbstractDAO):
@@ -22,17 +23,17 @@ class AutenticacaoDAO(AbstractDAO):
         return funcionario
 
     def update_password(self, cpf: str, password) -> None:
-        super().update("cpf", cpf, "senha", f"'{password}'")
+        super().update("cpf", cpf, "senha", password)
 
     @staticmethod
     def __parse_funcionario(row) -> Funcionario | None:
         if row is None:
             return None
 
-        if row["cargo"] == "operador_caixa":
+        if row["id_cargo"] == CargoEnum.operador_caixa.value:
             return AutenticacaoDAO.__parse_operador_caixa(row)
 
-        elif row["cargo"] == "supervisor":
+        elif row["id_cargo"] == CargoEnum.supervisor.value:
             return AutenticacaoDAO.__parse_supervisor(row)
 
         else:
