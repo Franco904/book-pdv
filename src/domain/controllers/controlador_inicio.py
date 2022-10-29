@@ -40,16 +40,12 @@ class ControladorInicio:
         if isinstance(funcionario_logado, Funcionario):
             self.__funcionario_logado = funcionario_logado
 
-    def abrir_caixas_abertos(self) -> None:
-        # Visualização dos dados dos caixas que foram abertos
-        pass
-
     def abrir_relatorio(self) -> None:
         # Visualização dos dados das vendas registradas
         pass
 
     def abrir_produtos(self) -> None:
-        # Visualização dos dados dos produtos registrados
+        # Visualização dos dados dos produtos registrados (Operador) ou Módulo de produtos (Supervisor)
         pass
 
     def abrir_funcionarios(self) -> None:
@@ -74,7 +70,7 @@ class ControladorInicio:
 
     def abrir_tela(self) -> None:
         opcoes_operador = {
-            'caixas': self.abrir_caixas_abertos,
+            'produtos': self.abrir_produtos,
             'sair': self.sair,
             'novo': self.abrir_caixa,
         }

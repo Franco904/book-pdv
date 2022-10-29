@@ -11,7 +11,9 @@ from src.domain.controllers.controlador_abrir_caixa import ControladorAbrirCaixa
 from src.domain.controllers.controlador_autenticacao import ControladorAutenticacao
 from src.domain.controllers.controlador_funcionarios import ControladorFuncionarios
 from src.domain.controllers.controlador_inicio import ControladorInicio
+from src.domain.controllers.controlador_painel_caixa import ControladorPainelCaixa
 from src.domain.models.caixa import Caixa
+from src.domain.models.caixa_operador import CaixaOperador
 from src.domain.models.funcionario import Funcionario
 from src.main.tela_home import TelaHome
 
@@ -65,14 +67,25 @@ class ControladorSistema:
         }
 
     def init_controlador_autenticacao(self) -> None:
-        self.__controladores['autenticacao'] = ControladorAutenticacao(self, self.__daos['autenticacao_dao'])
+        self.__controladores['autenticacao'] = ControladorAutenticacao(
+            self,
+            self.__daos['autenticacao_dao'],
+            self.__daos['caixas_operadores_dao'],
+        )
 
     def init_controladores(self) -> None:
         # Cria instâncias globais dos controladores
         self.__controladores['funcionarios'] = ControladorFuncionarios(
             self.__daos['funcionario_dao'],
         )
+        self.__controladores['painel_caixa'] = ControladorPainelCaixa(
+            self,
+            self.__daos["caixa_dao"],
+            self.__daos['caixas_operadores_dao'],
+            self.__funcionario_logado,
+        )
         self.__controladores['abrir_caixa'] = ControladorAbrirCaixa(
+            self.__controladores['painel_caixa'],
             self.__daos["caixa_dao"],
             self.__daos['caixas_operadores_dao'],
             self.__funcionario_logado,
@@ -121,3 +134,6 @@ class ControladorSistema:
 
     def abrir_inicio(self) -> None:
         self.__controladores['inicio'].abrir_tela()
+
+    def abrir_painel_caixa(self, caixa_operador: CaixaOperador) -> None:
+        self.__controladores['painel_caixa'].abrir_tela(caixa_operador)

@@ -4,6 +4,7 @@ import PySimpleGUI as sg
 
 from src.data.dao.caixa_dao import CaixaDAO
 from src.data.dao.caixas_operadores_dao import CaixasOperadoresDAO
+from src.domain.controllers.controlador_painel_caixa import ControladorPainelCaixa
 from src.domain.enums import StatusCaixaAberto
 from src.domain.models.caixa import Caixa
 from src.domain.models.caixa_operador import CaixaOperador
@@ -15,12 +16,14 @@ from src.domain.views.tela_confirmacao import TelaConfirmacao
 class ControladorAbrirCaixa:
     def __init__(
             self,
+            controlador_painel_caixa: ControladorPainelCaixa,
             caixa_dao: CaixaDAO,
             caixas_operadores_dao: CaixasOperadoresDAO,
             funcionario_logado: Funcionario,
     ) -> None:
         self.__tela_caixa = TelaAbrirCaixa()
         self.__tela_confirmacao = TelaConfirmacao()
+        self.__controlador_painel_caixa = None
         self.__caixa_dao = None
         self.__caixas_operadores_dao = None
 
@@ -28,6 +31,8 @@ class ControladorAbrirCaixa:
         self.__caixas = []
         self.__funcionario_logado = None
 
+        if isinstance(controlador_painel_caixa, ControladorPainelCaixa):
+            self.__controlador_painel_caixa = controlador_painel_caixa
         if isinstance(caixa_dao, CaixaDAO):
             self.__caixa_dao = caixa_dao
             self.__caixas = self.__load_caixas_to_open()
@@ -89,6 +94,9 @@ class ControladorAbrirCaixa:
 
         # Persiste no banco as informações do caixa no momento da abertura
         self.__caixas_operadores_dao.persist_entity(caixa_operador)
+
+        # Redireciona operador de caixa para o painel do caixa
+        self
 
     def retornar(self) -> None:
         self.__tela_caixa.close()
