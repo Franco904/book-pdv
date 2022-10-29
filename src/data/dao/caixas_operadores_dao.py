@@ -43,8 +43,24 @@ class CaixasOperadoresDAO(AbstractDAO):
 
         row = super().get_by_pk('id', id_caixa_operador, custom_query)
 
-        caixa = None if row is None else CaixasOperadoresDAO.__parse_caixa_operador(row)
-        return caixa
+        caixa_operador = None if row is None else CaixasOperadoresDAO.__parse_caixa_operador(row)
+        return caixa_operador
+
+    def get_caixa_opened_id(self, cpf_operador: str):
+        table = super().get_table()
+        custom_query = f"""
+                            SELECT co .*, c .*, f .* FROM {table} AS co
+                            INNER JOIN access_control.caixas AS c
+                            ON c.id = co.id_caixa
+                            INNER JOIN access_control.funcionarios AS f
+                            ON f.cpf = co.cpf_operador
+                            WHERE co.cpf_operador = '{cpf_operador}' AND c.aberto = 'true'
+                        """
+
+        row = super().get_by_pk('', 0, custom_query)
+
+        caixa_operador = None if row is None else CaixasOperadoresDAO.__parse_caixa_operador(row)
+        return caixa_operador
 
     def persist_entity(self, caixa_operador: CaixaOperador):
         table = super().get_table()
@@ -79,7 +95,7 @@ class CaixasOperadoresDAO(AbstractDAO):
     def __parse_caixa_operador(row):
         id = row['id']
         id_caixa = row['id_caixa']
-        data_criacao = row['data_criacao']
+        data_horario_criacao = row['data_horario_criacao']
         saldo = row['saldo']
 
         cpf_operador = row['cpf_operador']
@@ -100,7 +116,7 @@ class CaixasOperadoresDAO(AbstractDAO):
             id,
             Caixa(
                 id_caixa,
-                data_criacao,
+                data_horario_criacao,
                 saldo
             ),
             OperadorCaixa(
