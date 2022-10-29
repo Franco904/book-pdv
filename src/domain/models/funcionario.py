@@ -23,9 +23,14 @@ class Funcionario(ABC):
         if isinstance(cargo, str):
             self.__cargo = cargo
 
+    @abstractmethod
+    def copy_with(self, nome: str = None, cpf: str = None, email: str = None, telefone: str = None):
+        pass
+
     @property
     def nome(self) -> str:
         return self.__nome
+
     @nome.setter
     def nome(self, nome: str) -> None:
         if isinstance(nome, str):
@@ -34,6 +39,7 @@ class Funcionario(ABC):
     @property
     def cpf(self) -> str:
         return self.__cpf
+
     @cpf.setter
     def cpf(self, cpf: str) -> None:
         if isinstance(cpf, str):
@@ -42,6 +48,7 @@ class Funcionario(ABC):
     @property
     def email(self) -> str:
         return self.__email
+
     @email.setter
     def email(self, email: str) -> None:
         if isinstance(email, str):
@@ -50,6 +57,7 @@ class Funcionario(ABC):
     @property
     def cargo(self) -> str:
         return self.__cargo
+
     @cargo.setter
     def cargo(self, cargo: str) -> None:
         if isinstance(cargo, str):
@@ -58,6 +66,7 @@ class Funcionario(ABC):
     @property
     def telefone(self) -> str:
         return self.__telefone
+
     @telefone.setter
     def telefone(self, telefone: str) -> None:
         if isinstance(telefone, str):
@@ -66,6 +75,7 @@ class Funcionario(ABC):
     @property
     def senha(self) -> str:
         return self.__senha
+
     @senha.setter
     def senha(self, senha: str) -> None:
         if isinstance(senha, str):

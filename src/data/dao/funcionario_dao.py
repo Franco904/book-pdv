@@ -29,6 +29,20 @@ class FuncionarioDAO(AbstractDAO):
         funcionario = None if row is None else FuncionarioDAO.__parse_funcionario(row)
         return funcionario
 
+    def has_opened_caixa(self, cpf: str) -> bool:
+        table = super().get_table()
+        custom_query = f"""
+                            SELECT * FROM {table} AS f
+                            INNER JOIN access_control.caixas_operadores AS co
+                            ON f.cpf = co.cpf_operador
+                            WHERE co.cpf_operador = '{cpf}'
+                        """
+
+        rows = super().get_all(custom_query)
+
+        has_opened_caixa = False if len(rows) == 0 else True
+        return has_opened_caixa
+
     def persist_entity(self, funcionario: Funcionario) -> None:
         table = super().get_table()
         columns = "cpf, nome, email, telefone, senha, id_cargo"
