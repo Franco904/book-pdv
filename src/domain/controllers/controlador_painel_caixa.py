@@ -73,15 +73,21 @@ class ControladorPainelCaixa:
                 if botao_confirmacao == 'confirmar':
                     self.__tela_fechar_caixa.close()
 
+                    # Fecha o caixa
                     self.__caixa_dao.update_entity(self.__caixa_operador.caixa.id, 'aberto', False)
-                    print(self.__caixa_operador.id)
 
+                    # Atualiza o saldo do caixa
+                    if self.__caixa_operador.caixa.saldo != dados_caixa['saldo_fechamento']:
+                        self.__caixa_dao.update_entity(self.__caixa_operador.caixa.id, 'saldo', dados_caixa['saldo_fechamento'])
+
+                    # Atualiza dados do registro de caixa aberto pelo operador
                     self.__caixas_operadores_dao.update_entity(self.__caixa_operador.id, 'data_horario_fechamento', dados_caixa['data_horario_fechamento'])
                     self.__caixas_operadores_dao.update_entity(self.__caixa_operador.id, 'saldo_fechamento', dados_caixa['saldo_fechamento'])
 
                     if dados['observacao_fechamento'] is not None:
                         self.__caixas_operadores_dao.update_entity(self.__caixa_operador.id, 'observacao_fechamento', dados['observacao_fechamento'])
 
+                    # Redireciona para a tela de início
                     self.sair()
                     break
 

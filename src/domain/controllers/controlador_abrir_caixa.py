@@ -36,7 +36,6 @@ class ControladorAbrirCaixa:
             self.__controlador_painel_caixa = controlador_painel_caixa
         if isinstance(caixa_dao, CaixaDAO):
             self.__caixa_dao = caixa_dao
-            self.__caixas = self.__load_caixas_to_open()
         if isinstance(caixas_operadores_dao, CaixasOperadoresDAO):
             self.__caixas_operadores_dao = caixas_operadores_dao
         if isinstance(funcionario_logado, Funcionario):
@@ -46,6 +45,8 @@ class ControladorAbrirCaixa:
         return self.__caixa_dao.get_all_to_open()
 
     def abrir_tela(self) -> None:
+        self.__caixas = self.__load_caixas_to_open()
+
         while True:
             caixas_ids = list(map(lambda caixa: caixa.id, self.__caixas))
 
