@@ -132,12 +132,13 @@ class ControladorAutenticacao:
             return result
 
     def redirecionar_para_tela(self) -> None:
-        caixa_operador_opened = self.__caixas_operadores_dao.get_caixa_opened_id(self.__funcionario.cpf)
+        caixa_operador_opened = self.__caixas_operadores_dao.get_caixa_opened_by_cpf(self.__funcionario.cpf)
 
-        if caixa_operador_opened is None:
-            self.__controlador_sistema.abrir_inicio()
-        else:
+        # Se o funcionário for um operador de caixa e estiver com caixa aberto, redireciona ele para o painel do caixa
+        if caixa_operador_opened is not None:
             self.__controlador_sistema.abrir_painel_caixa(caixa_operador_opened)
+        else:
+            self.__controlador_sistema.abrir_inicio()
 
     def retornar_home(self) -> None:
         self.__tela_autenticacao.close()

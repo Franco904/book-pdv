@@ -46,10 +46,10 @@ class CaixasOperadoresDAO(AbstractDAO):
         caixa_operador = None if row is None else CaixasOperadoresDAO.__parse_caixa_operador(row)
         return caixa_operador
 
-    def get_caixa_opened_id(self, cpf_operador: str):
+    def get_caixa_opened_by_cpf(self, cpf_operador: str):
         table = super().get_table()
         custom_query = f"""
-                            SELECT co .*, c .*, f .* FROM {table} AS co
+                            SELECT * FROM {table} AS co
                             INNER JOIN access_control.caixas AS c
                             ON c.id = co.id_caixa
                             INNER JOIN access_control.funcionarios AS f
@@ -62,13 +62,33 @@ class CaixasOperadoresDAO(AbstractDAO):
         caixa_operador = None if row is None else CaixasOperadoresDAO.__parse_caixa_operador(row)
         return caixa_operador
 
+    def get_saldo_fechamento(self, id_caixa_operador: int, saldo_abertura: float) -> int:
+        table = super().get_table()
+        custom_query = f"""
+                            SELECT SUM(v.valor_pago - v.valor_troco) AS vendas, SUM(s.valor) AS sangrias
+                            FROM {table} AS co
+                            INNER JOIN access_control.vendas AS v
+                            ON v.id_caixa_operador = co.id
+                            INNER JOIN access_control.sangrias AS s
+                            ON s.id_caixa_operador = co.id
+                            WHERE co.id = '{id_caixa_operador}'
+                        """
+
+        row = super().get_by_pk('', 0, custom_query)
+
+        total_vendas = row['vendas'] if row['vendas'] is not None else 0
+        total_sangrias = row['sangrias'] if row['sangrias'] is not None else 0
+
+        saldo_fechamento = saldo_abertura + (total_vendas - total_sangrias)
+        return saldo_fechamento
+
     def persist_entity(self, caixa_operador: CaixaOperador):
         table = super().get_table()
         columns = 'id, cpf_operador, id_caixa, data_horario_abertura, data_horario_fechamento, saldo_abertura, ' \
-                  'saldo_fechamento, status, observacao, erros'
+                  'saldo_fechamento, status, observacao_abertura, erros, observacao_fechamento'
 
         super().persist(
-            f""" INSERT INTO {table} ({columns}) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+            f""" INSERT INTO {table} ({columns}) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
             (
                 caixa_operador.id,
                 caixa_operador.operador_caixa.cpf,
@@ -78,8 +98,9 @@ class CaixasOperadoresDAO(AbstractDAO):
                 caixa_operador.saldo_abertura,
                 caixa_operador.saldo_fechamento,
                 caixa_operador.status,
-                caixa_operador.observacao,
+                caixa_operador.observacao_abertura,
                 caixa_operador.erros,
+                caixa_operador.observacao_fechamento,
             ),
         )
 
@@ -109,7 +130,8 @@ class CaixasOperadoresDAO(AbstractDAO):
         saldo_abertura = row['saldo_abertura']
         saldo_fechamento = row['saldo_fechamento']
         status_caixa = row['status']
-        observacao = row['observacao']
+        observacao_abertura = row['observacao_abertura']
+        observacao_fechamento = row['observacao_fechamento']
         erros = row['erros']
 
         return CaixaOperador(
@@ -131,6 +153,7 @@ class CaixasOperadoresDAO(AbstractDAO):
             saldo_abertura,
             saldo_fechamento,
             status_caixa,
-            observacao,
+            observacao_abertura,
+            observacao_fechamento,
             erros,
         )
