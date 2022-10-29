@@ -76,7 +76,9 @@ class ControladorSistema:
     def init_controladores(self) -> None:
         # Cria instâncias globais dos controladores
         self.__controladores['funcionarios'] = ControladorFuncionarios(
+            self,
             self.__daos['funcionario_dao'],
+            self.__funcionario_logado,
         )
         self.__controladores['painel_caixa'] = ControladorPainelCaixa(
             self,

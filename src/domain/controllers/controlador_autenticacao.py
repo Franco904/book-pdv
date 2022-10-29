@@ -5,7 +5,6 @@ from src.data.dao.caixas_operadores_dao import CaixasOperadoresDAO
 from src.domain.exceptions.email_invalido_exception import EmailInvalidoException
 from src.domain.exceptions.falha_login_exception import FalhaLoginException
 from src.domain.exceptions.senha_atual_nao_correspondente_exception import SenhaAtualNaoCorrespondenteException
-from src.domain.models.funcionario import Funcionario
 from src.domain.views.login.tela_autenticacao import TelaLogin
 from src.domain.views.login.tela_cadastrar_senha import TelaCadastrarSenha
 from src.domain.views.login.tela_inserir_senha import TelaInserirSenha
