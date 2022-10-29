@@ -11,6 +11,7 @@ from src.domain.controllers.controlador_abrir_caixa import ControladorAbrirCaixa
 from src.domain.controllers.controlador_autenticacao import ControladorAutenticacao
 from src.domain.controllers.controlador_funcionarios import ControladorFuncionarios
 from src.domain.controllers.controlador_inicio import ControladorInicio
+from src.domain.models.caixa import Caixa
 from src.domain.models.funcionario import Funcionario
 from src.main.tela_home import TelaHome
 

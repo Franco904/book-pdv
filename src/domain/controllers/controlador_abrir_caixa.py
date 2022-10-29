@@ -30,17 +30,16 @@ class ControladorAbrirCaixa:
 
         if isinstance(caixa_dao, CaixaDAO):
             self.__caixa_dao = caixa_dao
+            self.__caixas = self.__load_caixas_to_open()
         if isinstance(caixas_operadores_dao, CaixasOperadoresDAO):
             self.__caixas_operadores_dao = caixas_operadores_dao
         if isinstance(funcionario_logado, Funcionario):
             self.__funcionario_logado = funcionario_logado
 
-    def __load_caixas_fisicos(self) -> [Caixa]:
-        return self.__caixa_dao.get_all()
+    def __load_caixas_to_open(self) -> [Caixa]:
+        return self.__caixa_dao.get_all_to_open()
 
     def abrir_tela(self) -> None:
-        self.__caixas = self.__load_caixas_fisicos()
-
         while True:
             caixas_ids = list(map(lambda caixa: caixa.id, self.__caixas))
 
@@ -69,8 +68,11 @@ class ControladorAbrirCaixa:
 
         caixa: Caixa = caixa_filtered[0]
 
+        # Atualiza no banco o caixa aberto
+        self.__caixa_dao.update_entity(caixa.id, 'aberto', True)
+
         # Atualiza na memória os caixas disponíveis para abertura
-        self.__caixas = self.__load_caixas_fisicos()
+        self.__caixas = list(filter(lambda caixa: caixa.id != dados['caixa_id'], self.__caixas))
 
         caixa_operador = CaixaOperador(
             int(),
@@ -78,7 +80,7 @@ class ControladorAbrirCaixa:
             self.__funcionario_logado,
             self.__data_horario_abertura,
             None,
-            dados['saldo_abertura'],
+            caixa.saldo,
             float(),
             StatusCaixaAberto.positivo,
             dados['observacoes'],

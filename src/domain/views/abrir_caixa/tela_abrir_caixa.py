@@ -32,7 +32,6 @@ class TelaAbrirCaixa(Tela):
         if caixas is None:
             return
 
-        saldo_caixa = 0
         while True:
             evento, dados = super().read()
 
@@ -47,14 +46,12 @@ class TelaAbrirCaixa(Tela):
                 saldo = list(filter(lambda caixa: caixa.id == id, caixas))[0].saldo
 
                 super().update('saldo_abertura', saldo)
-                saldo_caixa = saldo
 
             # Abrir caixa
             elif evento == 'abrir_caixa':
                 if dados['caixa_id'] == '':
                     super().show_message('Atenção!', 'Preencha o campo Caixa corretamente!')
                     continue
-                dados['saldo_abertura'] = saldo_caixa
                 break
 
         super().close()
