@@ -86,6 +86,12 @@ class ControladorSistema:
             self.__daos['caixas_operadores_dao'],
             self.__funcionario_logado,
         )
+        self.__controladores['painel_caixa'] = ControladorPainelCaixa(
+            self,
+            self.__daos["caixa_dao"],
+            self.__daos['caixas_operadores_dao'],
+            self.__funcionario_logado,
+        )
         self.__controladores['abrir_caixa'] = ControladorAbrirCaixa(
             self.__controladores['painel_caixa'],
             self.__daos["caixa_dao"],
