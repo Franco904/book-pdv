@@ -35,12 +35,12 @@ class FuncionarioDAO(AbstractDAO):
                             SELECT * FROM {table} AS f
                             INNER JOIN access_control.caixas_operadores AS co
                             ON f.cpf = co.cpf_operador
-                            WHERE f.cpf = '{cpf}'
+                            WHERE co.cpf_operador = '{cpf}'
                         """
 
-        row = super().get_all(custom_query)
+        rows = super().get_all(custom_query)
 
-        has_opened_caixa = False if row is None else True
+        has_opened_caixa = False if len(rows) == 0 else True
         return has_opened_caixa
 
     def persist_entity(self, funcionario: Funcionario) -> None:
