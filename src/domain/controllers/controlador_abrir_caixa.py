@@ -1,4 +1,5 @@
 import datetime
+from random import randint
 
 import PySimpleGUI as sg
 
@@ -35,7 +36,6 @@ class ControladorAbrirCaixa:
             self.__controlador_painel_caixa = controlador_painel_caixa
         if isinstance(caixa_dao, CaixaDAO):
             self.__caixa_dao = caixa_dao
-            self.__caixas = self.__load_caixas_to_open()
         if isinstance(caixas_operadores_dao, CaixasOperadoresDAO):
             self.__caixas_operadores_dao = caixas_operadores_dao
         if isinstance(funcionario_logado, Funcionario):
@@ -45,10 +45,12 @@ class ControladorAbrirCaixa:
         return self.__caixa_dao.get_all_to_open()
 
     def abrir_tela(self) -> None:
+        self.__caixas = self.__load_caixas_to_open()
+
         while True:
             caixas_ids = list(map(lambda caixa: caixa.id, self.__caixas))
 
-            self.__tela_caixa.init_components(caixas_ids, self.__data_horario_abertura.strftime("%d/%m/%Y"))
+            self.__tela_caixa.init_components(caixas_ids, self.__data_horario_abertura.strftime("%d/%m/%Y, %H:%M"))
             opcao, dados = self.__tela_caixa.open(self.__caixas)
 
             if opcao == 'voltar' or dados is None or sg.WIN_CLOSED:
@@ -80,7 +82,7 @@ class ControladorAbrirCaixa:
         self.__caixas = list(filter(lambda caixa: caixa.id != dados['caixa_id'], self.__caixas))
 
         caixa_operador = CaixaOperador(
-            int(),
+            randint(1, 100),
             caixa,
             self.__funcionario_logado,
             self.__data_horario_abertura,
@@ -88,7 +90,8 @@ class ControladorAbrirCaixa:
             caixa.saldo,
             float(),
             StatusCaixaAberto.positivo,
-            dados['observacoes'],
+            dados['observacao_abertura'],
+            '',
             '',
         )
 
@@ -96,7 +99,7 @@ class ControladorAbrirCaixa:
         self.__caixas_operadores_dao.persist_entity(caixa_operador)
 
         # Redireciona operador de caixa para o painel do caixa
-        self
+        self.__controlador_painel_caixa.abrir_tela(caixa_operador)
 
     def retornar(self) -> None:
         self.__tela_caixa.close()

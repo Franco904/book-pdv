@@ -16,12 +16,12 @@ class TelaAbrirCaixa(Tela):
         layout = [
             [sg.Combo(caixas_ids, enable_events=True, readonly=True, size=(40, 1), key='caixa_id')],
 
-            [sg.Text('Data', size=(24, 0), font=('', 10)),
+            [sg.Text('Data e horário', size=(24, 0), font=('', 10)),
              sg.Text(data_abertura, size=(24, 0), font=('', 10), key='data_abertura')],
-            [sg.Text('Valor', size=(24, 0), font=('', 10)),
+            [sg.Text('Saldo de abertura', size=(24, 0), font=('', 10)),
              sg.Text('-', size=(24, 0), font=("", 10), key='saldo_abertura')],
-            [sg.Text('Observações', size=(24, 0), font=('', 10))],
-            [sg.Multiline(size=(50, 5), pad=(5, 5), key='observacoes')],
+            [sg.Text('Observação', size=(24, 0), font=('', 10))],
+            [sg.Multiline(size=(50, 5), pad=(5, 5), key='observacao_abertura')],
             [sg.Push(), sg.Cancel('Voltar', key='voltar', button_color='gray'),
              sg.Cancel('Abrir caixa', key='abrir_caixa', button_color='green')]
         ]
@@ -43,9 +43,9 @@ class TelaAbrirCaixa(Tela):
             # Atualiza dinamicamente o valor de saldo, conforme seleção no combo de caixas
             elif evento == 'caixa_id':
                 id = dados['caixa_id']
-                saldo = list(filter(lambda caixa: caixa.id == id, caixas))[0].saldo
+                saldo_abertura = list(filter(lambda caixa: caixa.id == id, caixas))[0].saldo
 
-                super().update('saldo_abertura', saldo)
+                super().update('saldo_abertura', f'R$ {saldo_abertura}')
 
             # Abrir caixa
             elif evento == 'abrir_caixa':
