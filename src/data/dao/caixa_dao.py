@@ -19,6 +19,15 @@ class CaixaDAO(AbstractDAO):
 
         return caixas
 
+    def get_all_to_open(self) -> [Caixa]:
+        table = super().get_table()
+        custom_query = f"SELECT * FROM {table} WHERE aberto = 'false'"
+
+        rows = super().get_all(custom_query)
+        caixas = list(map(lambda row: CaixaDAO.__parse_caixa(row), rows))
+
+        return caixas
+
     def get_by_id(self, id: int) -> Caixa | None:
         row = super().get_by_pk("id", id)
 
