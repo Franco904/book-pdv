@@ -2,6 +2,7 @@ import datetime
 
 from src.data.dao.caixa_dao import CaixaDAO
 from src.data.dao.caixas_operadores_dao import CaixasOperadoresDAO
+from src.data.dao.sangrias_dao import SangriasDAO
 from src.domain.models.caixa_operador import CaixaOperador
 from src.domain.models.funcionario import Funcionario
 from src.domain.views.painel_caixa.tela_fechar_caixa import TelaFecharCaixa
@@ -15,6 +16,7 @@ class ControladorPainelCaixa:
             controlador_sistema,
             caixa_dao: CaixaDAO,
             caixas_operadores_dao: CaixasOperadoresDAO,
+            sangrias_dao: SangriasDAO,
             funcionario_logado: Funcionario,
     ) -> None:
         self.__tela_painel_caixa = TelaPainelCaixa()
@@ -24,6 +26,7 @@ class ControladorPainelCaixa:
         self.__controlador_sistema = controlador_sistema
         self.__caixa_dao = None
         self.__caixas_operadores_dao = None
+        self.__sangrias_dao = None
 
         self.__caixa_operador: CaixaOperador | None = None
         self.__funcionario_logado: Funcionario | None = None
@@ -32,6 +35,8 @@ class ControladorPainelCaixa:
             self.__caixa_dao = caixa_dao
         if isinstance(caixas_operadores_dao, CaixasOperadoresDAO):
             self.__caixas_operadores_dao = caixas_operadores_dao
+        if isinstance(sangrias_dao, SangriasDAO):
+            self.__sangrias_dao = sangrias_dao
         if isinstance(funcionario_logado, Funcionario):
             self.__funcionario_logado = funcionario_logado
 
@@ -59,7 +64,7 @@ class ControladorPainelCaixa:
 
         while True:
             self.__tela_fechar_caixa.init_components(dados_caixa)
-            opcao, dados = self.__tela_fechar_caixa.open()
+            opcao, dados_tela = self.__tela_fechar_caixa.open()
 
             if opcao == 'voltar':
                 return self.__tela_fechar_caixa.close()
@@ -78,18 +83,34 @@ class ControladorPainelCaixa:
 
                     # Atualiza o saldo do caixa
                     if self.__caixa_operador.caixa.saldo != dados_caixa['saldo_fechamento']:
-                        self.__caixa_dao.update_entity(self.__caixa_operador.caixa.id, 'saldo', dados_caixa['saldo_fechamento'])
+                        self.__caixa_dao.update_entity(self.__caixa_operador.caixa.id, 'saldo',
+                                                       dados_caixa['saldo_fechamento'])
 
-                    # Atualiza dados do registro de caixa aberto pelo operador
-                    self.__caixas_operadores_dao.update_entity(self.__caixa_operador.id, 'data_horario_fechamento', dados_caixa['data_horario_fechamento'])
-                    self.__caixas_operadores_dao.update_entity(self.__caixa_operador.id, 'saldo_fechamento', dados_caixa['saldo_fechamento'])
-
-                    if dados['observacao_fechamento'] is not None:
-                        self.__caixas_operadores_dao.update_entity(self.__caixa_operador.id, 'observacao_fechamento', dados['observacao_fechamento'])
+                    # Atualiza restante das propriedades do registro de caixa
+                    self.persist_caixa_operador_data(dados_caixa, dados_tela)
 
                     # Redireciona para a tela de início
                     self.sair()
                     break
+
+    def persist_caixa_operador_data(self, dados_caixa, dados_tela):
+        # Atualiza data/horário de fechamento e saldo de fechamento
+        self.__caixas_operadores_dao.update_entity(self.__caixa_operador.id, 'data_horario_fechamento',
+                                                   dados_caixa['data_horario_fechamento'])
+        self.__caixas_operadores_dao.update_entity(self.__caixa_operador.id, 'saldo_fechamento',
+                                                   dados_caixa['saldo_fechamento'])
+
+        # Atualiza o status para *negativo* caso o saldo de fechamento for menor que o saldo de
+        # abertura e não houverem sangrias registradas
+        num_sangrias_caixa = len(self.__sangrias_dao.get_all_by_caixa_operador(self.__caixa_operador.id))
+
+        if dados_caixa['saldo_fechamento'] < self.__caixa_operador.saldo_abertura and num_sangrias_caixa == 0:
+            self.__caixas_operadores_dao.update_entity(self.__caixa_operador.id, 'status', 'negativo')
+
+        # Adiciona observação de fechamento se houver
+        if dados_tela['observacao_fechamento'] is not None:
+            self.__caixas_operadores_dao.update_entity(self.__caixa_operador.id, 'observacao_fechamento',
+                                                       dados_tela['observacao_fechamento'])
 
     def sair(self) -> None:
         self.__controlador_sistema.abrir_inicio()
