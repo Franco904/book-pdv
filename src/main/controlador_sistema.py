@@ -105,7 +105,7 @@ class ControladorSistema:
             self.__daos['caixa_dao'],
             self.__funcionario_logado,
         )
-        self.__controladores['produtos'] = ControladorProdutos(self.__daos['produto'])
+        self.__controladores['produtos'] = ControladorProdutos(self.__daos['produto_dao'])
 
     def init_inserts(self) -> None:
         # self.__daos['cargos_dao'].persist_entity(CargoEnum.operador_caixa)
