@@ -1,5 +1,4 @@
 import PySimpleGUI as sg
-
 from src.data.dao.autenticacao_dao import AutenticacaoDAO
 from src.data.dao.caixa_dao import CaixaDAO
 from src.data.dao.caixas_operadores_dao import CaixasOperadoresDAO
@@ -7,12 +6,14 @@ from src.data.dao.cargos_dao import CargosDAO
 from src.data.dao.funcionario_dao import FuncionarioDAO
 from src.data.dao.sangrias_dao import SangriasDAO
 from src.data.dao.tipos_produto_dao import TiposProdutoDAO
+from src.data.dao.produto_dao import ProdutoDAO
 from src.data.database.database import Database
 from src.domain.controllers.controlador_abrir_caixa import ControladorAbrirCaixa
 from src.domain.controllers.controlador_autenticacao import ControladorAutenticacao
 from src.domain.controllers.controlador_funcionarios import ControladorFuncionarios
 from src.domain.controllers.controlador_inicio import ControladorInicio
 from src.domain.controllers.controlador_painel_caixa import ControladorPainelCaixa
+from src.domain.controllers.controlador_produtos import ControladorProdutos
 from src.domain.models.caixa import Caixa
 from src.domain.models.caixa_operador import CaixaOperador
 from src.domain.models.funcionario import Funcionario
@@ -66,6 +67,7 @@ class ControladorSistema:
             'sangrias_dao': SangriasDAO(self.__database),
             'cargos_dao': CargosDAO(self.__database),
             'tipos_produto_dao': TiposProdutoDAO(self.__database),
+            'produto_dao': ProdutoDAO(self.__database)
         }
 
     def init_controlador_autenticacao(self) -> None:
@@ -103,6 +105,7 @@ class ControladorSistema:
             self.__daos['caixa_dao'],
             self.__funcionario_logado,
         )
+        self.__controladores['produtos'] = ControladorProdutos(self.__daos['produto_dao'])
 
     def init_inserts(self) -> None:
         # self.__daos['cargos_dao'].persist_entity(CargoEnum.operador_caixa)

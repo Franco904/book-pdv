@@ -4,7 +4,7 @@ import PySimpleGUI as sg
 
 class Tela(ABC):
     @abstractmethod
-    def __init__(self, window, tamanho=None):
+    def __init__(self, window: sg.Window, tamanho=None):
         self.__window = window
         if tamanho is not None:
             self.__window.set_min_size(tamanho)
@@ -16,6 +16,10 @@ class Tela(ABC):
     @abstractmethod
     def open(self):
         pass
+
+    @property
+    def window(self):
+        return self.__window
 
     def close(self):
         self.__window.close()
