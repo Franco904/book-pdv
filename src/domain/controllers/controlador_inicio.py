@@ -40,7 +40,11 @@ class ControladorInicio:
         if isinstance(funcionario_logado, Funcionario):
             self.__funcionario_logado = funcionario_logado
 
-    def abrir_relatorio(self) -> None:
+    def abrir_caixas(self) -> None:
+        # Cadastro de caixas físicos e visualização do histórico de aberturas
+        pass
+
+    def abrir_relatorio_vendas(self) -> None:
         # Visualização dos dados das vendas registradas
         pass
 
@@ -51,7 +55,7 @@ class ControladorInicio:
     def abrir_funcionarios(self) -> None:
         self.__controlador_funcionarios.abre_tela()
 
-    def abrir_caixa(self) -> None:
+    def abrir_novo_caixa(self) -> None:
         has_caixas_to_open = len(self.__caixa_dao.get_all()) > 0
 
         try:
@@ -72,11 +76,12 @@ class ControladorInicio:
         opcoes_operador = {
             'produtos': self.abrir_produtos,
             'sair': self.sair,
-            'novo': self.abrir_caixa,
+            'novo': self.abrir_novo_caixa,
         }
 
         opcoes_supervisor = {
-            'relatorio': self.abrir_relatorio,
+            'caixas': self.abrir_caixas,
+            'relatorio_vendas': self.abrir_relatorio_vendas,
             'produtos': self.abrir_produtos,
             'funcionarios': self.abrir_funcionarios,
             'sair': self.sair,

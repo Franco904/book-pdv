@@ -49,7 +49,7 @@ class ControladorPainelCaixa:
         pass
 
     def abrir_movimentacoes(self) -> None:
-        # Abre visualização das movimentações do caixa (Novo caso de uso?)
+        # Abre visualização das movimentações do caixa
         pass
 
     def fechar_caixa(self) -> None:
@@ -106,6 +106,11 @@ class ControladorPainelCaixa:
 
         if dados_caixa['saldo_fechamento'] < self.__caixa_operador.saldo_abertura and num_sangrias_caixa == 0:
             self.__caixas_operadores_dao.update_entity(self.__caixa_operador.id, 'status', 'negativo')
+            self.__caixas_operadores_dao.update_entity(
+                self.__caixa_operador.id,
+                'erros',
+                'Caixa fechou com saldo menor do que o de abertura, mesmo sem ocorrerem retiradas de dinheiro',
+            )
 
         # Adiciona observação de fechamento se houver
         if dados_tela['observacao_fechamento'] is not None:
