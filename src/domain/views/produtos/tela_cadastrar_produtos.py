@@ -1,8 +1,20 @@
 from src.domain.views.tela_abstrata import Tela
 import PySimpleGUI as sg
+from src.domain.exceptions.entrada_vazia_exception import EntradaVaziaException
+from src.domain.exceptions.produtos.titulo_invalido_exception import TituloInvalidoException
+from src.domain.exceptions.produtos.descricao_invalida_exception import DescricaoInvalidaException
+from src.domain.exceptions.produtos.custo_invalido_exception import CustoInvalidoException
+from src.domain.exceptions.produtos.margem_lucro_invalida_exception import MargemLucroInvalidaException
+from src.domain.exceptions.produtos.desconto_invalido_exception import DescontoInvalidoException
+from src.domain.exceptions.produtos.isbn_invalido_exception import ISBNInvalidoException
+from src.domain.exceptions.produtos.autor_invalido_exception import AutorInvalidoException
+from src.domain.exceptions.produtos.edicao_invalida_exception import EdicaoInvalidaException
+from src.domain.exceptions.produtos.editora_invalida_exception import EditoraInvalidaException
+from src.domain.exceptions.produtos.fabricante_invalido_exception import FabricanteInvalidoException
+from src.domain.exceptions.produtos.produto_invalido_exception import ProdutoInvalidoException
 
 
-class TelaCadastroProduto(Tela):
+class TelaCadastrarProduto(Tela):
     def __init__(self) -> None:
         pass
 
@@ -153,19 +165,93 @@ class TelaCadastroProduto(Tela):
                 for elemento in elementos_livro:
                     window[elemento].update(visible=False)
 
+        def validate_common_inputs():
+            if dados['titulo'].isnumeric() is True and len(dados['titulo']) < 2 and len(dados['titulo']) > 20:
+                raise TituloInvalidoException
+            elif dados['descricao'].isnumeric() is True and len(dados['descricao']) < 2 and len(dados['descricao']) > 50:
+                raise DescricaoInvalidaException
+            elif dados['custo'].isnumeric() is False:
+                raise CustoInvalidoException
+            elif dados['margem_lucro'].isnumeric() is False:
+                raise MargemLucroInvalidaException
+
+        def validate_desconto_input():
+            try:
+                if '.' not in dados['desconto']:
+                    dados['desconto'] = int(dados['desconto'])
+                else:
+                    dados['desconto'] = float(dados['desconto'])
+            except Exception:
+                raise DescontoInvalidoException
+            if dados['desconto'] < 0 or dados['desconto'] > 100:
+                raise DescontoInvalidoException
+
+        def validate_livro_input(dados):
+            if dados['isbn'].replace('', '').isnumeric() is False and len(dados['isbn']) != 13:
+                raise ISBNInvalidoException
+            elif dados['autor'].isnumeric() is True and len(dados['autor']) < 2 or len(dados['autor']) > 20:
+                raise AutorInvalidoException
+            elif dados['edicao'].isascii() is False and len(dados['edicao']) < 1 or len(dados['edicao']) > 20:
+                raise EdicaoInvalidaException
+            elif dados['editora'].isnumeric() is True and len(dados['editora']) < 2 or len(dados['editora']) > 20:
+                raise EditoraInvalidaException
+
+
+        def validate_eletronico_input(dados):
+            if dados['fabricante'].isnumeric() is False and len(dados['fabricante']) < 2 or len(dados['fabricante']) > 20:
+                raise FabricanteInvalidoException
+
         while True:
-            evento, valores = super().read()
+            evento, dados = super().read()
 
             alternar_atributos_produto(super().window, evento)
 
             if evento == 'enviar':
-                print(valores)
-                """
-                    TODO: input validation cases
-                """
+                try:
+                    if not alterar:
+                        if not dados['livro'] is False and dados['eletronico'] is False:
+                            validate_common_inputs()
+                            if dados['livro']:
+                                validate_livro_input(dados)
+                            elif dados['eletronico']:
+                                validate_eletronico_input(dados)
+                        else:
+                            raise ProdutoInvalidoException
+                    else:
+                        validate_common_inputs()
+                        if dados['id_tipo_produto'] == 0:
+                            validate_livro_input(dados)
+                        else:
+                            validate_eletronico_input(dados)
+                        validate_desconto_input()
+
+                except EntradaVaziaException as a:
+                    super().show_message('Campos incompletos!', a)
+                except TituloInvalidoException as b:
+                    super().show_message('Título inválido!', b)
+                except DescricaoInvalidaException as c:
+                    super().show_message('Descrição inválida!', c)
+                except CustoInvalidoException as d:
+                    super().show_message('Custo inválido!', d)
+                except MargemLucroInvalidaException as e:
+                    super().show_message('Margem de lucro inválida!', e)
+                except DescontoInvalidoException as f:
+                    super().show_message('Desconto inválido!', f)
+                except ISBNInvalidoException as g:
+                    super().show_message('ISBN inválido!', g)
+                except AutorInvalidoException as h:
+                    super().show_message('Autor inválido!', h)
+                except EdicaoInvalidaException as i:
+                    super().show_message('Edição inválida!', i)
+                except EditoraInvalidaException as j:
+                    super().show_message('Editora inválida!', j)
+                except FabricanteInvalidoException as k:
+                    super().show_message('Fabricante inválido!', k)
+                except ProdutoInvalidoException as p:
+                    super().show_message('Produto inválido!', p)
 
             if evento is None or evento == sg.WIN_CLOSED or evento == 'voltar':
                 super().close()
                 break
 
-        return evento, valores
+        return evento, dados

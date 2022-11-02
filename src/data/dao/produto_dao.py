@@ -19,8 +19,14 @@ class ProdutoDAO(AbstractDAO):
     def get_all(self, custom_query="") -> [Produto]:
         rows = super().get_all()
         produtos = list(map(lambda row: ProdutoDAO.__parse_produto(row), rows))
-
-        return produtos
+        livros = []
+        eletronicos = []
+        for produto in produtos:
+            if produto.id_tipo_produto == 0:
+                livros.append(produto)
+            if produto.id_tipo_produto == 1:
+                eletronicos.append(produto)
+        return {'livros': livros, 'eletronicos': eletronicos}
 
     def get_by_id(self, id_produto: int) -> Produto | None:
         row = super().get_by_pk("id", id_produto)
