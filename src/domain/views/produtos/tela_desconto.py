@@ -58,6 +58,7 @@ class TelaDesconto(Tela):
                     except DescontoInvalidoException as d:
                         super().show_message("Desconto inválido!", d)
                 else:
+                    valores['valor_desconto'] = 0
                     super().close()
                     break
 

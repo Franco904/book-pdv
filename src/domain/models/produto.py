@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 class Produto(ABC):
     @abstractmethod
     def __init__(self,
+                 id_produto: int,
                  id_tipo_produto: int,
                  titulo: str,
                  descricao: str,
@@ -17,6 +18,7 @@ class Produto(ABC):
                  pais: str,
                  desconto: float | int
                  ):
+        self.__id_produto: None
         self.__id_tipo_produto = None
         self.__titulo = None
         self.__descricao = None
@@ -30,15 +32,17 @@ class Produto(ABC):
         self.__pais = None
         self.__desconto = None
 
+        if isinstance(id_produto, int):
+            self.__id_produto = id_produto
         if isinstance(id_tipo_produto, int):
             self.__id_tipo_produto = id_tipo_produto
         if isinstance(titulo, str):
             self.__titulo = titulo
         if isinstance(descricao, str):
             self.__descricao = descricao
-        if isinstance(custo, float):
+        if isinstance(custo, float) or isinstance(custo, int):
             self.__custo = custo
-        if isinstance(margem_lucro, float):
+        if isinstance(margem_lucro, float) or isinstance(margem_lucro, int):
             self.__margem_lucro = margem_lucro
         if isinstance(fabricante, str):
             self.__fabricante = fabricante
@@ -52,10 +56,19 @@ class Produto(ABC):
             self.__isbn = isbn
         if isinstance(pais, str):
             self.__pais = pais
-        if isinstance(desconto, float):
+        if isinstance(desconto, float) or isinstance(desconto, int):
             self.__desconto = desconto
 
         self.__preco_final = self.calcula_preco_final()
+
+    @property
+    def id_produto(self) -> int:
+        return self.__id_produto
+
+    @id_produto.setter
+    def id_produto(self, id_produto: int) -> None:
+        if isinstance(id_produto, int):
+            self.__id_produto = id_produto
 
     @property
     def id_tipo_produto(self) -> int:

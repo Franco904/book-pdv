@@ -3,6 +3,7 @@ from src.domain.models.produto import Produto
 
 class Livro(Produto):
     def __init__(self,
+                 id_produto: int,
                  id_tipo_produto: int,
                  titulo: str,
                  descricao: str,
@@ -13,10 +14,11 @@ class Livro(Produto):
                  editora: str,
                  isbn: str,
                  pais: str,
-                 desconto: float,
+                 desconto: float | int = 0,
                  fabricante: str = '',
                  ):
         super().__init__(
+            id_produto,
             id_tipo_produto,
             titulo,
             descricao,

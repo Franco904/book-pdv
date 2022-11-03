@@ -12,6 +12,7 @@ from src.domain.exceptions.produtos.edicao_invalida_exception import EdicaoInval
 from src.domain.exceptions.produtos.editora_invalida_exception import EditoraInvalidaException
 from src.domain.exceptions.produtos.fabricante_invalido_exception import FabricanteInvalidoException
 from src.domain.exceptions.produtos.produto_invalido_exception import ProdutoInvalidoException
+from src.domain.exceptions.produtos.id_invalido_exception import IDInvalidoException
 
 
 class TelaCadastrarProduto(Tela):
@@ -37,6 +38,10 @@ class TelaCadastrarProduto(Tela):
 
         atributos_produto = [
             [sg.Text('   ')],
+            [
+                sg.Text('ID produto', key='id_produto_text', size=(9, 1)),
+                sg.InputText(dados_produto['id_produto'] if alterar else '', key='id_produto', size=(50, 1))
+            ] if not alterar else [],
             [
                 sg.Text('Título', size=(9, 1)),
                 sg.InputText(dados_produto['titulo'] if alterar else '', key='titulo', size=(50, 1))
@@ -165,41 +170,130 @@ class TelaCadastrarProduto(Tela):
                 for elemento in elementos_livro:
                     window[elemento].update(visible=False)
 
+        def validate_numeric_input(key: str):
+            try:
+                if '.' not in dados[key]:
+                    dados[key] = int(dados[key])
+                else:
+                    dados[key] = float(dados[key])
+                return True
+            except ValueError:
+                return False
+
+        def validate_id_produto_input():
+            if not validate_numeric_input('id_produto'):
+                raise IDInvalidoException
+
         def validate_common_inputs():
-            if dados['titulo'].isnumeric() is True and len(dados['titulo']) < 2 and len(dados['titulo']) > 20:
+            if dados['titulo'].isnumeric() is True or len(dados['titulo']) < 2 or len(dados['titulo']) > 20:
                 raise TituloInvalidoException
-            elif dados['descricao'].isnumeric() is True and len(dados['descricao']) < 2 and len(dados['descricao']) > 50:
+            elif dados['descricao'].isnumeric() is True or len(dados['descricao']) < 2 or len(dados['descricao']) > 50:
                 raise DescricaoInvalidaException
-            elif dados['custo'].isnumeric() is False:
+            elif not validate_numeric_input('custo'):
                 raise CustoInvalidoException
-            elif dados['margem_lucro'].isnumeric() is False:
+            elif not validate_numeric_input('margem_lucro'):
                 raise MargemLucroInvalidaException
 
         def validate_desconto_input():
-            try:
-                if '.' not in dados['desconto']:
-                    dados['desconto'] = int(dados['desconto'])
-                else:
-                    dados['desconto'] = float(dados['desconto'])
-            except Exception:
-                raise DescontoInvalidoException
-            if dados['desconto'] < 0 or dados['desconto'] > 100:
+            if not validate_numeric_input('desconto') or dados['desconto'] < 0 or dados['desconto'] > 100:
                 raise DescontoInvalidoException
 
-        def validate_livro_input(dados):
-            if dados['isbn'].replace('', '').isnumeric() is False and len(dados['isbn']) != 13:
+        def validate_livro_input():
+            if '-' in dados['isbn']:
+                if len(dados['isbn']) != 17:
+                    raise ISBNInvalidoException
+            elif dados['isbn'].replace('-', '').isnumeric() is False or len(dados['isbn'].replace('-', '')) != 13:
                 raise ISBNInvalidoException
-            elif dados['autor'].isnumeric() is True and len(dados['autor']) < 2 or len(dados['autor']) > 20:
+            elif dados['autor'].isnumeric() is True or len(dados['autor']) < 2 or len(dados['autor']) > 20:
                 raise AutorInvalidoException
-            elif dados['edicao'].isascii() is False and len(dados['edicao']) < 1 or len(dados['edicao']) > 20:
+            elif dados['edicao'].isascii() is False or len(dados['edicao']) < 1 or len(dados['edicao']) > 20:
                 raise EdicaoInvalidaException
-            elif dados['editora'].isnumeric() is True and len(dados['editora']) < 2 or len(dados['editora']) > 20:
+            elif dados['editora'].isnumeric() is True or len(dados['editora']) < 2 or len(dados['editora']) > 20:
                 raise EditoraInvalidaException
 
-
-        def validate_eletronico_input(dados):
-            if dados['fabricante'].isnumeric() is False and len(dados['fabricante']) < 2 or len(dados['fabricante']) > 20:
+        def validate_eletronico_input():
+            if dados['fabricante'].isnumeric() is True or len(dados['fabricante']) < 2 or len(dados['fabricante']) > 20:
                 raise FabricanteInvalidoException
+
+        def validate_new_product(product_type_validation):
+            validate_id_produto_input()
+            validate_common_inputs()
+            product_type_validation()
+
+        def validate_update_product(product_type_validation):
+            validate_common_inputs()
+            validate_desconto_input()
+            product_type_validation()
+
+        def check_if_livro():
+            try:
+                isbn_check = dados['isbn']
+                is_livro = True
+            except KeyError:
+                is_livro = False
+
+            return is_livro
+
+        def validate_all_inputs():
+            common_inputs = [
+                dados['titulo'],
+                dados['descricao'],
+                dados['custo'],
+                dados['margem_lucro']
+            ]
+
+            if not alterar:
+                if not all([dados['livro'], dados['eletronico']]):
+                    if dados['livro']:
+                        inputs_new_livro = [
+                            dados['id_produto'],
+                            dados['isbn'],
+                            dados['autor'],
+                            dados['edicao'],
+                            dados['editora'],
+                            dados['pais']
+                        ]
+                        if '' in common_inputs + inputs_new_livro:
+                            raise EntradaVaziaException
+
+                        validate_new_product(validate_livro_input)
+
+                    if dados['eletronico']:
+                        inputs_eletronico = [
+                            dados['id_produto'],
+                            dados['fabricante']
+                        ]
+                        if '' in common_inputs + inputs_eletronico:
+                            raise EntradaVaziaException
+
+                        validate_new_product(validate_eletronico_input)
+                else:
+                    raise ProdutoInvalidoException
+            else:
+                input_desconto = [
+                    dados['desconto']
+                ]
+
+                is_livro = check_if_livro()
+
+                if is_livro:
+                    inputs_update_livro = [
+                        dados['isbn'],
+                        dados['autor'],
+                        dados['edicao'],
+                        dados['editora'],
+                        dados['pais']
+                    ]
+                    if '' in common_inputs[1:] + inputs_update_livro + input_desconto:
+                        raise EntradaVaziaException
+
+                    validate_update_product(validate_livro_input)
+
+                else:
+                    if '' in common_inputs[1:] + [dados['fabricante']] + input_desconto:
+                        raise EntradaVaziaException
+
+                    validate_update_product(validate_eletronico_input)
 
         while True:
             evento, dados = super().read()
@@ -208,23 +302,8 @@ class TelaCadastrarProduto(Tela):
 
             if evento == 'enviar':
                 try:
-                    if not alterar:
-                        if not dados['livro'] is False and dados['eletronico'] is False:
-                            validate_common_inputs()
-                            if dados['livro']:
-                                validate_livro_input(dados)
-                            elif dados['eletronico']:
-                                validate_eletronico_input(dados)
-                        else:
-                            raise ProdutoInvalidoException
-                    else:
-                        validate_common_inputs()
-                        if dados['id_tipo_produto'] == 0:
-                            validate_livro_input(dados)
-                        else:
-                            validate_eletronico_input(dados)
-                        validate_desconto_input()
-
+                    validate_all_inputs()
+                    break
                 except EntradaVaziaException as a:
                     super().show_message('Campos incompletos!', a)
                 except TituloInvalidoException as b:

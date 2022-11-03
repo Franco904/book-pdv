@@ -36,12 +36,13 @@ class ProdutoDAO(AbstractDAO):
 
     def persist_entity(self, produto: Produto) -> None:
         table = super().get_table()
-        columns = "id_tipo_produto, titulo, descricao, custo, margem_lucro, fabricante, autor, edicao, editora, isbn, " \
-                  "pais, desconto "
+        columns = "id, id_tipo_produto, titulo, descricao, custo, margem_lucro, fabricante, autor, edicao, editora, " \
+                  "isbn, pais, desconto"
 
         super().persist(
-            f""" INSERT INTO {table} ({columns}) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+            f""" INSERT INTO {table} ({columns}) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
             (
+                produto.id_produto,
                 produto.id_tipo_produto,
                 produto.titulo,
                 produto.descricao,
@@ -57,8 +58,8 @@ class ProdutoDAO(AbstractDAO):
             ),
         )
 
-    def delete_entity(self, cpf: str) -> None:
-        super().delete("cpf", cpf)
+    def delete_entity(self, id_produto: int) -> None:
+        super().delete("id", id_produto)
 
     def update_entity(self, id_produto: int, attribute, value) -> None:
         super().update("id", id_produto, attribute, value)
@@ -79,6 +80,7 @@ class ProdutoDAO(AbstractDAO):
 
     @staticmethod
     def __parse_livro(row) -> Livro:
+        id_produto = row['id_produto']
         id_tipo_produto = row['id_tipo_produto']
         titulo = row['produto.titulo']
         descricao = row['descricao']
@@ -91,7 +93,8 @@ class ProdutoDAO(AbstractDAO):
         pais = row['pais']
         desconto = row['desconto']
 
-        return Livro(id_tipo_produto,
+        return Livro(id_produto,
+                     id_tipo_produto,
                      titulo,
                      descricao,
                      custo,
@@ -105,6 +108,7 @@ class ProdutoDAO(AbstractDAO):
 
     @staticmethod
     def __parse_eletronico(row) -> Eletronico:
+        id_produto = row['id_produto']
         id_tipo_produto = row['id_tipo_produto']
         titulo = row['produto.titulo']
         descricao = row['descricao']
@@ -113,7 +117,8 @@ class ProdutoDAO(AbstractDAO):
         fabricante = row['fabricante']
         desconto = row['desconto']
 
-        return Eletronico(id_tipo_produto,
+        return Eletronico(id_produto,
+                          id_tipo_produto,
                           titulo,
                           descricao,
                           custo,
