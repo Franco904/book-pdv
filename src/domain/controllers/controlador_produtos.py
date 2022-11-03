@@ -90,7 +90,6 @@ class ControladorProdutos:
                             valores['editora'],
                             valores['isbn'],
                             valores['pais'],
-                            valores['desconto']
                         )
                     else:
                         produto = Eletronico(
@@ -101,9 +100,7 @@ class ControladorProdutos:
                             valores['custo'],
                             valores['margem_lucro'],
                             valores['fabricante'],
-                            valores['desconto']
                         )
-                    produto.update_preco_final()
                     self.__produto_dao.persist_entity(produto)
                     self.__tela_cadastrar_produtos.close()
                 except ProdutoJaCadastradoException as p:
