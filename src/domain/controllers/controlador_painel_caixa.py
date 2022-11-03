@@ -65,6 +65,7 @@ class ControladorPainelCaixa:
         while True:
             self.__tela_fechar_caixa.init_components(dados_caixa)
             opcao, dados_tela = self.__tela_fechar_caixa.open()
+            self.__tela_fechar_caixa.open()
 
             if opcao == 'voltar':
                 return self.__tela_fechar_caixa.close()
@@ -73,7 +74,7 @@ class ControladorPainelCaixa:
                 self.__tela_confirmacao.init_components()
                 botao_confirmacao = self.__tela_confirmacao.open()
 
-                self.__tela_confirmacao.close()
+                # self.__tela_confirmacao.close()
 
                 if botao_confirmacao == 'confirmar':
                     self.__tela_fechar_caixa.close()
@@ -93,7 +94,7 @@ class ControladorPainelCaixa:
                     self.sair()
                     break
 
-    def persist_caixa_operador_data(self, dados_caixa, dados_tela):
+    def persist_caixa_operador_data(self, dados_caixa, dados_tela) -> None:
         # Atualiza data/horário de fechamento e saldo de fechamento
         self.__caixas_operadores_dao.update_entity(self.__caixa_operador.id, 'data_horario_fechamento',
                                                    dados_caixa['data_horario_fechamento'])

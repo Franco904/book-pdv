@@ -23,7 +23,7 @@ class TelaDesconto(Tela):
                      sg.Cancel('Salvar', key='salvar', button_color='green', size=(12, 1))],
                 ]
 
-        super().__init__(sg.Window("Buscar produto", layout=layout, resizable=False, modal=True, finalize=True,
+        super().__init__(sg.Window("Aplicar desconto", layout=layout, resizable=False, modal=True, finalize=True,
                                    element_justification='c'))
 
     def open(self) -> tuple:
@@ -58,6 +58,7 @@ class TelaDesconto(Tela):
                     except DescontoInvalidoException as d:
                         super().show_message("Desconto inválido!", d)
                 else:
+                    valores['valor_desconto'] = 0
                     super().close()
                     break
 

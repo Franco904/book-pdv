@@ -6,7 +6,7 @@ class TelaIncialProdutos(Tela):
     def __init__(self) -> None:
         pass
 
-    def init_components(self, livros: {}, eletronicos: {}, nome_tela, isSupervisor: bool = False) -> None:
+    def init_components(self, livros: {}, eletronicos: {}, isSupervisor: bool = False) -> None:
 
         sg.theme("Reddit")
 
@@ -57,7 +57,7 @@ class TelaIncialProdutos(Tela):
             button_group
         ]
 
-        super().__init__(sg.Window(nome_tela, layout=layout,
+        super().__init__(sg.Window('Produtos', layout=layout,
                                    resizable=True, finalize=True, modal=True),
                          (300, (len(livros) + len(eletronicos) + 1) * 10))
 
