@@ -23,7 +23,7 @@ class TelaInicio(Tela):
         if is_operador:
             layout.append(
                 [
-                    [sg.Submit('Caixas', key='caixas', button_color='green', pad=(5, 15)),
+                    [sg.Submit('Produtos', key='produtos', button_color='green', pad=(5, 15)),
                      sg.Text(f"      {main_msg}", size=(48, 1), justification='center')],
                     [sg.Submit('Sair', key='sair', button_color='green'),
                      sg.Push(),
@@ -33,9 +33,10 @@ class TelaInicio(Tela):
         else:
             layout.append(
                 [
-                    [sg.Submit('Relatório de vendas', key='relatorio', button_color='green', pad=(5, 15)),
+                    [sg.Submit('Caixas', key='caixas', button_color='green', pad=((5, 5), (15, 5)))],
+                    [sg.Submit('Relatório de vendas', key='relatorio_vendas', button_color='green'),
                      sg.Text(f'       {main_msg}', size=(48, 1), justification='center')],
-                    [sg.Submit('Produtos', key='produtos', button_color='green'),
+                    [sg.Submit('Produtos', key='produtos', button_color='green', pad=((5, 5), (5, 15))),
                      sg.Push(),
                      sg.Submit('Manejar funcionários', key='funcionarios', button_color='green')],
                     [sg.Submit('Sair', key='sair', button_color='green')],
