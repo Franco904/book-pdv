@@ -21,7 +21,7 @@ class CaixaDAO(AbstractDAO):
 
     def get_all_to_open(self) -> [Caixa]:
         table = super().get_table()
-        custom_query = f"SELECT * FROM {table} WHERE aberto = 'false'"
+        custom_query = f"SELECT * FROM {table} WHERE aberto = 'false' AND ativo = 'true'"
 
         rows = super().get_all(custom_query)
         caixas = list(map(lambda row: CaixaDAO.__parse_caixa(row), rows))

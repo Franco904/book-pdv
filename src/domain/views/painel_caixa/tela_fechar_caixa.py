@@ -7,7 +7,7 @@ class TelaFecharCaixa(Tela):
     def __init__(self):
         pass
 
-    def init_components(self, dados_caixa=None):
+    def init_components(self, dados_caixa=None) -> None:
         sg.theme('Reddit')
         layout = [
             [sg.Text('Código do caixa', size=(24, 0), font=('', 10)),
@@ -24,7 +24,7 @@ class TelaFecharCaixa(Tela):
 
         super().__init__(sg.Window('Fechar caixa', layout=layout, resizable=False, finalize=True))
 
-    def open(self):
+    def open(self) -> tuple:
         while True:
             evento, dados = super().read()
 
@@ -38,5 +38,5 @@ class TelaFecharCaixa(Tela):
 
         return evento, dados
 
-    def close(self):
+    def close(self) -> None:
         super().close()

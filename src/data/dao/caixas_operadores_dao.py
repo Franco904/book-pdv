@@ -62,7 +62,7 @@ class CaixasOperadoresDAO(AbstractDAO):
         caixa_operador = None if row is None else CaixasOperadoresDAO.__parse_caixa_operador(row)
         return caixa_operador
 
-    def get_saldo_fechamento(self, id_caixa_operador: int, saldo_abertura: float) -> int:
+    def get_saldo_fechamento(self, id_caixa_operador: int, saldo_abertura: float) -> float:
         table = super().get_table()
         custom_query = f"""
                             SELECT SUM(v.valor_pago - v.valor_troco) AS vendas, SUM(s.valor) AS sangrias

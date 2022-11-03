@@ -1,5 +1,5 @@
 import psycopg2
-from psycopg2.extras import DictCursor
+from psycopg2.extras import DictCursor, DictConnection
 
 
 class Database:
@@ -26,21 +26,21 @@ class Database:
         return [self.__connection, self.cursor]
 
     @property
-    def connection(self):
+    def connection(self) -> DictConnection:
         return self.__connection
 
     @property
-    def cursor(self):
+    def cursor(self) -> DictCursor:
         return self.__cursor
 
-    def close_all(self):
+    def close_all(self) -> None:
         self.close_cursor()
         self.close_connection()
 
-    def close_connection(self):
+    def close_connection(self) -> None:
         if self.__connection is not None:
             self.__connection.close()
 
-    def close_cursor(self):
+    def close_cursor(self) -> None:
         if self.__cursor is not None:
             self.__cursor.close()
