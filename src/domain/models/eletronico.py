@@ -4,7 +4,6 @@ from src.domain.models.produto import Produto
 class Eletronico(Produto):
     def __init__(self,
                  id_produto: int,
-                 id_tipo_produto: int,
                  titulo: str,
                  descricao: str,
                  custo: float,
@@ -19,7 +18,7 @@ class Eletronico(Produto):
                  ):
         super().__init__(
             id_produto,
-            id_tipo_produto,
+            1,
             titulo,
             descricao,
             custo,

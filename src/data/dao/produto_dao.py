@@ -94,7 +94,6 @@ class ProdutoDAO(AbstractDAO):
         desconto = row['desconto']
 
         return Livro(id_produto,
-                     id_tipo_produto,
                      titulo,
                      descricao,
                      custo,
@@ -118,7 +117,6 @@ class ProdutoDAO(AbstractDAO):
         desconto = row['desconto']
 
         return Eletronico(id_produto,
-                          id_tipo_produto,
                           titulo,
                           descricao,
                           custo,

@@ -17,7 +17,7 @@ class ControladorProdutos:
         self.__produto_dao = produto_dao
         self.__tela_inicial_produtos = TelaIncialProdutos()
         self.__tela_cadastrar_produtos = TelaCadastrarProduto()
-        self._tela_busca_produto = TelaBuscaProduto()
+        self.__tela_busca_produto = TelaBuscaProduto()
         self.__tela_confirmacao = TelaConfirmacao()
         self.__tela_desconto = TelaDesconto()
 
@@ -80,7 +80,6 @@ class ControladorProdutos:
                     if valores['id_tipo_produto'] == 0:
                         produto = Livro(
                             valores['id_produto'],
-                            valores['id_tipo_produto'],
                             valores['titulo'],
                             valores['descricao'],
                             valores['custo'],
@@ -94,7 +93,6 @@ class ControladorProdutos:
                     else:
                         produto = Eletronico(
                             valores['id_produto'],
-                            valores['id_tipo_produto'],
                             valores['titulo'],
                             valores['descricao'],
                             valores['custo'],
@@ -107,14 +105,14 @@ class ControladorProdutos:
                     self.__tela_cadastrar_produtos.show_message('Produto já cadastrado!', p)
 
     def aplicar_desconto(self) -> None:
-        self._tela_busca_produto.init_components()
-        botao, id_produto = self._tela_busca_produto.open()
+        self.__tela_busca_produto.init_components()
+        botao, id_produto = self.__tela_busca_produto.open()
 
         if botao == 'buscar' and id_produto is not None:
             produto: Produto = self.__produto_dao.get_by_id(id_produto)
 
             if produto is None:
-                self._tela_busca_produto.show_message('Produto não encontrado',
+                self.__tela_busca_produto.show_message('Produto não encontrado',
                                                       'Não foi encontrado um produto cadastrado com esse ID.')
             else:
                 self.__tela_desconto.init_components()
@@ -131,14 +129,14 @@ class ControladorProdutos:
                                                              valores['desconto'])
 
     def alterar_produto(self) -> None:
-        self._tela_busca_produto.init_components()
-        botao, id_produto = self._tela_busca_produto.open()
+        self.__tela_busca_produto.init_components()
+        botao, id_produto = self.__tela_busca_produto.open()
 
         if botao == 'buscar' and id_produto is not None:
             produto: Produto = self.__produto_dao.get_by_id(id_produto)
 
             if produto is None:
-                self._tela_busca_produto.show_message('Produto não encontrado',
+                self.__tela_busca_produto.show_message('Produto não encontrado',
                                                       'Não foi encontrado um produto cadastrado com esse ID.')
             else:
                 if produto.id_tipo_produto == 0:
@@ -220,14 +218,14 @@ class ControladorProdutos:
                         produto.update_preco_final()
 
     def excluir_produto(self) -> None:
-        self._tela_busca_produto.init_components()
-        botao, id_produto = self._tela_busca_produto.open()
+        self.__tela_busca_produto.init_components()
+        botao, id_produto = self.__tela_busca_produto.open()
 
         if botao == 'buscar' and id_produto is not None:
             produto: Produto = self.__produto_dao.get_by_id(id_produto)
 
             if produto is None:
-                self._tela_busca_produto.show_message('Produto não encontrado',
+                self.__tela_busca_produto.show_message('Produto não encontrado',
                                                       'Não foi encontrado um produto cadastrado com esse ID.')
             else:
                 pass
