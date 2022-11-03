@@ -7,7 +7,7 @@ class TelaPainelCaixa(Tela):
     def __init__(self):
         pass
 
-    def init_components(self, nome_operador='', id_caixa=''):
+    def init_components(self, nome_operador='', id_caixa='') -> None:
         sg.theme("Reddit")
         layout = [
             [sg.Text(nome_operador, size=(24, 0), font=('', 13))],
@@ -41,5 +41,5 @@ class TelaPainelCaixa(Tela):
 
         return botao
 
-    def close(self):
+    def close(self) -> None:
         super().close()
