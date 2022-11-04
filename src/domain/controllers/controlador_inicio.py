@@ -4,6 +4,7 @@ from src.data.dao.caixa_dao import CaixaDAO
 from src.data.dao.funcionario_dao import FuncionarioDAO
 from src.domain.controllers.controlador_abrir_caixa import ControladorAbrirCaixa
 from src.domain.controllers.controlador_funcionarios import ControladorFuncionarios
+from src.domain.controllers.controlador_produtos import ControladorProdutos
 from src.domain.exceptions.lista_vazia_exception import ListaVaziaException
 from src.domain.models.funcionario import Funcionario
 from src.domain.views.inicio.tela_inicio import TelaInicio
@@ -16,6 +17,7 @@ class ControladorInicio:
             controlador_sistema,
             controlador_funcionarios: ControladorFuncionarios,
             controlador_abrir_caixa: ControladorAbrirCaixa,
+            controlador_produtos: ControladorProdutos,
             funcionario_dao: FuncionarioDAO,
             caixa_dao: CaixaDAO,
             funcionario_logado: Funcionario,
@@ -23,6 +25,7 @@ class ControladorInicio:
         self.__tela_inicio = TelaInicio()
         self.__tela_confirmacao = TelaConfirmacao()
         self.__controlador_sistema = controlador_sistema
+        self.__controlador_produtos = None
         self.__controlador_funcionarios = None
         self.__controlador_abrir_caixa = None
         self.__funcionario_dao = None
@@ -33,6 +36,8 @@ class ControladorInicio:
             self.__controlador_funcionarios = controlador_funcionarios
         if isinstance(controlador_abrir_caixa, ControladorAbrirCaixa):
             self.__controlador_abrir_caixa = controlador_abrir_caixa
+        if isinstance(controlador_produtos, ControladorProdutos):
+            self.__controlador_produtos = controlador_produtos
         if isinstance(funcionario_dao, FuncionarioDAO):
             self.__funcionario_dao = funcionario_dao
         if isinstance(caixa_dao, CaixaDAO):
@@ -49,8 +54,8 @@ class ControladorInicio:
         pass
 
     def abrir_produtos(self) -> None:
-        # Visualização dos dados dos produtos registrados (Operador) ou Módulo de produtos (Supervisor)
-        pass
+        is_supervisor = self.__funcionario_logado.cargo == 'supervisor'
+        self.__controlador_produtos.abre_tela(is_supervisor)
 
     def abrir_funcionarios(self) -> None:
         self.__controlador_funcionarios.abre_tela()

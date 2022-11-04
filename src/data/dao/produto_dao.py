@@ -72,7 +72,7 @@ class ProdutoDAO(AbstractDAO):
         if row["id_tipo_produto"] == TipoProdutoEnum.livro.value:
             return ProdutoDAO.__parse_livro(row)
 
-        elif row["id_cargo"] == TipoProdutoEnum.eletronico.value:
+        elif row["id_tipo_produto"] == TipoProdutoEnum.eletronico.value:
             return ProdutoDAO.__parse_eletronico(row)
 
         else:
@@ -80,9 +80,8 @@ class ProdutoDAO(AbstractDAO):
 
     @staticmethod
     def __parse_livro(row) -> Livro:
-        id_produto = row['id_produto']
-        id_tipo_produto = row['id_tipo_produto']
-        titulo = row['produto.titulo']
+        id_produto = row['id']
+        titulo = row['titulo']
         descricao = row['descricao']
         custo = row['custo']
         margem_lucro = row['margem_lucro']
@@ -107,9 +106,8 @@ class ProdutoDAO(AbstractDAO):
 
     @staticmethod
     def __parse_eletronico(row) -> Eletronico:
-        id_produto = row['id_produto']
-        id_tipo_produto = row['id_tipo_produto']
-        titulo = row['produto.titulo']
+        id_produto = row['id']
+        titulo = row['titulo']
         descricao = row['descricao']
         custo = row['custo']
         margem_lucro = row['margem_lucro']

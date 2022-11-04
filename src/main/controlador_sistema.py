@@ -7,6 +7,7 @@ from src.data.dao.funcionario_dao import FuncionarioDAO
 from src.data.dao.sangrias_dao import SangriasDAO
 from src.data.dao.tipos_produto_dao import TiposProdutoDAO
 from src.data.dao.produto_dao import ProdutoDAO
+from src.data.dao.vendas_produtos_dao import VendasProdutoDAO
 from src.data.database.database import Database
 from src.domain.controllers.controlador_abrir_caixa import ControladorAbrirCaixa
 from src.domain.controllers.controlador_autenticacao import ControladorAutenticacao
@@ -67,7 +68,8 @@ class ControladorSistema:
             'sangrias_dao': SangriasDAO(self.__database),
             'cargos_dao': CargosDAO(self.__database),
             'tipos_produto_dao': TiposProdutoDAO(self.__database),
-            'produto_dao': ProdutoDAO(self.__database)
+            'produto_dao': ProdutoDAO(self.__database),
+            'vendas_produtos_dao': VendasProdutoDAO(self.__database)
         }
 
     def init_controlador_autenticacao(self) -> None:
@@ -97,15 +99,16 @@ class ControladorSistema:
             self.__daos['caixas_operadores_dao'],
             self.__funcionario_logado,
         )
+        self.__controladores['produtos'] = ControladorProdutos(self.__daos['produto_dao'], self.__daos['vendas_produtos_dao'])
         self.__controladores["inicio"] = ControladorInicio(
             self,
             self.__controladores['funcionarios'],
             self.__controladores['abrir_caixa'],
+            self.__controladores['produtos'],
             self.__daos['funcionario_dao'],
             self.__daos['caixa_dao'],
             self.__funcionario_logado,
         )
-        self.__controladores['produtos'] = ControladorProdutos(self.__daos['produto_dao'])
 
     def init_inserts(self) -> None:
         # self.__daos['cargos_dao'].persist_entity(CargoEnum.operador_caixa)

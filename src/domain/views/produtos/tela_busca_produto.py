@@ -31,7 +31,6 @@ class TelaBuscaProduto(Tela):
                         if valores['busca_codigo_produto'].isnumeric() is False:
                             raise CodigoInvalidoException('produto')
                         valores['busca_codigo_produto'] = int(valores['busca_codigo_produto'])
-                        super().close()
                         break
                     else:
                         raise EntradaVaziaException

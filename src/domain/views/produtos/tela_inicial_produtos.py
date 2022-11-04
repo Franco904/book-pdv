@@ -6,7 +6,7 @@ class TelaIncialProdutos(Tela):
     def __init__(self) -> None:
         pass
 
-    def init_components(self, livros: {}, eletronicos: {}, isSupervisor: bool = False) -> None:
+    def init_components(self, livros: {}, eletronicos: {}, is_supervisor: bool = False) -> None:
 
         sg.theme("Reddit")
 
@@ -16,9 +16,9 @@ class TelaIncialProdutos(Tela):
                 sg.Submit('Editar', key='editar'),
                 sg.Submit('Excluir', key='excluir'),
                 sg.Submit('Aplicar/Remover desconto', key='desconto'),
-                sg.Submit('Novo', key='novo')
+                sg.Submit('Novo', key='novo', button_color='green')
             ]
-        ] if isSupervisor else [
+        ] if is_supervisor else [
             [sg.Cancel("Voltar", key='voltar')]
         ]
 
@@ -30,7 +30,7 @@ class TelaIncialProdutos(Tela):
                           auto_size_columns=True,
                           display_row_numbers=False,
                           justification='center',
-                          num_rows=len(livros),
+                          num_rows=len(livros['lista']),
                           key='tabela_livros',
                           row_height=35,
                           tooltip='Lista de livros')]
@@ -43,7 +43,7 @@ class TelaIncialProdutos(Tela):
                           auto_size_columns=True,
                           display_row_numbers=False,
                           justification='center',
-                          num_rows=len(eletronicos),
+                          num_rows=len(eletronicos['lista']),
                           key='tabela_eletronicos',
                           row_height=35,
                           tooltip='Lista de eletrônicos')]
