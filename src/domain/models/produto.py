@@ -177,9 +177,6 @@ class Produto(ABC):
         margem_lucro_percentual_descontada = (self.margem_lucro - self.__desconto) / 100
         return self.__custo + (margem_lucro_percentual_descontada * self.__custo)
 
-    def update_preco_final(self):
-        self.__preco_final = self.calcula_preco_final()
-
     @property
     def desconto(self) -> float:
         return self.__desconto

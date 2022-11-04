@@ -102,9 +102,9 @@ class TelaCadastrarProduto(Tela):
                         sg.InputText(dados_produto['desconto'] if alterar else '', key='desconto', size=(22, 1))
                     ],
                     [
-                        sg.Text('Fabricante', size=(12, 1), key='fabricante_text', visible=False),
+                        sg.Text('Fabricante', size=(12, 1), key='fabricante_text'),
                         sg.InputText(dados_produto['fabricante'] if alterar else '',
-                                     key='fabricante', size=(22, 1), visible=False)
+                                     key='fabricante', size=(22, 1))
                     ]
                 ])
         else:
@@ -284,13 +284,13 @@ class TelaCadastrarProduto(Tela):
                         dados['editora'],
                         dados['pais']
                     ]
-                    if '' in common_inputs[1:] + inputs_update_livro + input_desconto:
+                    if '' in common_inputs + inputs_update_livro + input_desconto:
                         raise EntradaVaziaException
 
                     validate_update_product(validate_livro_input)
 
                 else:
-                    if '' in common_inputs[1:] + [dados['fabricante']] + input_desconto:
+                    if '' in common_inputs + [dados['fabricante']] + input_desconto:
                         raise EntradaVaziaException
 
                     validate_update_product(validate_eletronico_input)

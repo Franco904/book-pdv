@@ -10,6 +10,7 @@ from src.domain.models.livro import Livro
 from src.domain.models.eletronico import Eletronico
 from src.domain.models.produto import Produto
 from src.domain.exceptions.produtos.produto_ja_cadastrado_exception import ProdutoJaCadastradoException
+from src.domain.exceptions.produtos.produto_em_venda_exception import ProdutoEmVendaException
 
 
 class ControladorProdutos:
@@ -21,39 +22,84 @@ class ControladorProdutos:
         self.__tela_confirmacao = TelaConfirmacao()
         self.__tela_desconto = TelaDesconto()
 
-    def iniciar_modulo_produtos(self):
+    def get_produtos(self, is_supervisor: bool):
         produtos = self.__produto_dao.get_all()
 
-        parsed_livros = []
-        colunas_livros = ['ID', 'Título', 'Descrição', 'ISBN', 'Autor', 'Edição', 'Editora', 'Pais', 'Preço final']
+        if not is_supervisor:
+            colunas_livros = ['ID Livro', 'Título', 'Descrição', 'ISBN', 'Autor', 'Edição', 'Editora', 'País',
+                              'Preço final']
+            colunas_eletronicos = ['ID Eletrônico', 'Título', 'Descrição', 'Fabricante', 'Preço final']
 
-        parsed_eletronicos = []
-        colunas_eletronicos = ['ID', 'Título', 'Descrição', 'Fabricante', 'Preço final']
+            parsed_livros = [[livro.id_produto,
+                              livro.titulo,
+                              livro.descricao,
+                              livro.isbn,
+                              livro.autor,
+                              livro.edicao,
+                              livro.editora,
+                              livro.pais,
+                              livro.preco_final] for livro in produtos['livros']]
+            parsed_eletronicos = [[eletronico.id_produto,
+                                   eletronico.titulo,
+                                   eletronico.descricao,
+                                   eletronico.fabricante,
+                                   eletronico.preco_final] for eletronico in produtos['eletronicos']]
+        else:
+            colunas_livros = ['ID Livro', 'Título', 'Descrição', 'ISBN', 'Autor', 'Edição', 'Editora', 'País', 'Custo',
+                              'Margem Lucro', 'Desconto', 'Preço final']
+            colunas_eletronicos = ['ID Eletrônico', 'Título', 'Descrição', 'Fabricante', 'Custo', 'Margem Lucro',
+                                   'Desconto', 'Preço final']
 
-        """
-            TODO: Missing 'cargo' verification! 
-        """
+            parsed_livros = [[livro.id_produto,
+                              livro.titulo,
+                              livro.descricao,
+                              livro.isbn,
+                              livro.autor,
+                              livro.edicao,
+                              livro.editora,
+                              livro.pais,
+                              livro.custo,
+                              livro.margem_lucro,
+                              livro.desconto,
+                              livro.preco_final] for livro in produtos['livros']]
 
-        for livro in produtos['livros']:
-            parsed_livros.append([
-                livro.id_produto,
-                livro.titulo,
-                livro.descricao,
-                livro.isbn,
-                livro.autor,
-                livro.edicao,
-                livro.editora,
-                livro.pais,
-                livro.preco_final,
-            ])
-        for eletronico in produtos['eletronicos']:
-            parsed_livros.append([
-                eletronico.id_produto,
-                eletronico.titulo,
-                eletronico.descricao,
-                eletronico.fabricante,
-                eletronico.preco_final,
-            ])
+            parsed_eletronicos = [[eletronico.id_produto,
+                                   eletronico.titulo,
+                                   eletronico.descricao,
+                                   eletronico.fabricante,
+                                   eletronico.custo,
+                                   eletronico.margem_lucro,
+                                   eletronico.desconto,
+                                   eletronico.preco_final] for eletronico in produtos['eletronicos']]
+
+            """
+            for livro in produtos['livros']:
+                parsed_livros.append([
+                    livro.id_produto,
+                    livro.titulo,
+                    livro.descricao,
+                    livro.isbn,
+                    livro.autor,
+                    livro.edicao,
+                    livro.editora,
+                    livro.custo,
+                    livro.margem_lucro,
+                    livro.desconto,
+                    livro.pais,
+                    livro.preco_final,
+                ])
+            for eletronico in produtos['eletronicos']:
+                parsed_eletronicos.append([
+                    eletronico.id_produto,
+                    eletronico.titulo,
+                    eletronico.descricao,
+                    eletronico.fabricante,
+                    eletronico.custo,
+                    eletronico.margem_lucro,
+                    eletronico.desconto,
+                    eletronico.preco_final,
+                ])
+            """
 
         dados_produtos = {
             'livros': {
@@ -66,7 +112,7 @@ class ControladorProdutos:
             }
         }
 
-        self.abre_tela(dados_produtos)
+        return dados_produtos
 
     def cadastrar_produto(self) -> None:
         paises = [p.value for p in PaisEnum]
@@ -77,7 +123,7 @@ class ControladorProdutos:
                 try:
                     if self.__produto_dao.get_by_id(valores['id_produto']) is not None:
                         raise ProdutoJaCadastradoException(valores['id_produto'])
-                    if valores['id_tipo_produto'] == 0:
+                    if valores['livro']:
                         produto = Livro(
                             valores['id_produto'],
                             valores['titulo'],
@@ -107,18 +153,19 @@ class ControladorProdutos:
     def aplicar_desconto(self) -> None:
         self.__tela_busca_produto.init_components()
         botao, id_produto = self.__tela_busca_produto.open()
+        self.__tela_busca_produto.close()
 
         if botao == 'buscar' and id_produto is not None:
             produto: Produto = self.__produto_dao.get_by_id(id_produto)
 
             if produto is None:
                 self.__tela_busca_produto.show_message('Produto não encontrado',
-                                                      'Não foi encontrado um produto cadastrado com esse ID.')
+                                                       'Não foi encontrado um produto cadastrado com esse ID.')
             else:
                 self.__tela_desconto.init_components()
                 botao, valores = self.__tela_desconto.open()
 
-                if botao == 'salvar':
+                if botao == 'salvar' and valores is not None:
                     self.__tela_confirmacao.init_components()
                     botao_confirmacao = self.__tela_confirmacao.open()
                     self.__tela_confirmacao.close()
@@ -126,18 +173,19 @@ class ControladorProdutos:
                     if botao_confirmacao == 'confirmar':
                         if valores['valor_desconto'] != produto.desconto:
                             self.__produto_dao.update_entity(produto.id_produto, 'desconto',
-                                                             valores['desconto'])
+                                                             valores['valor_desconto'])
 
     def alterar_produto(self) -> None:
         self.__tela_busca_produto.init_components()
         botao, id_produto = self.__tela_busca_produto.open()
+        self.__tela_busca_produto.close()
 
         if botao == 'buscar' and id_produto is not None:
             produto: Produto = self.__produto_dao.get_by_id(id_produto)
 
             if produto is None:
                 self.__tela_busca_produto.show_message('Produto não encontrado',
-                                                      'Não foi encontrado um produto cadastrado com esse ID.')
+                                                       'Não foi encontrado um produto cadastrado com esse ID.')
             else:
                 if produto.id_tipo_produto == 0:
                     tipo_produto = 'livro'
@@ -215,35 +263,40 @@ class ControladorProdutos:
                             if dados_novos_produto['fabricante'] != dados_produto['fabricante']:
                                 self.__produto_dao.update_entity(dados_produto['id_produto'], 'fabricante',
                                                                  dados_novos_produto['fabricante'])
-                        produto.update_preco_final()
 
     def excluir_produto(self) -> None:
         self.__tela_busca_produto.init_components()
         botao, id_produto = self.__tela_busca_produto.open()
 
-        if botao == 'buscar' and id_produto is not None:
-            produto: Produto = self.__produto_dao.get_by_id(id_produto)
+        try:
+            if botao == 'buscar' and id_produto is not None:
+                produto: Produto = self.__produto_dao.get_by_id(id_produto)
 
-            if produto is None:
-                self.__tela_busca_produto.show_message('Produto não encontrado',
-                                                      'Não foi encontrado um produto cadastrado com esse ID.')
-            else:
-                pass
-                """
-                    Need to create vendas_produtos_dao in order to verify if any sell
-                    process has the designated product, and if so, block delete process.
-                """
-        pass
+                if produto is None:
+                    self.__tela_busca_produto.show_message('Produto não encontrado',
+                                                           'Não foi encontrado um produto cadastrado com esse ID.')
+                    self.__tela_busca_produto.close()
+                else:
+                    if not self.__produto_dao.has_product_venda(produto.id_produto):
+                        self.__tela_busca_produto.close()
+                        self.__produto_dao.delete_entity(produto.id_produto)
+                    else:
+                        raise ProdutoEmVendaException
+        except ProdutoEmVendaException as p:
+            self.__tela_busca_produto.show_message('Erro ao excluir', p)
+            self.__tela_busca_produto.close()
 
-    def abre_tela(self, dados_produtos: dict):
-        opcoes = {'cadastrar': self.cadastrar_produto, 'desconto': self.aplicar_desconto,
-                  'alterar': self.alterar_produto, 'excluir': self.excluir_produto}
+    def abre_tela(self, is_supervisor: bool):
+        opcoes = {'novo': self.cadastrar_produto, 'desconto': self.aplicar_desconto,
+                  'editar': self.alterar_produto, 'excluir': self.excluir_produto}
 
         while True:
-            self.__tela_inicial_produtos.init_components(dados_produtos['livros'], dados_produtos['eletronicos'])
+            dados_produtos = self.get_produtos(is_supervisor)
+            self.__tela_inicial_produtos.init_components(dados_produtos['livros'], dados_produtos['eletronicos'],
+                                                         is_supervisor)
             opcao_escolhida = self.__tela_inicial_produtos.open()
 
-            if opcao_escolhida == 'voltar' or opcao_escolhida is None or sg.WIN_CLOSED:
+            if opcao_escolhida in ('voltar', None, sg.WIN_CLOSED):
                 self.__tela_inicial_produtos.close()
                 break
             else:
