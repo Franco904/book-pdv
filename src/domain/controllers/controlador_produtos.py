@@ -1,6 +1,5 @@
 import PySimpleGUI as sg
 from src.data.dao.produto_dao import ProdutoDAO
-from src.data.dao.vendas_produtos_dao import VendasProdutoDAO
 from src.domain.views.produtos.tela_inicial_produtos import TelaIncialProdutos
 from src.domain.views.produtos.tela_cadastrar_produtos import TelaCadastrarProduto
 from src.domain.views.produtos.tela_busca_produto import TelaBuscaProduto
@@ -15,14 +14,13 @@ from src.domain.exceptions.produtos.produto_em_venda_exception import ProdutoEmV
 
 
 class ControladorProdutos:
-    def __init__(self, produto_dao: ProdutoDAO, vendas_produtos_dao: VendasProdutoDAO) -> None:
+    def __init__(self, produto_dao: ProdutoDAO) -> None:
         self.__produto_dao = produto_dao
         self.__tela_inicial_produtos = TelaIncialProdutos()
         self.__tela_cadastrar_produtos = TelaCadastrarProduto()
         self.__tela_busca_produto = TelaBuscaProduto()
         self.__tela_confirmacao = TelaConfirmacao()
         self.__tela_desconto = TelaDesconto()
-        self.__vendas_produtos_dao = vendas_produtos_dao
 
     def get_produtos(self, is_supervisor: bool):
         produtos = self.__produto_dao.get_all()
@@ -279,7 +277,7 @@ class ControladorProdutos:
                                                            'Não foi encontrado um produto cadastrado com esse ID.')
                     self.__tela_busca_produto.close()
                 else:
-                    if not self.__vendas_produtos_dao.has_product_venda(produto.id_produto):
+                    if not self.__produto_dao.has_product_venda(produto.id_produto):
                         self.__tela_busca_produto.close()
                         self.__produto_dao.delete_entity(produto.id_produto)
                     else:

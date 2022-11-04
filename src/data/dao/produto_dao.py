@@ -16,7 +16,7 @@ class ProdutoDAO(AbstractDAO):
     def execute_query(self, query: str):
         super().execute_query(query)
 
-    def get_all(self, custom_query="") -> [Produto]:
+    def get_all(self, custom_query="") -> dict:
         rows = super().get_all()
         produtos = list(map(lambda row: ProdutoDAO.__parse_produto(row), rows))
         livros = []
@@ -27,6 +27,18 @@ class ProdutoDAO(AbstractDAO):
             if produto.id_tipo_produto == 1:
                 eletronicos.append(produto)
         return {'livros': livros, 'eletronicos': eletronicos}
+
+    def has_product_venda(self, id_produto: int) -> bool:
+        table = super().get_table()
+        custom_query = f"""
+                           SELECT id_venda FROM {table} p INNER JOIN access_control.vendas_produtos vp
+                           ON p.id = vp.id_produto WHERE p.id = {id_produto}
+                        """
+
+        rows = super().get_all(custom_query)
+
+        has_product_venda = False if len(rows) == 0 else True
+        return has_product_venda
 
     def get_by_id(self, id_produto: int) -> Produto | None:
         row = super().get_by_pk("id", id_produto)
