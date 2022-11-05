@@ -43,7 +43,7 @@ class ProdutoDAO(AbstractDAO):
     def get_by_id(self, id_produto: int) -> Produto | None:
         row = super().get_by_pk("id", id_produto)
 
-        produto = None if row is None else ProdutoDAO.__parse_produto(row)
+        produto = None if row is None else ProdutoDAO.parse_produto(row)
         return produto
 
     def persist_entity(self, produto: Produto) -> None:
@@ -77,7 +77,7 @@ class ProdutoDAO(AbstractDAO):
         super().update("id", id_produto, attribute, value)
 
     @staticmethod
-    def __parse_produto(row) -> Produto | None:
+    def parse_produto(row: dict) -> Produto | None:
         if row is None:
             return None
 
@@ -91,7 +91,7 @@ class ProdutoDAO(AbstractDAO):
             raise Exception
 
     @staticmethod
-    def __parse_livro(row) -> Livro:
+    def __parse_livro(row: dict) -> Livro:
         id_produto = row['id']
         titulo = row['titulo']
         descricao = row['descricao']
@@ -117,7 +117,7 @@ class ProdutoDAO(AbstractDAO):
                      desconto)
 
     @staticmethod
-    def __parse_eletronico(row) -> Eletronico:
+    def __parse_eletronico(row: dict) -> Eletronico:
         id_produto = row['id']
         titulo = row['titulo']
         descricao = row['descricao']

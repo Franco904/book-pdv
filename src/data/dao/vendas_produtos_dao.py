@@ -1,9 +1,8 @@
 from src.data.dao.abstract_dao import AbstractDAO
+from src.data.dao.produto_dao import ProdutoDAO
 from src.data.database.database import Database
-from src.domain.enums import TipoProdutoEnum
 from src.domain.models.produto import Produto
-from src.domain.models.livro import Livro
-from src.domain.models.eletronico import Eletronico
+from src.domain.models.venda_produtos import VendaProduto
 
 
 class VendasProdutoDAO(AbstractDAO):
@@ -13,119 +12,82 @@ class VendasProdutoDAO(AbstractDAO):
         self.__schema = super().schema
         self.__table = super().table
 
+    @staticmethod
+    def __get_columns_joined():
+        return ', '.join([
+            'vp.id AS venda_produto_id', 'vp.id_venda', 'vp.id_produto', 'vp.quantidade',
+            'p.id', 'p.id_tipo_produto', 'p.titulo', 'p.descricao', 'p.custo', 'p.margem_lucro',
+            'p.fabricante',
+            'p.autor', 'p.edicao', 'p.editora', 'p.isbn', 'p.pais', 'p.desconto'
+        ])
+
     def execute_query(self, query: str):
         super().execute_query(query)
 
-    def get_all(self, custom_query="") -> [Produto]:
-        rows = super().get_all()
-        produtos = list(map(lambda row: VendasProdutoDAO.__parse_produto(row), rows))
-        livros = []
-        eletronicos = []
-        for produto in produtos:
-            if produto.id_tipo_produto == 0:
-                livros.append(produto)
-            if produto.id_tipo_produto == 1:
-                eletronicos.append(produto)
-        return {'livros': livros, 'eletronicos': eletronicos}
-
-    def get_by_id(self, id_produto: int) -> Produto | None:
-        row = super().get_by_pk("id", id_produto)
-
-        produto = None if row is None else VendasProdutoDAO.__parse_produto(row)
-        return produto
-
-    def has_product_venda(self, id_produto: int) -> bool:
-        """
-            VALIDATED
-        """
+    def get_all(self, custom_query="") -> [VendaProduto]:
         table = super().get_table()
+        columns = VendasProdutoDAO.__get_columns_joined()
+
         custom_query = f"""
-                               SELECT id_venda FROM {table} 
-                               WHERE id_produto = {id_produto}
-                           """
+                           SELECT {columns} FROM {table} vp
+                           INNER JOIN access_control.produtos p
+                           ON vp.id_produto = p.id
+                        """
 
         rows = super().get_all(custom_query)
 
-        has_product_venda = False if len(rows) == 0 else True
-        return has_product_venda
+        venda_produtos = list(map(lambda row: VendasProdutoDAO.__parse_venda_produto(row), rows))
 
+        return venda_produtos
 
-    def persist_entity(self, produto: Produto, venda) -> None:
+    def get_by_id(self, id_venda_produto: int) -> VendaProduto | None:
+        table = super().get_table()
+        columns = VendasProdutoDAO.__get_columns_joined()
+
+        custom_query = f"""
+                           SELECT {columns} FROM {table} vp
+                           INNER JOIN access_control.produtos p
+                           ON vp.id_produto = p.id
+                           WHERE venda_produto_id = {id_venda_produto}
+                        """
+
+        row = super().get_by_pk("id", id_venda_produto, custom_query)
+
+        venda_produto = None if row is None else VendasProdutoDAO.__parse_venda_produto(row)
+        return venda_produto
+
+    def persist_entity(self, venda_produto: VendaProduto) -> None:
         table = super().get_table()
         columns = "id, id_venda, id_produto, quantidade"
 
         super().persist(
             f""" INSERT INTO {table} ({columns}) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
             (
-                id,
-                venda.id_venda,
-                produto.id_produto,
-                produto.quantidade
+                venda_produto.id,
+                venda_produto.id_venda,
+                venda_produto.produto.id,
+                venda_produto.quantidade
             ),
         )
 
-    def delete_entity(self, id_produto: int) -> None:
-        super().delete("id", id_produto)
+    def delete_entity(self, id_venda_produto: int) -> None:
+        super().delete("id", id_venda_produto)
 
-    def update_entity(self, id_produto: int, attribute, value) -> None:
-        super().update("id", id_produto, attribute, value)
-
-    @staticmethod
-    def __parse_produto(row) -> Produto | None:
-        if row is None:
-            return None
-
-        if row["id_tipo_produto"] == TipoProdutoEnum.livro.value:
-            return VendasProdutoDAO.__parse_livro(row)
-
-        elif row["id_cargo"] == TipoProdutoEnum.eletronico.value:
-            return VendasProdutoDAO.__parse_eletronico(row)
-
-        else:
-            raise Exception
+    def update_entity(self, id_venda_produto: int, attribute, value) -> None:
+        super().update("id", id_venda_produto, attribute, value)
 
     @staticmethod
-    def __parse_livro(row) -> Livro:
-        id_produto = row['id_produto']
-        id_tipo_produto = row['id_tipo_produto']
-        titulo = row['produto.titulo']
-        descricao = row['descricao']
-        custo = row['custo']
-        margem_lucro = row['margem_lucro']
-        autor = row['autor']
-        edicao = row['edicao']
-        editora = row['editora']
-        isbn = row['isbn']
-        pais = row['pais']
-        desconto = row['desconto']
+    def __parse_venda_produto(row: dict):
+        id = row['venda_produto_id']
+        id_venda = row['id_venda']
 
-        return Livro(id_produto,
-                     titulo,
-                     descricao,
-                     custo,
-                     margem_lucro,
-                     autor,
-                     edicao,
-                     editora,
-                     isbn,
-                     pais,
-                     desconto)
+        produto = ProdutoDAO.parse_produto(row)
 
-    @staticmethod
-    def __parse_eletronico(row) -> Eletronico:
-        id_produto = row['id_produto']
-        id_tipo_produto = row['id_tipo_produto']
-        titulo = row['produto.titulo']
-        descricao = row['descricao']
-        custo = row['custo']
-        margem_lucro = row['margem_lucro']
-        fabricante = row['fabricante']
-        desconto = row['desconto']
+        quantidade = row['quantidade']
 
-        return Eletronico(id_produto,
-                          titulo,
-                          descricao,
-                          custo,
-                          margem_lucro,
-                          fabricante,
-                          desconto)
+        return VendaProduto(
+            id,
+            id_venda,
+            produto,
+            quantidade
+        )
