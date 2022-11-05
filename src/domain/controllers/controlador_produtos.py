@@ -279,7 +279,12 @@ class ControladorProdutos:
                 else:
                     if not self.__produto_dao.has_product_venda(produto.id_produto):
                         self.__tela_busca_produto.close()
-                        self.__produto_dao.delete_entity(produto.id_produto)
+                        self.__tela_confirmacao.init_components()
+                        botao_confirmacao = self.__tela_confirmacao.open()
+                        self.__tela_confirmacao.close()
+
+                        if botao_confirmacao == 'confirmar':
+                            self.__produto_dao.delete_entity(produto.id_produto)
                     else:
                         raise ProdutoEmVendaException
         except ProdutoEmVendaException as p:
