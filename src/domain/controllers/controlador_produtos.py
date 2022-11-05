@@ -72,35 +72,6 @@ class ControladorProdutos:
                                    eletronico.desconto,
                                    eletronico.preco_final] for eletronico in produtos['eletronicos']]
 
-            """
-            for livro in produtos['livros']:
-                parsed_livros.append([
-                    livro.id_produto,
-                    livro.titulo,
-                    livro.descricao,
-                    livro.isbn,
-                    livro.autor,
-                    livro.edicao,
-                    livro.editora,
-                    livro.custo,
-                    livro.margem_lucro,
-                    livro.desconto,
-                    livro.pais,
-                    livro.preco_final,
-                ])
-            for eletronico in produtos['eletronicos']:
-                parsed_eletronicos.append([
-                    eletronico.id_produto,
-                    eletronico.titulo,
-                    eletronico.descricao,
-                    eletronico.fabricante,
-                    eletronico.custo,
-                    eletronico.margem_lucro,
-                    eletronico.desconto,
-                    eletronico.preco_final,
-                ])
-            """
-
         dados_produtos = {
             'livros': {
                 'lista': parsed_livros,
