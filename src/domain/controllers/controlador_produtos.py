@@ -46,9 +46,9 @@ class ControladorProdutos:
                                    eletronico.preco_final] for eletronico in produtos['eletronicos']]
         else:
             colunas_livros = ['ID Livro', 'Título', 'Descrição', 'ISBN', 'Autor', 'Edição', 'Editora', 'País', 'Custo',
-                              'Margem Lucro', 'Desconto', 'Preço final']
-            colunas_eletronicos = ['ID Eletrônico', 'Título', 'Descrição', 'Fabricante', 'Custo', 'Margem Lucro',
-                                   'Desconto', 'Preço final']
+                              'Margem Lucro (%)', 'Desconto (%)', 'Preço final']
+            colunas_eletronicos = ['ID Eletrônico', 'Título', 'Descrição', 'Fabricante', 'Custo',
+                                   'Margem Lucro (%)', 'Desconto (%)', 'Preço final']
 
             parsed_livros = [[livro.id_produto,
                               livro.titulo,
