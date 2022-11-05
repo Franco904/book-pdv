@@ -87,8 +87,8 @@ class ControladorProdutos:
 
     def cadastrar_produto(self) -> None:
         paises = [p.value for p in PaisEnum]
-        self.__tela_cadastrar_produtos.init_components(paises, alterar=False)
-        botao_cadastro, valores = self.__tela_cadastrar_produtos.open(alterar=False)
+        self.__tela_cadastrar_produtos.init_components(paises, editar=False)
+        botao_cadastro, valores = self.__tela_cadastrar_produtos.open(editar=False)
 
         if botao_cadastro == 'enviar':
             if valores is not None:
@@ -148,7 +148,7 @@ class ControladorProdutos:
                             self.__produto_dao.update_entity(produto.id_produto, 'desconto',
                                                              valores['valor_desconto'])
 
-    def alterar_produto(self) -> None:
+    def editar_produto(self) -> None:
         self.__tela_busca_produto.init_components()
         botao_busca, id_produto = self.__tela_busca_produto.open()
         self.__tela_busca_produto.close()
@@ -191,8 +191,8 @@ class ControladorProdutos:
                     }
 
                 paises = [p.value for p in PaisEnum]
-                self.__tela_cadastrar_produtos.init_components(paises, alterar=True, dados_produto=dados_produto)
-                botao_cadastro, dados_novos_produto = self.__tela_cadastrar_produtos.open(alterar=True)
+                self.__tela_cadastrar_produtos.init_components(paises, editar=True, dados_produto=dados_produto)
+                botao_cadastro, dados_novos_produto = self.__tela_cadastrar_produtos.open(editar=True)
 
                 if botao_cadastro == 'enviar':
                     self.__tela_cadastrar_produtos.close()
@@ -266,7 +266,7 @@ class ControladorProdutos:
 
     def abre_tela(self, is_supervisor: bool):
         opcoes = {'novo': self.cadastrar_produto, 'desconto': self.aplicar_desconto,
-                  'editar': self.alterar_produto, 'excluir': self.excluir_produto}
+                  'editar': self.editar_produto, 'excluir': self.excluir_produto}
 
         while True:
             dados_produtos = self.get_produtos(is_supervisor)
