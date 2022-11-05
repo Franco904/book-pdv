@@ -147,9 +147,10 @@ class ControladorProdutos:
                             valores['fabricante'],
                         )
                     self.__produto_dao.persist_entity(produto)
-                    self.__tela_cadastrar_produtos.close()
                 except ProdutoJaCadastradoException as p:
                     self.__tela_cadastrar_produtos.show_message('Produto já cadastrado!', p)
+                finally:
+                    self.__tela_cadastrar_produtos.close()
 
     def aplicar_desconto(self) -> None:
         self.__tela_busca_produto.init_components()
