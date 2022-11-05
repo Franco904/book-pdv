@@ -117,8 +117,9 @@ class ControladorProdutos:
     def cadastrar_produto(self) -> None:
         paises = [p.value for p in PaisEnum]
         self.__tela_cadastrar_produtos.init_components(paises, alterar=False)
-        botao, valores = self.__tela_cadastrar_produtos.open(alterar=False)
-        if botao == 'enviar':
+        botao_cadastro, valores = self.__tela_cadastrar_produtos.open(alterar=False)
+
+        if botao_cadastro == 'enviar':
             if valores is not None:
                 try:
                     if self.__produto_dao.get_by_id(valores['id_produto']) is not None:
@@ -152,10 +153,10 @@ class ControladorProdutos:
 
     def aplicar_desconto(self) -> None:
         self.__tela_busca_produto.init_components()
-        botao, id_produto = self.__tela_busca_produto.open()
+        bota_busca, id_produto = self.__tela_busca_produto.open()
         self.__tela_busca_produto.close()
 
-        if botao == 'buscar' and id_produto is not None:
+        if bota_busca == 'buscar' and id_produto is not None:
             produto: Produto = self.__produto_dao.get_by_id(id_produto)
 
             if produto is None:
@@ -163,9 +164,9 @@ class ControladorProdutos:
                                                        'Não foi encontrado um produto cadastrado com esse ID.')
             else:
                 self.__tela_desconto.init_components()
-                botao, valores = self.__tela_desconto.open()
+                botao_desconto, valores = self.__tela_desconto.open()
 
-                if botao == 'salvar' and valores is not None:
+                if botao_desconto == 'salvar' and valores is not None:
                     self.__tela_confirmacao.init_components()
                     botao_confirmacao = self.__tela_confirmacao.open()
                     self.__tela_confirmacao.close()
@@ -177,10 +178,10 @@ class ControladorProdutos:
 
     def alterar_produto(self) -> None:
         self.__tela_busca_produto.init_components()
-        botao, id_produto = self.__tela_busca_produto.open()
+        botao_busca, id_produto = self.__tela_busca_produto.open()
         self.__tela_busca_produto.close()
 
-        if botao == 'buscar' and id_produto is not None:
+        if botao_busca == 'buscar' and id_produto is not None:
             produto: Produto = self.__produto_dao.get_by_id(id_produto)
 
             if produto is None:
@@ -219,9 +220,9 @@ class ControladorProdutos:
 
                 paises = [p.value for p in PaisEnum]
                 self.__tela_cadastrar_produtos.init_components(paises, alterar=True, dados_produto=dados_produto)
-                botao, dados_novos_produto = self.__tela_cadastrar_produtos.open(alterar=True)
+                botao_cadastro, dados_novos_produto = self.__tela_cadastrar_produtos.open(alterar=True)
 
-                if botao == 'enviar':
+                if botao_cadastro == 'enviar':
                     self.__tela_cadastrar_produtos.close()
                     self.__tela_confirmacao.init_components()
                     botao_confirmacao = self.__tela_confirmacao.open()
@@ -266,10 +267,10 @@ class ControladorProdutos:
 
     def excluir_produto(self) -> None:
         self.__tela_busca_produto.init_components()
-        botao, id_produto = self.__tela_busca_produto.open()
+        botao_busca, id_produto = self.__tela_busca_produto.open()
 
         try:
-            if botao == 'buscar' and id_produto is not None:
+            if botao_busca == 'buscar' and id_produto is not None:
                 produto: Produto = self.__produto_dao.get_by_id(id_produto)
 
                 if produto is None:
