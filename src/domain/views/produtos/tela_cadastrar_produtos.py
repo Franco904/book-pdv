@@ -19,7 +19,7 @@ class TelaCadastrarProduto(Tela):
     def __init__(self) -> None:
         pass
 
-    def init_components(self, paises: list, alterar: bool = False, dados_produto: dict = None) -> None:
+    def init_components(self, paises: list, editar: bool = False, dados_produto: dict = None) -> None:
         sg.theme("Reddit")
 
         radio_group = [
@@ -40,70 +40,70 @@ class TelaCadastrarProduto(Tela):
             [sg.Text('   ')],
             [
                 sg.Text('ID produto', key='id_produto_text', size=(9, 1)),
-                sg.InputText(dados_produto['id_produto'] if alterar else '', key='id_produto', size=(50, 1))
-            ] if not alterar else [],
+                sg.InputText(dados_produto['id_produto'] if editar else '', key='id_produto', size=(50, 1))
+            ] if not editar else [],
             [
                 sg.Text('Título', size=(9, 1)),
-                sg.InputText(dados_produto['titulo'] if alterar else '', key='titulo', size=(50, 1))
+                sg.InputText(dados_produto['titulo'] if editar else '', key='titulo', size=(50, 1))
             ],
             [sg.Text('   ')],
             [sg.Text('Descrição')],
-            [sg.Multiline(dados_produto['descricao'] if alterar else '', key='descricao', size=(60, 8))],
+            [sg.Multiline(dados_produto['descricao'] if editar else '', key='descricao', size=(60, 8))],
             [sg.Text('   ')],
             [
                 sg.Text('Custo', size=(12, 1)),
-                sg.InputText(dados_produto['custo'] if alterar else '', key='custo', size=(22, 1))
+                sg.InputText(dados_produto['custo'] if editar else '', key='custo', size=(22, 1))
             ],
             [
                 sg.Text('Margem Lucro', size=(12, 1)),
-                sg.InputText(dados_produto['margem_lucro'] if alterar else '', key='margem_lucro', size=(22, 1))
+                sg.InputText(dados_produto['margem_lucro'] if editar else '', key='margem_lucro', size=(22, 1))
             ]
         ]
 
         nome_tela = 'Cadastrar Produto'
 
-        if alterar:
-            nome_tela = 'Alterar Produto'
-            radio_group = [sg.Text('Alterar dados do produto')]
+        if editar:
+            nome_tela = 'Editar Produto'
+            radio_group = [sg.Text('Editar dados do produto')]
 
             if dados_produto['id_tipo_produto'] == 0:
                 atributos_produto.append([
                     [
                         sg.Text('Desconto', size=(12, 1)),
-                        sg.InputText(dados_produto['desconto'] if alterar else '', key='desconto', size=(22, 1))
+                        sg.InputText(dados_produto['desconto'] if editar else '', key='desconto', size=(22, 1))
                     ],
                     [
                         sg.Text('ISBN', key='isbn_text', size=(12, 1)),
-                        sg.InputText(dados_produto['isbn'] if alterar else '', key='isbn', size=(22, 1)),
+                        sg.InputText(dados_produto['isbn'] if editar else '', key='isbn', size=(22, 1)),
                     ],
                     [
                         sg.Text('Autor', key='autor_text', size=(12, 1)),
-                        sg.InputText(dados_produto['autor'] if alterar else dados_produto[''] if alterar else '',
+                        sg.InputText(dados_produto['autor'] if editar else dados_produto[''] if editar else '',
                                      key='autor', size=(22, 1))
                     ],
                     [
                         sg.Text('Edição', key='edicao_text', size=(12, 1)),
-                        sg.InputText(dados_produto['edicao'] if alterar else '', key='edicao', size=(22, 1))
+                        sg.InputText(dados_produto['edicao'] if editar else '', key='edicao', size=(22, 1))
                     ],
                     [
                         sg.Text('Editora', key='editora_text', size=(12, 1)),
-                        sg.InputText(dados_produto['editora'] if alterar else '', key='editora', size=(22, 1))
+                        sg.InputText(dados_produto['editora'] if editar else '', key='editora', size=(22, 1))
                     ],
                     [
                         sg.Text('País', key='pais_text', size=(12, 1)),
                         sg.Combo(paises, enable_events=True, readonly=True, size=(20, 1),
-                                 key='pais', default_value=dados_produto['pais'] if alterar else '')
+                                 key='pais', default_value=dados_produto['pais'] if editar else '')
                     ],
                 ])
             else:
                 atributos_produto.append([
                     [
                         sg.Text('Desconto', size=(12, 1)),
-                        sg.InputText(dados_produto['desconto'] if alterar else '', key='desconto', size=(22, 1))
+                        sg.InputText(dados_produto['desconto'] if editar else '', key='desconto', size=(22, 1))
                     ],
                     [
                         sg.Text('Fabricante', size=(12, 1), key='fabricante_text'),
-                        sg.InputText(dados_produto['fabricante'] if alterar else '',
+                        sg.InputText(dados_produto['fabricante'] if editar else '',
                                      key='fabricante', size=(22, 1))
                     ]
                 ])
@@ -142,7 +142,7 @@ class TelaCadastrarProduto(Tela):
 
         super().__init__(sg.Window(nome_tela, layout=layout, resizable=False, modal=True, finalize=True))
 
-    def open(self, alterar: bool = False) -> tuple:
+    def open(self, editar: bool = False) -> tuple:
 
         def alternar_atributos_produto(window, evento_tela):
             elementos_livro = [
@@ -242,7 +242,7 @@ class TelaCadastrarProduto(Tela):
                 dados['margem_lucro']
             ]
 
-            if not alterar:
+            if not editar:
                 if not all([dados['livro'], dados['eletronico']]):
                     if dados['livro']:
                         inputs_new_livro = [
