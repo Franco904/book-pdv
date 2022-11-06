@@ -30,7 +30,7 @@ class Produto(ABC):
         self.__editora = None
         self.__isbn = None
         self.__pais = None
-        self.__desconto = None
+        self.__desconto = 0
 
         if isinstance(id_produto, int):
             self.__id_produto = id_produto
