@@ -46,10 +46,14 @@ class TelaInicio(Tela):
         super().__init__(sg.Window('Início', layout=layout, resizable=False, finalize=True), (500, 50))
 
     def open(self):
-        botao, dados = super().read()
+        while True:
+            botao, valores = super().read()
 
-        if botao in ('sair', None, sg.WIN_CLOSED):
-            super().close()
+            if botao in ('caixas', 'relatorio_vendas', 'produtos', 'funcionarios', 'novo'):
+                break
+
+            if botao == 'sair' or botao is None or botao == sg.WIN_CLOSED:
+                break
 
         super().close()
         return botao

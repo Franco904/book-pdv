@@ -12,18 +12,29 @@ class CaixasOperadoresDAO(AbstractDAO):
         self.__schema = super().schema
         self.__table = super().table
 
+    @staticmethod
+    def __get_columns_joined():
+        return ', '.join([
+            'co.id AS caixa_operador_id', 'co.cpf_operador', 'co.id_caixa', 'co.data_horario_abertura', 'co.data_horario_fechamento',
+            'co.saldo_abertura', 'co.saldo_fechamento', 'co.status', 'co.observacao_abertura', 'co.observacao_fechamento', 'co.erros',
+            'c.id AS caixa_id', 'c.data_horario_criacao', 'c.saldo', 'c.aberto', 'c.ativo',
+            'f.cpf', 'f.nome', 'f.telefone', 'f.senha', 'f.email', 'f.id_cargo',
+        ])
+
     def execute_query(self, query: str):
         super().execute_query(query)
 
     def get_all(self):
         table = super().get_table()
+        columns = CaixasOperadoresDAO.__get_columns_joined()
+
         custom_query = f"""
-            SELECT * FROM {table} AS co
-            INNER JOIN access_control.caixas AS c
-            ON c.id = co.id_caixa
-            INNER JOIN access_control.funcionarios AS f
-            ON f.cpf = co.cpf_operador
-        """
+                            SELECT {columns} FROM {table} AS co
+                            INNER JOIN access_control.caixas AS c
+                            ON c.id = co.id_caixa
+                            INNER JOIN access_control.funcionarios AS f
+                            ON f.cpf = co.cpf_operador
+                        """
 
         rows = super().get_all(custom_query)
         caixas_operadores = list(map(lambda row: CaixasOperadoresDAO.__parse_caixa_operador(row), rows))
@@ -32,14 +43,16 @@ class CaixasOperadoresDAO(AbstractDAO):
 
     def get_by_id(self, id_caixa_operador: int):
         table = super().get_table()
+        columns = CaixasOperadoresDAO.__get_columns_joined()
+
         custom_query = f"""
-                    SELECT * FROM {table} AS co
-                    INNER JOIN access_control.caixas AS c
-                    ON c.id = co.id_caixa
-                    INNER JOIN access_control.funcionarios AS f
-                    ON f.cpf = co.cpf_operador
-                    WHERE co.id = '{id_caixa_operador}'
-                """
+                            SELECT {columns} FROM {table} AS co
+                            INNER JOIN access_control.caixas AS c
+                            ON c.id = co.id_caixa
+                            INNER JOIN access_control.funcionarios AS f
+                            ON f.cpf = co.cpf_operador
+                            WHERE co.id = '{id_caixa_operador}'
+                        """
 
         row = super().get_by_pk('id', id_caixa_operador, custom_query)
 
@@ -48,8 +61,10 @@ class CaixasOperadoresDAO(AbstractDAO):
 
     def get_caixa_opened_by_cpf(self, cpf_operador: str):
         table = super().get_table()
+        columns = CaixasOperadoresDAO.__get_columns_joined()
+
         custom_query = f"""
-                            SELECT * FROM {table} AS co
+                            SELECT {columns} FROM {table} AS co
                             INNER JOIN access_control.caixas AS c
                             ON c.id = co.id_caixa
                             INNER JOIN access_control.funcionarios AS f
@@ -114,7 +129,7 @@ class CaixasOperadoresDAO(AbstractDAO):
 
     @staticmethod
     def __parse_caixa_operador(row):
-        id = row['id']
+        id = row['caixa_operador_id']
         id_caixa = row['id_caixa']
         data_horario_criacao = row['data_horario_criacao']
         saldo = row['saldo']
