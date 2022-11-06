@@ -1,5 +1,7 @@
 import datetime
 
+import PySimpleGUI as sg
+
 from src.data.dao.caixa_dao import CaixaDAO
 from src.data.dao.caixas_operadores_dao import CaixasOperadoresDAO
 from src.data.dao.sangrias_dao import SangriasDAO
@@ -62,23 +64,15 @@ class ControladorPainelCaixa:
             )
         }
 
+        self.__tela_fechar_caixa.init_components(dados_caixa)
+
         while True:
-            self.__tela_fechar_caixa.init_components(dados_caixa)
             opcao, dados_tela = self.__tela_fechar_caixa.open()
-            self.__tela_fechar_caixa.open()
 
-            if opcao == 'voltar':
-                return self.__tela_fechar_caixa.close()
+            if opcao == 'fechar_caixa':
+                botao_confirmacao = self.__tela_fechar_caixa.show_form_confirmation('Desejas fechar o caixa?', '')
 
-            elif opcao == 'fechar_caixa':
-                self.__tela_confirmacao.init_components()
-                botao_confirmacao = self.__tela_confirmacao.open()
-
-                # self.__tela_confirmacao.close()
-
-                if botao_confirmacao == 'confirmar':
-                    self.__tela_fechar_caixa.close()
-
+                if botao_confirmacao == 'OK':
                     # Fecha o caixa
                     self.__caixa_dao.update_entity(self.__caixa_operador.caixa.id, 'aberto', False)
 
@@ -93,6 +87,10 @@ class ControladorPainelCaixa:
                     # Redireciona para a tela de início
                     self.sair()
                     break
+
+            else:
+                self.__tela_fechar_caixa.close()
+                break
 
     def persist_caixa_operador_data(self, dados_caixa, dados_tela) -> None:
         # Atualiza data/horário de fechamento e saldo de fechamento
@@ -119,6 +117,7 @@ class ControladorPainelCaixa:
                                                        dados_tela['observacao_fechamento'])
 
     def sair(self) -> None:
+        self.__tela_fechar_caixa.close()
         self.__controlador_sistema.abrir_inicio()
 
     def abrir_tela(self, caixa_operador: CaixaOperador) -> None:
