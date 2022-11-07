@@ -75,7 +75,6 @@ class ControladorInicio:
 
     def sair(self) -> None:
         self.__controlador_sistema.funcionario_logado = None
-        self.__tela_inicio.close()
 
     def abrir_tela(self) -> None:
         opcoes_operador = {
@@ -103,7 +102,7 @@ class ControladorInicio:
 
             opcao_escolhida = self.__tela_inicio.open()
 
-            if opcao_escolhida in ('sair', None, sg.WIN_CLOSED):
+            if opcao_escolhida == 'sair':
                 self.__tela_confirmacao.init_components()
                 botao_confirmacao = self.__tela_confirmacao.open()
                 self.__tela_confirmacao.close()
@@ -111,6 +110,8 @@ class ControladorInicio:
                 if botao_confirmacao == 'confirmar':
                     self.sair()
                     break
+            elif opcao_escolhida is None:
+                continue
             elif is_operador_caixa:
                 opcoes_operador[opcao_escolhida]()
             else:

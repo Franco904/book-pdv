@@ -40,3 +40,12 @@ class TelaFecharCaixa(Tela):
 
     def close(self) -> None:
         super().close()
+
+    def show_form_confirmation(self, titulo: str, msg):
+        while True:
+            botao_confirmacao = super().show_form_confirmation(titulo, msg)
+
+            if botao_confirmacao in ('OK', 'Cancel', None, sg.WIN_CLOSED):
+                break
+
+        return botao_confirmacao

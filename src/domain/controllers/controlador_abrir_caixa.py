@@ -81,8 +81,13 @@ class ControladorAbrirCaixa:
         # Atualiza na memória os caixas disponíveis para abertura
         self.__caixas = list(filter(lambda caixa: caixa.id != dados['caixa_id'], self.__caixas))
 
+        caixa_operadores_ids = [co.id for co in self.__caixas_operadores_dao.get_all()]
+
+        random_integers = [i for i in range(150)]
+        chooseble_ids = [ri for ri in random_integers if ri not in caixa_operadores_ids]
+
         caixa_operador = CaixaOperador(
-            randint(1, 100),
+            randint(1, len(chooseble_ids) - 1),
             caixa,
             self.__funcionario_logado,
             self.__data_horario_abertura,

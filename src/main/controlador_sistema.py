@@ -1,12 +1,13 @@
 import PySimpleGUI as sg
+
 from src.data.dao.autenticacao_dao import AutenticacaoDAO
 from src.data.dao.caixa_dao import CaixaDAO
 from src.data.dao.caixas_operadores_dao import CaixasOperadoresDAO
 from src.data.dao.cargos_dao import CargosDAO
 from src.data.dao.funcionario_dao import FuncionarioDAO
+from src.data.dao.produto_dao import ProdutoDAO
 from src.data.dao.sangrias_dao import SangriasDAO
 from src.data.dao.tipos_produto_dao import TiposProdutoDAO
-from src.data.dao.produto_dao import ProdutoDAO
 from src.data.dao.vendas_produtos_dao import VendasProdutoDAO
 from src.data.database.database import Database
 from src.domain.controllers.controlador_abrir_caixa import ControladorAbrirCaixa
@@ -15,7 +16,6 @@ from src.domain.controllers.controlador_funcionarios import ControladorFuncionar
 from src.domain.controllers.controlador_inicio import ControladorInicio
 from src.domain.controllers.controlador_painel_caixa import ControladorPainelCaixa
 from src.domain.controllers.controlador_produtos import ControladorProdutos
-from src.domain.models.caixa import Caixa
 from src.domain.models.caixa_operador import CaixaOperador
 from src.domain.models.funcionario import Funcionario
 from src.main.tela_home import TelaHome
@@ -116,12 +116,6 @@ class ControladorSistema:
 
         # self.__daos['tipos_produto_dao'].persist_entity(TipoProdutoEnum.livro)
         # self.__daos['tipos_produto_dao'].persist_entity(TipoProdutoEnum.eletronico)
-
-        # self.__daos['caixa_dao'].persist_entity(Caixa(1))
-        # self.__daos['caixa_dao'].persist_entity(Caixa(2))
-        # self.__daos['caixa_dao'].persist_entity(Caixa(3))
-        # self.__daos['caixa_dao'].persist_entity(Caixa(4))
-        # self.__daos['caixa_dao'].persist_entity(Caixa(5))
         pass
 
     def entrar(self) -> None:

@@ -18,7 +18,7 @@ class ProdutoDAO(AbstractDAO):
 
     def get_all(self, custom_query="") -> dict:
         rows = super().get_all()
-        produtos = list(map(lambda row: ProdutoDAO.__parse_produto(row), rows))
+        produtos = list(map(lambda row: ProdutoDAO.parse_produto(row), rows))
         livros = []
         eletronicos = []
         for produto in produtos:
