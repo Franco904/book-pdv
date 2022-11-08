@@ -54,7 +54,7 @@ class ControladorPainelCaixa:
         # Abre visualização das movimentações do caixa
         pass
 
-    def fechar_caixa(self) -> None:
+    def fechar_caixa(self) -> bool | None:
         dados_caixa = {
             'id_caixa': self.__caixa_operador.caixa.id,
             'data_horario_fechamento': datetime.datetime.now(),
@@ -86,7 +86,11 @@ class ControladorPainelCaixa:
 
                     # Redireciona para a tela de início
                     self.sair()
-                    break
+                    return True
+
+            else:
+                self.__tela_fechar_caixa.close()
+                break
 
             else:
                 self.__tela_fechar_caixa.close()
