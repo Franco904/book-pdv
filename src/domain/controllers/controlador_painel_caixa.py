@@ -92,10 +92,6 @@ class ControladorPainelCaixa:
                 self.__tela_fechar_caixa.close()
                 break
 
-            else:
-                self.__tela_fechar_caixa.close()
-                break
-
     def persist_caixa_operador_data(self, dados_caixa, dados_tela) -> None:
         # Atualiza data/horário de fechamento e saldo de fechamento
         self.__caixas_operadores_dao.update_entity(self.__caixa_operador.id, 'data_horario_fechamento',

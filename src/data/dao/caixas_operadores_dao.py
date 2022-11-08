@@ -97,6 +97,17 @@ class CaixasOperadoresDAO(AbstractDAO):
         saldo_fechamento = saldo_abertura + (total_vendas - total_sangrias)
         return saldo_fechamento
 
+    def get_max_id(self) -> int:
+        table = super().get_table()
+        custom_query = f"""
+                            SELECT MAX(co.id)
+                            FROM {table} AS co
+                        """
+
+        row = super().get_by_pk('', 0, custom_query)
+
+        return None if row is None else row[0]
+
     def persist_entity(self, caixa_operador: CaixaOperador):
         table = super().get_table()
         columns = 'id, cpf_operador, id_caixa, data_horario_abertura, data_horario_fechamento, saldo_abertura, ' \
