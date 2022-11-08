@@ -48,7 +48,10 @@ class TelaCadastroVenda(Tela):
         ]
 
 
+        produtos= [
+                [sg.Table()]
 
+        ]
 
 
         nome_tela = 'Nova Venda'
@@ -64,6 +67,7 @@ class TelaCadastroVenda(Tela):
             [data_e_troco,
              codigo_venda,
              total_e_observacoes,
+             produtos,
              buttons
              ]
 

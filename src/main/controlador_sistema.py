@@ -8,6 +8,7 @@ from src.data.dao.funcionario_dao import FuncionarioDAO
 from src.data.dao.produto_dao import ProdutoDAO
 from src.data.dao.sangrias_dao import SangriasDAO
 from src.data.dao.tipos_produto_dao import TiposProdutoDAO
+from src.data.dao.vendas_dao import VendasDAO
 from src.data.dao.vendas_produtos_dao import VendasProdutoDAO
 from src.data.database.database import Database
 from src.domain.controllers.controlador_abrir_caixa import ControladorAbrirCaixa
@@ -16,6 +17,7 @@ from src.domain.controllers.controlador_funcionarios import ControladorFuncionar
 from src.domain.controllers.controlador_inicio import ControladorInicio
 from src.domain.controllers.controlador_painel_caixa import ControladorPainelCaixa
 from src.domain.controllers.controlador_produtos import ControladorProdutos
+from src.domain.controllers.controlador_vendas import ControladorVendas
 from src.domain.models.caixa_operador import CaixaOperador
 from src.domain.models.funcionario import Funcionario
 from src.main.tela_home import TelaHome
@@ -69,6 +71,7 @@ class ControladorSistema:
             'cargos_dao': CargosDAO(self.__database),
             'tipos_produto_dao': TiposProdutoDAO(self.__database),
             'produto_dao': ProdutoDAO(self.__database),
+            'vendas_dao': VendasDAO(self.__database),
             'vendas_produtos_dao': VendasProdutoDAO(self.__database)
         }
 
@@ -85,6 +88,10 @@ class ControladorSistema:
             self,
             self.__daos['funcionario_dao'],
             self.__funcionario_logado,
+        )
+        self.__controladores['vendas'] = ControladorVendas(
+            self.__daos['vendas_dao'],
+            self.__daos['vendas-produtos_dao'],
         )
         self.__controladores['painel_caixa'] = ControladorPainelCaixa(
             self,
