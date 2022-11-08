@@ -1,7 +1,5 @@
 import datetime
 
-import PySimpleGUI as sg
-
 from src.data.dao.caixa_dao import CaixaDAO
 from src.data.dao.caixas_operadores_dao import CaixasOperadoresDAO
 from src.data.dao.sangrias_dao import SangriasDAO
