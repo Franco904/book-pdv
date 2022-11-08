@@ -7,7 +7,6 @@ from src.domain.models.caixa_operador import CaixaOperador
 from src.domain.models.funcionario import Funcionario
 from src.domain.views.painel_caixa.tela_fechar_caixa import TelaFecharCaixa
 from src.domain.views.painel_caixa.tela_painel_caixa import TelaPainelCaixa
-from src.domain.views.tela_confirmacao import TelaConfirmacao
 
 
 class ControladorPainelCaixa:
@@ -21,7 +20,6 @@ class ControladorPainelCaixa:
     ) -> None:
         self.__tela_painel_caixa = TelaPainelCaixa()
         self.__tela_fechar_caixa = TelaFecharCaixa()
-        self.__tela_confirmacao = TelaConfirmacao()
 
         self.__controlador_sistema = controlador_sistema
         self.__caixa_dao = None

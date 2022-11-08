@@ -1,5 +1,4 @@
 import datetime
-from random import randint
 
 import PySimpleGUI as sg
 

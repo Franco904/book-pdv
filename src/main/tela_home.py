@@ -18,7 +18,7 @@ class TelaHome(Tela):
 
         super().__init__(sg.Window('Home', layout=layout, resizable=False, modal=True, finalize=True, element_justification='c'), (200,100))
 
-    def open(self) -> int:
+    def open(self) -> str:
         while True:
             botao, dados = super().read()
 
