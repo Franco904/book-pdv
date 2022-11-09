@@ -19,7 +19,7 @@ class TelaInicialVenda(Tela):
                                    element_justification='c'), (300, 180))
 
 
-    def open(self) -> str:
+    def open(self) -> str | None:
         while True:
             botao, valores = super().read()
             if botao is None or botao == sg.WIN_CLOSED or botao == 'voltar':

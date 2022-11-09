@@ -45,7 +45,21 @@ class ControladorVendas:
 
 
     def alterar_venda(self):
-        pass
+        self.__tela_buscar_venda.init_components()
+        botao_busca, id_venda = self.__tela_buscar_venda.open()
+        self.__tela_buscar_venda.close()
+
+        if botao_busca == 'buscar' and id_venda is not None:
+            venda: Venda = self.__vendas_dao.get_by_id_with_products(id_venda)
+
+        if venda is None:
+            self.__tela_buscar_venda.show_message('Venda não encontrada',
+                                                   'Não foi encontrada uma venda cadastrada com esse ID.')
+        else:
+            dados_venda = {
+
+            }
+
 
     def cancelar_venda(self):
         pass
