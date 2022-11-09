@@ -1,8 +1,8 @@
 import datetime
-
 from src.data.dao.caixa_dao import CaixaDAO
 from src.data.dao.caixas_operadores_dao import CaixasOperadoresDAO
 from src.data.dao.sangrias_dao import SangriasDAO
+from src.domain.controllers.controlador_vendas import ControladorVendas
 from src.domain.models.caixa_operador import CaixaOperador
 from src.domain.models.funcionario import Funcionario
 from src.domain.views.painel_caixa.tela_fechar_caixa import TelaFecharCaixa
@@ -17,17 +17,21 @@ class ControladorPainelCaixa:
             caixas_operadores_dao: CaixasOperadoresDAO,
             sangrias_dao: SangriasDAO,
             funcionario_logado: Funcionario,
+            controlador_vendas: ControladorVendas
     ) -> None:
         self.__tela_painel_caixa = TelaPainelCaixa()
         self.__tela_fechar_caixa = TelaFecharCaixa()
 
         self.__controlador_sistema = controlador_sistema
+        self.__controlador_vendas = None
+
         self.__caixa_dao = None
         self.__caixas_operadores_dao = None
         self.__sangrias_dao = None
 
         self.__caixa_operador: CaixaOperador | None = None
         self.__funcionario_logado: Funcionario | None = None
+
 
         if isinstance(caixa_dao, CaixaDAO):
             self.__caixa_dao = caixa_dao
@@ -37,9 +41,11 @@ class ControladorPainelCaixa:
             self.__sangrias_dao = sangrias_dao
         if isinstance(funcionario_logado, Funcionario):
             self.__funcionario_logado = funcionario_logado
+        if isinstance(controlador_vendas, ControladorVendas):
+            self.__controlador_vendas = controlador_vendas
 
     def abrir_vendas(self) -> None:
-        # Abre módulo de vendas
+        self.__controlador_vendas.abre_tela()
         pass
 
     def abrir_sangrias(self) -> None:
