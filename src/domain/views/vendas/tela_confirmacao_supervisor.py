@@ -35,6 +35,6 @@ class TelaConfirmacaoSupervisor(Tela):
 
 
 #Remover depois
-tela = TelaConfirmacaoSupervisor()
-tela.init_components('1234123')
-button, values = tela.open()
+# tela = TelaConfirmacaoSupervisor()
+# tela.init_components('1234123')
+# button, values = tela.open()

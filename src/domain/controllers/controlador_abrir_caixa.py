@@ -84,7 +84,7 @@ class ControladorAbrirCaixa:
         try:
             max_id_stored = self.__caixas_operadores_dao.get_max_id()
             if max_id_stored is None:
-                raise AbrirCaixaException
+                max_id_stored = 1
 
             new_id = max_id_stored + 1
 
@@ -108,8 +108,8 @@ class ControladorAbrirCaixa:
             # Redireciona operador de caixa para o painel do caixa
             self.__controlador_painel_caixa.abrir_tela(caixa_operador)
 
-        except AbrirCaixaException as a:
-            self.__tela_caixa.show_message('Erro ao salvar registro', a)
+        except Exception as e:
+            self.__tela_caixa.show_message('Erro ao salvar registro', e)
 
     def retornar(self) -> None:
         self.__tela_caixa.close()

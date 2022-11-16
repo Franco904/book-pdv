@@ -32,7 +32,6 @@ class ControladorPainelCaixa:
         self.__caixa_operador: CaixaOperador | None = None
         self.__funcionario_logado: Funcionario | None = None
 
-
         if isinstance(caixa_dao, CaixaDAO):
             self.__caixa_dao = caixa_dao
         if isinstance(caixas_operadores_dao, CaixasOperadoresDAO):
@@ -60,10 +59,10 @@ class ControladorPainelCaixa:
         dados_caixa = {
             'id_caixa': self.__caixa_operador.caixa.id,
             'data_horario_fechamento': datetime.datetime.now(),
-            'saldo_fechamento': self.__caixas_operadores_dao.get_saldo_fechamento(
-                self.__caixa_operador.caixa.id,
+            'saldo_fechamento': round(self.__caixas_operadores_dao.get_saldo_fechamento(
+                self.__caixa_operador.id,
                 self.__caixa_operador.saldo_abertura,
-            )
+            ), 2)
         }
 
         self.__tela_fechar_caixa.init_components(dados_caixa)

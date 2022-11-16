@@ -51,6 +51,6 @@ class TelaIncluirProduto(Tela):
 
             return botao
 
-tela = TelaIncluirProduto()
-tela.init_components(quantidade='', produtos='')
-button, values = tela.open()
+# tela = TelaIncluirProduto()
+# tela.init_components(quantidade='', produtos='')
+# button, values = tela.open()

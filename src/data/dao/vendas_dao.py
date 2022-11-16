@@ -181,23 +181,3 @@ class VendasDAO(AbstractDAO):
             previous_venda.venda_produtos.extend(current.venda_produtos)
 
         return previous_venda
-
-
-# TESTE: get_all_with_products
-
-vendas = VendasDAO(Database()).get_all_with_products(56)
-
-for v in vendas:
-    print('=' * 40)
-    print(v.id)
-    print(v.venda_produtos)
-
-
-# TESTE: get_by_id_with_products
-
-venda = VendasDAO(Database()).get_by_id_with_products(56, 1)
-
-print('=' * 40)
-print('=' * 40)
-print(venda.id)
-print(venda.venda_produtos)

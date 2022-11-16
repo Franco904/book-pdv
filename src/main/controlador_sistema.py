@@ -91,7 +91,7 @@ class ControladorSistema:
         )
         self.__controladores['vendas'] = ControladorVendas(
             self.__daos['vendas_dao'],
-            self.__daos['vendas-produtos_dao'],
+            self.__daos['vendas_produtos_dao'],
         )
         self.__controladores['painel_caixa'] = ControladorPainelCaixa(
             self,
@@ -99,6 +99,7 @@ class ControladorSistema:
             self.__daos['caixas_operadores_dao'],
             self.__daos['sangrias_dao'],
             self.__funcionario_logado,
+            self.__controladores['vendas'],
         )
         self.__controladores['abrir_caixa'] = ControladorAbrirCaixa(
             self.__controladores['painel_caixa'],

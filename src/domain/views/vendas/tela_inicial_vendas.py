@@ -29,6 +29,6 @@ class TelaInicialVenda(Tela):
             return botao
 
 #retirar depois
-tela = TelaInicialVenda()
-tela.init_components()
-opcao, dados = tela.open()
+# tela = TelaInicialVenda()
+# tela.init_components()
+# opcao, dados = tela.open()
