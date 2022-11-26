@@ -3,10 +3,10 @@ from src.domain.exceptions.entrada_vazia_exception import EntradaVaziaException
 from src.domain.views.tela_abstrata import Tela
 import PySimpleGUI as sg
 
+
 class TelaBuscaVenda(Tela):
     def __init__(self) -> None:
         pass
-
 
     def init_components(self) -> None:
         sg.theme("Reddit")

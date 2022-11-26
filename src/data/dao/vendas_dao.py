@@ -1,6 +1,7 @@
 from src.data.dao.abstract_dao import AbstractDAO
 from src.data.dao.produto_dao import ProdutoDAO
 from src.data.database.database import Database
+from src.domain.enums import FiltroRelatorioVendasIntervaloEnum
 from src.domain.models.venda import Venda
 from src.domain.models.venda_produtos import VendaProduto
 
@@ -26,7 +27,7 @@ class VendasDAO(AbstractDAO):
     def execute_query(self, query: str):
         super().execute_query(query)
 
-    def get_all_with_products(self, id_caixa_operador: int) -> [Venda]:
+    def get_all_with_products(self, id_caixa_operador=None) -> [Venda]:
         table = super().get_table()
         columns = VendasDAO.__get_columns_joined()
 
@@ -36,7 +37,7 @@ class VendasDAO(AbstractDAO):
                            ON v.id = vp.id_venda
                            INNER JOIN access_control.produtos p
                            ON p.id = vp.id_produto
-                           WHERE v.id_caixa_operador = {id_caixa_operador}
+                           {f'WHERE v.id_caixa_operador = {id_caixa_operador}' if id_caixa_operador is not None else ''}
                         """
 
         rows = super().get_all(custom_query)
@@ -47,6 +48,62 @@ class VendasDAO(AbstractDAO):
         ff = [vendas_folded := VendasDAO.__fold_vendas(vendas_folded, v) for v in vendas]
 
         return vendas_folded
+
+    def get_all_by_period_with_products(
+            self,
+            data_inicio='CURRENT_DATE',
+            filtroIntervalo=FiltroRelatorioVendasIntervaloEnum.ultima_semana
+    ) -> [Venda]:
+        table = super().get_table()
+        columns = VendasDAO.__get_columns_joined()
+
+        custom_query = f"""
+                           SELECT {columns} FROM {table} v
+                           INNER JOIN access_control.vendas_produtos vp
+                           ON v.id = vp.id_venda
+                           INNER JOIN access_control.produtos p
+                           ON p.id = vp.id_produto
+                           WHERE v.data_horario <= {data_inicio}
+                           AND v.data_horario >= {data_inicio}::date - INTERVAL {filtroIntervalo.value}
+                        """
+
+        rows = super().get_all(custom_query)
+
+        vendas = list(map(lambda row: VendasDAO.__parse_venda(row), rows))
+
+        vendas_folded = []
+        ff = [vendas_folded := VendasDAO.__fold_vendas(vendas_folded, v) for v in vendas]
+
+        return vendas_folded
+
+    def get_operador_with_more_vendas_by_period(
+            self,
+            data_inicio='CURRENT_DATE',
+            filtroIntervalo=FiltroRelatorioVendasIntervaloEnum.ultima_semana
+    ) -> dict:
+        table = super().get_table()
+
+        custom_query = f"""
+                           SELECT MAX(s.count), s.nome, s.total
+                           FROM (
+                                SELECT COUNT(*) AS count, f.nome AS nome, SUM(v.valor_pago - v.valor_troco) AS total
+                                FROM {table} AS v
+                                INNER JOIN access_control.caixas_operadores AS co
+                                ON v.id_caixa_operador = co.id
+                                INNER JOIN access_control.funcionarios AS f
+                                ON co.cpf_operador = f.cpf
+                                WHERE v.data_horario <= {data_inicio}
+                                AND v.data_horario >= {data_inicio}::date - INTERVAL {filtroIntervalo.value}
+                                GROUP BY v.id_caixa_operador, f.nome
+                           ) AS s
+                           GROUP BY s.nome, s.total;
+                        """
+
+        row = super().get_by_pk('', 1, custom_query)
+
+        print(row)
+
+        return row if row is not None else {'nome': '', 'total': ''}
 
     def get_by_id_with_products(self, id_caixa_operador: int, id_venda: int) -> [Venda]:
         table = super().get_table()

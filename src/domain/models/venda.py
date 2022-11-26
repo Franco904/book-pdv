@@ -64,3 +64,6 @@ class Venda:
     @property
     def venda_produtos(self):
         return self.__venda_produtos
+
+    def valor_total(self):
+        return self.__valor_pago - self.__valor_troco

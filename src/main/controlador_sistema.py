@@ -17,6 +17,7 @@ from src.domain.controllers.controlador_funcionarios import ControladorFuncionar
 from src.domain.controllers.controlador_inicio import ControladorInicio
 from src.domain.controllers.controlador_painel_caixa import ControladorPainelCaixa
 from src.domain.controllers.controlador_produtos import ControladorProdutos
+from src.domain.controllers.controlador_relatorio_vendas import ControladorRelatorioVendas
 from src.domain.controllers.controlador_vendas import ControladorVendas
 from src.domain.models.caixa_operador import CaixaOperador
 from src.domain.models.funcionario import Funcionario
@@ -108,11 +109,13 @@ class ControladorSistema:
             self.__funcionario_logado,
         )
         self.__controladores['produtos'] = ControladorProdutos(self.__daos['produto_dao'])
+        self.__controladores['relatorio_vendas'] = ControladorRelatorioVendas(self.__daos['vendas_dao'])
         self.__controladores["inicio"] = ControladorInicio(
             self,
             self.__controladores['funcionarios'],
             self.__controladores['abrir_caixa'],
             self.__controladores['produtos'],
+            self.__controladores['relatorio_vendas'],
             self.__daos['funcionario_dao'],
             self.__daos['caixa_dao'],
             self.__funcionario_logado,
