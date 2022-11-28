@@ -19,16 +19,16 @@ class TelaBuscaVenda(Tela):
              sg.Submit("Buscar", key='buscar', size=(20, 1))]
         ]
 
-        super().__init__(sg.Window("Buscar Produto", layout=layout, resizable=False, modal=True, finalize=True,
+        super().__init__(sg.Window("Buscar Venda", layout=layout, resizable=False, modal=True, finalize=True,
                                    element_justification='c'), (300, 80))
 
-    def open(self):
+    def open(self) -> tuple:
         while True:
             botao, valores = super().read()
             if botao == 'buscar':
                 try:
                     if not valores['codigo_venda'] == '':
-                        if valores['codigo_venda'].isnumeric() == False:
+                        if not valores['codigo_venda'].isnumeric():
                             raise CodigoInvalidoException('venda')
                         valores['codigo_venda'] = int(valores['codigo_venda'])
                         break
@@ -40,12 +40,8 @@ class TelaBuscaVenda(Tela):
                 except CodigoInvalidoException as c:
                     super().show_message("Código Inválido!", c)
 
-
             if botao is None or botao == sg.WIN_CLOSED or botao == 'voltar':
                 super().close()
-                break
+                return 'voltar', 0
 
-            return botao, valores['codigo_venda']
-
-
-
+        return botao, valores['codigo_venda']

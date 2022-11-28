@@ -109,7 +109,10 @@ class ControladorSistema:
             self.__funcionario_logado,
         )
         self.__controladores['produtos'] = ControladorProdutos(self.__daos['produto_dao'])
-        self.__controladores['relatorio_vendas'] = ControladorRelatorioVendas(self.__daos['vendas_dao'])
+        self.__controladores['relatorio_vendas'] = ControladorRelatorioVendas(
+            self.__daos['vendas_dao'],
+            self.__daos['produto_dao'],
+        )
         self.__controladores["inicio"] = ControladorInicio(
             self,
             self.__controladores['funcionarios'],

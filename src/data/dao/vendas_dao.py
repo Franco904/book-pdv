@@ -117,7 +117,7 @@ class VendasDAO(AbstractDAO):
 
         return {'nome': row[0], 'total': row[1]} if row is not None else {'nome': '', 'total': ''}
 
-    def get_by_id_with_products(self, id_caixa_operador: int, id_venda: int) -> [Venda]:
+    def get_by_id_with_products(self, id_venda: int) -> [Venda]:
         table = super().get_table()
         columns = VendasDAO.__get_columns_joined()
 
@@ -131,8 +131,7 @@ class VendasDAO(AbstractDAO):
                            ON v.id_caixa_operador = co.id
                            INNER JOIN access_control.funcionarios AS f
                            ON co.cpf_operador = f.cpf
-                           WHERE v.id_caixa_operador = {id_caixa_operador}
-                           AND v.id = {id_venda}
+                           WHERE v.id = {id_venda};
                         """
 
         rows = super().get_all(custom_query)

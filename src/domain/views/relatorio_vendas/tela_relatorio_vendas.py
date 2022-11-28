@@ -24,45 +24,43 @@ class TelaRelatorioVendas(Tela):
         ]
 
         layout = [
+            [sg.Text('Período', font=('Arial', 12, 'bold'))],
             [
-                [sg.Text('Período', font=('Arial', 12, 'bold'))],
-                [
-                    sg.Combo(
-                        periodos,
-                        enable_events=True, readonly=True, size=(40, 1),
-                        key='periodo', default_value=periodos[0],
-                    ),
-                ],
-                [sg.Text('  ')],
-                [sg.Text('Estatísticas', font=('Arial', 12, 'bold'))],
-                [
-                    sg.Text(f'{"+" if vendas["diff_registros"] > 0 else ""} {vendas["diff_registros"]}',
-                            font=('', 10), key='diff_registros'),
-                    sg.Text(' registros desde o último período', font=('', 10))
-                ],
-                [
-                    sg.Text(f'{"+" if vendas["diff_receita"] > 0 else ""} R$ {round(vendas["diff_receita"], 2)}',
-                            font=('', 10), key='diff_receita'),
-                    sg.Text(' de receita em comparação com o último período', size=(24, 0), font=('', 10))
-                ],
-                [
-                    sg.Text('O funcionário que realizou mais vendas foi ', font=('', 10)),
-                    sg.Text(vendas['operador_com_mais_vendas']['nome'], font=('', 10), key='operador_nome'),
-                    sg.Text(' com um total de', font=('', 10)),
-                    sg.Text(f' R$ {vendas["operador_com_mais_vendas"]["total"]}', font=('', 10), key='operador_total'),
-                ],
-                [sg.Text('  ')],
-                [sg.Text('Vendas registradas', font=('Arial', 12, 'bold'))],
-                [sg.Table(values=vendas['lista'], headings=vendas['colunas'], max_col_width=35,
-                          auto_size_columns=True,
-                          display_row_numbers=False,
-                          justification='center',
-                          num_rows=5,
-                          key='vendas_table',
-                          row_height=35,
-                          tooltip='Vendas no período')]
-                if len(vendas['lista']) else [sg.Text('Não existem vendas cadastradas.')],
+                sg.Combo(
+                    periodos,
+                    enable_events=True, readonly=True, size=(40, 1),
+                    key='periodo', default_value=periodos[0],
+                ),
             ],
+            [sg.Text('  ')],
+            [sg.Text('Estatísticas', font=('Arial', 12, 'bold'))],
+            [
+                sg.Text(f'{"+" if vendas["diff_registros"] > 0 else ""} {vendas["diff_registros"]}',
+                        font=('', 10), key='diff_registros'),
+                sg.Text(' registros desde o último período', font=('', 10))
+            ],
+            [
+                sg.Text(f'{"+" if vendas["diff_receita"] > 0 else ""} R$ {round(vendas["diff_receita"], 2)}',
+                        font=('', 10), key='diff_receita'),
+                sg.Text(' de receita em comparação com o último período', size=(24, 0), font=('', 10))
+            ],
+            [
+                sg.Text('O funcionário que realizou mais vendas foi ', font=('', 10)),
+                sg.Text(vendas['operador_com_mais_vendas']['nome'], font=('', 10), key='operador_nome'),
+                sg.Text(' com um total de', font=('', 10)),
+                sg.Text(f' R$ {vendas["operador_com_mais_vendas"]["total"]}', font=('', 10), key='operador_total'),
+            ],
+            [sg.Text('  ')],
+            [sg.Text('Vendas registradas', font=('Arial', 12, 'bold'))],
+            [sg.Table(values=vendas['lista'], headings=vendas['colunas'], max_col_width=35,
+                      auto_size_columns=True,
+                      display_row_numbers=False,
+                      justification='center',
+                      num_rows=5,
+                      key='vendas_table',
+                      row_height=35,
+                      tooltip='Vendas no período')]
+            if len(vendas['lista']) else [sg.Text('Não existem vendas cadastradas.')],
             [sg.Text('   ')],
             button_group,
         ]
