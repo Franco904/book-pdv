@@ -1,5 +1,6 @@
 import datetime
 
+from src.domain.models.funcionario import Funcionario
 from src.domain.models.venda_produtos import VendaProduto
 
 
@@ -8,6 +9,7 @@ class Venda:
             self,
             id: int,
             id_caixa_operador: int,
+            funcionario: Funcionario,
             data_horario: datetime,
             valor_pago: float,
             valor_troco: float,
@@ -15,7 +17,8 @@ class Venda:
             venda_produtos: [VendaProduto],
     ):
         self.__id = None
-        self.__caixa_operador = None
+        self.__id_caixa_operador = None
+        self.__funcionario = None
         self.__data_horario = None
         self.__valor_pago = None
         self.__valor_troco = 0
@@ -25,7 +28,9 @@ class Venda:
         if isinstance(id, int):
             self.__id = id
         if isinstance(id_caixa_operador, int):
-            self.__id_caixa_operador = int
+            self.__id_caixa_operador = id_caixa_operador
+        if isinstance(funcionario, Funcionario):
+            self.__funcionario = funcionario
         if isinstance(data_horario, datetime.datetime):
             self.__data_horario = data_horario
         if isinstance(valor_pago, float):
@@ -46,6 +51,10 @@ class Venda:
         return self.__id_caixa_operador
 
     @property
+    def funcionario(self):
+        return self.__funcionario
+
+    @property
     def data_horario(self):
         return self.__data_horario
 
@@ -64,3 +73,6 @@ class Venda:
     @property
     def venda_produtos(self):
         return self.__venda_produtos
+
+    def valor_total(self):
+        return self.__valor_pago - self.__valor_troco

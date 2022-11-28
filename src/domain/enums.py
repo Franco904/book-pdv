@@ -266,3 +266,11 @@ class PaisEnum(Enum):
     YE = "Yemen"
     ZM = "Zâmbia"
     ZW = "Zimbabwe"
+
+
+class FiltroRelatorioVendasIntervaloEnum(Enum):
+    ultima_semana = "'7' DAY"
+    ultimo_mes = "'1' MONTH"
+    ultimos_3_meses = "'3' MONTH"
+    ultimo_ano = "'1' YEAR"
+    ultimos_5_anos = "'5' YEAR"
