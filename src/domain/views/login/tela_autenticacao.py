@@ -4,7 +4,7 @@ import PySimpleGUI as sg
 
 from src.domain.exceptions.email_invalido_exception import EmailInvalidoException
 from src.domain.exceptions.entrada_vazia_exception import EntradaVaziaException
-from src.domain.views.tela_abstrata import Tela
+from src.domain.views.shared.tela_abstrata import Tela
 
 
 class TelaLogin(Tela):
