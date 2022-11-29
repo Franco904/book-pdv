@@ -6,12 +6,11 @@ from src.data.dao.caixa_dao import CaixaDAO
 from src.data.dao.caixas_operadores_dao import CaixasOperadoresDAO
 from src.domain.controllers.controlador_painel_caixa import ControladorPainelCaixa
 from src.domain.enums import StatusCaixaAberto
-from src.domain.exceptions.abrir_caixa_exception import AbrirCaixaException
 from src.domain.models.caixa import Caixa
 from src.domain.models.caixa_operador import CaixaOperador
 from src.domain.models.funcionario import Funcionario
 from src.domain.views.abrir_caixa.tela_abrir_caixa import TelaAbrirCaixa
-from src.domain.views.tela_confirmacao import TelaConfirmacao
+from src.domain.views.shared.tela_confirmacao import TelaConfirmacao
 
 
 class ControladorAbrirCaixa:

@@ -11,8 +11,8 @@ from src.domain.models.supervisor import Supervisor
 from src.domain.views.funcionarios.tela_busca_funcionario import TelaBuscaFuncionario
 from src.domain.views.funcionarios.tela_cadastrar_funcionario import TelaCadastroFuncionario
 from src.domain.views.funcionarios.tela_funcionarios import TelaFuncionarios
-from src.domain.views.tela_confirmacao import TelaConfirmacao
-from src.domain.views.tela_lista_entidades import TelaListaEntidades
+from src.domain.views.shared.tela_confirmacao import TelaConfirmacao
+from src.domain.views.shared.tela_lista_entidades import TelaListaEntidades
 
 
 class ControladorFuncionarios:
@@ -36,7 +36,7 @@ class ControladorFuncionarios:
 
     def cadastrar_funcionario(self) -> None:
         self.__tela_cadastro_funcionario.init_components()
-        botao, dados = self.__tela_cadastro_funcionario.tela_opcoes()
+        botao, dados = self.__tela_cadastro_funcionario.open()
 
         if botao == 'enviar':
             try:

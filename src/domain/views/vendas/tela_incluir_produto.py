@@ -1,6 +1,6 @@
 from src.domain.exceptions.entrada_vazia_exception import EntradaVaziaException
 from src.domain.exceptions.quantidade_invalida_exception import QuantidadeInvalidaException
-from src.domain.views.tela_abstrata import Tela
+from src.domain.views.shared.tela_abstrata import Tela
 import PySimpleGUI as sg
 
 class TelaIncluirProduto(Tela):

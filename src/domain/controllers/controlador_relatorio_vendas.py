@@ -12,7 +12,7 @@ from src.domain.models.venda_produtos import VendaProduto
 from src.domain.views.relatorio_vendas.tela_mais_vendidos import TelaProdutosMaisVendidos
 from src.domain.views.relatorio_vendas.tela_relatorio_vendas import TelaRelatorioVendas
 from src.domain.views.relatorio_vendas.tela_venda_produtos import TelaVendaProdutos
-from src.domain.views.tela_buscar_venda import TelaBuscaVenda
+from src.domain.views.shared.tela_buscar_venda import TelaBuscaVenda
 
 
 class ControladorRelatorioVendas:
@@ -111,7 +111,7 @@ class ControladorRelatorioVendas:
             f" R$ {operador_com_mais_vendas['total']}" if round(operador_com_mais_vendas['total'], 2) is not None else ' R$ 0.0',
         )
 
-    def abre_produtos_venda(self) -> None:
+    def abrir_produtos_venda(self) -> None:
         self.__tela_buscar_venda.init_components()
         botao_busca, id_venda = self.__tela_buscar_venda.open()
         self.__tela_buscar_venda.close()
@@ -141,7 +141,7 @@ class ControladorRelatorioVendas:
             except VendaNaoEncontradaException as v:
                 self.__tela_buscar_venda.show_message('Venda não encontrada', v)
 
-    def abre_mais_vendidos(self) -> None:
+    def abrir_mais_vendidos(self) -> None:
         colunas = ['Código', 'Título', 'Descrição', 'Receita Total (R$)', 'Quantidade']
 
         produtos: [ProdutoRelatorio] = self.__produto_dao.get_most_sold_in_period(filtroIntervalo=self.__current_filter)
@@ -165,8 +165,8 @@ class ControladorRelatorioVendas:
 
     def abre_tela(self) -> None:
         opcoes = {
-            'venda_produtos': self.abre_produtos_venda,
-            'mais_vendidos': self.abre_mais_vendidos,
+            'venda_produtos': self.abrir_produtos_venda,
+            'mais_vendidos': self.abrir_mais_vendidos,
         }
 
         while True:

@@ -1,4 +1,4 @@
-from src.domain.views.tela_abstrata import Tela
+from src.domain.views.shared.tela_abstrata import Tela
 import PySimpleGUI as sg
 from src.domain.exceptions.senha_invalida_exception import SenhaInvalidaException
 from src.domain.exceptions.senhas_diferentes_exception import SenhasDiferentesException

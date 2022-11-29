@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 
 from src.domain.models.caixa import Caixa
-from src.domain.views.tela_abstrata import Tela
+from src.domain.views.shared.tela_abstrata import Tela
 
 
 class TelaAbrirCaixa(Tela):

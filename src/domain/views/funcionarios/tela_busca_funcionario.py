@@ -1,4 +1,4 @@
-from src.domain.views.tela_abstrata import Tela
+from src.domain.views.shared.tela_abstrata import Tela
 from src.domain.exceptions.cpf_invalido_exception import CPFInvalidoException
 from src.domain.exceptions.entrada_vazia_exception import EntradaVaziaException
 from src.domain.exceptions.cpf_inexistente import CPFInexistenteException

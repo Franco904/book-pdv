@@ -36,7 +36,7 @@ class CaixaDAO(AbstractDAO):
 
     def persist_entity(self, caixa: Caixa) -> None:
         table = super().get_table()
-        columns = "id, data_horario_criacao, saldo"
+        columns = "id, data_horario_criacao, saldo, aberto, ativo"
 
         super().persist(
             f""" INSERT INTO {table} ({columns}) VALUES (%s, %s, %s)""",
@@ -44,8 +44,13 @@ class CaixaDAO(AbstractDAO):
                 caixa.id,
                 caixa.data_horario_criacao,
                 caixa.saldo,
+                'false',
+                'true',
             ),
         )
+
+    def inactivate_entity(self, id: int):
+        super().update("id", id, 'ativo', 'false')
 
     def delete_entity(self, id: int) -> None:
         super().delete("id", id)
