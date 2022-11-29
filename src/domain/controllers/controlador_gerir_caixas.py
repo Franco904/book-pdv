@@ -7,10 +7,10 @@ from src.data.dao.caixas_operadores_dao import CaixasOperadoresDAO
 from src.domain.exceptions.caixas.caixa_ja_cadastrado_exception import CaixaJaCadastradoException
 from src.domain.exceptions.lista_vazia_exception import ListaVaziaException
 from src.domain.models.caixa import Caixa
-from src.domain.views.gerir_caixa.tela_aberturas_caixa import TelaAberturasCaixa
-from src.domain.views.gerir_caixa.tela_busca_caixa import TelaBuscarCaixa
-from src.domain.views.gerir_caixa.tela_cadastro_caixa import TelaCadastroCaixa
-from src.domain.views.gerir_caixa.tela_gerir_caixa import TelaGerirCaixas
+from src.domain.views.gerir_caixas.tela_aberturas_caixa import TelaAberturasCaixa
+from src.domain.views.gerir_caixas.tela_busca_caixa import TelaBuscarCaixa
+from src.domain.views.gerir_caixas.tela_cadastro_caixa import TelaCadastroCaixa
+from src.domain.views.gerir_caixas.tela_gerir_caixas import TelaGerirCaixas
 from src.domain.views.shared.tela_confirmacao import TelaConfirmacao
 from src.domain.views.shared.tela_movimentacoes_caixa import TelaMovimentacoesCaixa
 
