@@ -34,12 +34,24 @@ class CaixaDAO(AbstractDAO):
         caixa = None if row is None else CaixaDAO.__parse_caixa(row)
         return caixa
 
+    def get_ativo_by_id(self, id: int) -> Caixa | None:
+        table = super().get_table()
+        custom_query = f"SELECT * FROM {table} WHERE id = '{id}' AND ativo = 'true'"
+
+        row = super().get_by_pk('', 0, custom_query)
+
+        caixa = None if row is None else CaixaDAO.__parse_caixa(row)
+        return caixa
+
     def persist_entity(self, caixa: Caixa) -> None:
         table = super().get_table()
         columns = "id, data_horario_criacao, saldo, aberto, ativo"
 
+        print(caixa.id)
+        print(caixa.saldo)
+
         super().persist(
-            f""" INSERT INTO {table} ({columns}) VALUES (%s, %s, %s)""",
+            f""" INSERT INTO {table} ({columns}) VALUES (%s, %s, %s, %s, %s)""",
             (
                 caixa.id,
                 caixa.data_horario_criacao,

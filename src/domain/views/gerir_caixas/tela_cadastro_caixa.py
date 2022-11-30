@@ -16,11 +16,11 @@ class TelaCadastroCaixa(Tela):
             [sg.Text('Saldo inicial:', size=(10, 1)), sg.InputText(key='saldo', size=(40, 1))],
 
             [sg.Text('       ')],
-            [sg.Cancel('Voltar', button_color='gray', key='voltar', size=(12, 1)),
+            [sg.Push(), sg.Cancel('Voltar', button_color='gray', key='voltar', size=(12, 1)),
              sg.Submit('Enviar', key='enviar', button_color='green', size=(12, 1))]
         ]
 
-        super().__init__(sg.Window('Novo caixa', layout=layout, resizable=False, finalize=True), (400, 200))
+        super().__init__(sg.Window('Novo caixa', layout=layout, resizable=False, finalize=True), (400, 150))
 
     def open(self) -> tuple:
         while True:

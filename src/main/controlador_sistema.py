@@ -118,6 +118,7 @@ class ControladorSistema:
         self.__controladores['gerir_caixas'] = ControladorGerirCaixas(
             self.__daos['caixa_dao'],
             self.__daos['caixas_operadores_dao'],
+            self.__daos['funcionario_dao'],
         )
         self.__controladores["inicio"] = ControladorInicio(
             self,
