@@ -1,12 +1,17 @@
 import datetime
+
+import PySimpleGUI as sg
+
 from src.data.dao.caixa_dao import CaixaDAO
 from src.data.dao.caixas_operadores_dao import CaixasOperadoresDAO
 from src.data.dao.sangrias_dao import SangriasDAO
 from src.domain.controllers.controlador_vendas import ControladorVendas
 from src.domain.models.caixa_operador import CaixaOperador
 from src.domain.models.funcionario import Funcionario
+from src.domain.models.movimentacao_caixa import MovimentacaoCaixa
 from src.domain.views.painel_caixa.tela_fechar_caixa import TelaFecharCaixa
 from src.domain.views.painel_caixa.tela_painel_caixa import TelaPainelCaixa
+from src.domain.views.shared.tela_movimentacoes_caixa import TelaMovimentacoesCaixa
 
 
 class ControladorPainelCaixa:
@@ -21,6 +26,7 @@ class ControladorPainelCaixa:
     ) -> None:
         self.__tela_painel_caixa = TelaPainelCaixa()
         self.__tela_fechar_caixa = TelaFecharCaixa()
+        self.__tela_movimentacoes_caixa = TelaMovimentacoesCaixa()
 
         self.__controlador_sistema = controlador_sistema
         self.__controlador_vendas = None
@@ -31,6 +37,7 @@ class ControladorPainelCaixa:
 
         self.__caixa_operador: CaixaOperador | None = None
         self.__funcionario_logado: Funcionario | None = None
+        self.__movimentacoes_todas = []
 
         if isinstance(caixa_dao, CaixaDAO):
             self.__caixa_dao = caixa_dao
@@ -44,6 +51,7 @@ class ControladorPainelCaixa:
             self.__controlador_vendas = controlador_vendas
 
     def abrir_vendas(self) -> None:
+        # Abre módulo de vendas
         self.__controlador_vendas.abre_tela()
         pass
 
@@ -52,10 +60,41 @@ class ControladorPainelCaixa:
         pass
 
     def abrir_movimentacoes(self) -> None:
-        # Abre visualização das movimentações do caixa
-        pass
+        movimentacoes = self.__caixas_operadores_dao.get_movimentacoes_by_caixa_id(self.__caixa_operador.caixa.id)
+
+        colunas = [
+            'Tipo',
+            'Código',
+            'Data de fechamento',
+            'Total movimentado (R$)',
+            'Observação',
+        ]
+
+        self.__movimentacoes_todas = self.__parse_movimentacoes_to_show(movimentacoes)
+
+        while True:
+            self.__tela_movimentacoes_caixa.init_components({
+                'colunas': colunas,
+                'lista': self.__movimentacoes_todas,
+            })
+
+            opcao_escolhida = self.__tela_movimentacoes_caixa.open(self.__handle_movimentacao_filter_change)
+
+            if opcao_escolhida in ('voltar', None, sg.WIN_CLOSED):
+                self.__tela_movimentacoes_caixa.close()
+                break
+
+    def __handle_movimentacao_filter_change(self, filtroMovimentacao: str) -> None:
+        if filtroMovimentacao == 'Todas':
+            return self.__tela_movimentacoes_caixa.update_component('movimentacoes_table', self.__movimentacoes_todas)
+
+        movimentacoes = self.__movimentacoes_todas
+        movimentacoes_filtered = [m for m in movimentacoes if f'{m[0]}s' == filtroMovimentacao]
+
+        self.__tela_movimentacoes_caixa.update_component('movimentacoes_table', movimentacoes_filtered)
 
     def fechar_caixa(self) -> bool | None:
+        # Fechamento de caixa
         dados_caixa = {
             'id_caixa': self.__caixa_operador.caixa.id,
             'data_horario_fechamento': datetime.datetime.now(),
@@ -146,3 +185,12 @@ class ControladorPainelCaixa:
 
             if saiu:
                 break
+
+    def __parse_movimentacoes_to_show(self, movimentacoes: [MovimentacaoCaixa]) -> list:
+        return [[
+            movimentacao.tipo,
+            movimentacao.id,
+            movimentacao.data_horario,
+            round(movimentacao.movimentacao_total, 2),
+            ' - ' if movimentacao.observacao in ('', None) else movimentacao.observacao,
+        ] for movimentacao in movimentacoes]
