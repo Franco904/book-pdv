@@ -118,10 +118,6 @@ class CaixasOperadoresDAO(AbstractDAO):
         rows_vendas = super().get_all(custom_query_vendas)
         rows_sangrias = super().get_all(custom_query_sangrias)
 
-        # con, cursor = self.__database.connect()
-        # cursor.execute(custom_query_vendas)
-        # print([desc[0] for desc in cursor.description])
-
         movimentacoes = [
             CaixasOperadoresDAO.__parse_movimentacao_caixa(row_venda, MovimentacaoCaixaEnum.venda)
             for row_venda in rows_vendas
@@ -172,7 +168,6 @@ class CaixasOperadoresDAO(AbstractDAO):
 
     def get_saldo_fechamento(self, id_caixa_operador: int, saldo_abertura: float) -> float:
         table = super().get_table()
-        print(id_caixa_operador)
         custom_query_vendas = f"""
                                     SELECT SUM(v.valor_pago - v.valor_troco)
                                     FROM {table} AS co

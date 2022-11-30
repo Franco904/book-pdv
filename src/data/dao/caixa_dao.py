@@ -47,9 +47,6 @@ class CaixaDAO(AbstractDAO):
         table = super().get_table()
         columns = "id, data_horario_criacao, saldo, aberto, ativo"
 
-        print(caixa.id)
-        print(caixa.saldo)
-
         super().persist(
             f""" INSERT INTO {table} ({columns}) VALUES (%s, %s, %s, %s, %s)""",
             (

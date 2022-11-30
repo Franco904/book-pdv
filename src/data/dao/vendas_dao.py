@@ -115,7 +115,7 @@ class VendasDAO(AbstractDAO):
 
         row = super().get_by_pk('', 0, custom_query)
 
-        return {'nome': row[0], 'total': row[1]} if row is not None else {'nome': '', 'total': ''}
+        return {'nome': row[0], 'total': round(row[1], 2)} if row is not None else {'nome': '', 'total': ''}
 
     def get_by_id_with_products(self, id_venda: int) -> [Venda]:
         table = super().get_table()

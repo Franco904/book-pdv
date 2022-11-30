@@ -181,7 +181,7 @@ class ControladorRelatorioVendas:
             else:
                 opcoes[opcao_escolhida]()
 
-    def __parse_vendas_to_show(self, vendas: list) -> list:
+    def __parse_vendas_to_show(self, vendas: [Venda]) -> list:
         return [[
             venda.id,
             venda.data_horario.strftime("%d/%m/%Y, %H:%M"),
@@ -189,7 +189,7 @@ class ControladorRelatorioVendas:
             round(venda.valor_troco, 2),
             round(venda.valor_total(), 2),
             'Nenhuma observação' if venda.observacao is not None else venda.observacao,
-            venda.funcionario.nome,
+            venda.operador.nome,
         ] for venda in vendas]
 
     def __parse_produtos_venda_to_show(self, venda_produtos: [VendaProduto]) -> list:
