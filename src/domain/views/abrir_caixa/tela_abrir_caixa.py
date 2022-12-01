@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 
 from src.domain.models.caixa import Caixa
-from src.domain.views.tela_abstrata import Tela
+from src.domain.views.shared.tela_abstrata import Tela
 
 
 class TelaAbrirCaixa(Tela):
@@ -14,7 +14,9 @@ class TelaAbrirCaixa(Tela):
 
         sg.theme('Reddit')
         layout = [
-            [sg.Combo(caixas_ids, enable_events=True, readonly=True, size=(40, 1), key='caixa_id')],
+            [sg.Combo(
+                caixas_ids, enable_events=True, readonly=True, size=(40, 1), key='caixa_id', default_value='Caixa',
+            )],
 
             [sg.Text('Data e horário', size=(24, 0), font=('', 10)),
              sg.Text(data_abertura, size=(24, 0), font=('', 10), key='data_abertura')],

@@ -23,6 +23,15 @@ class FuncionarioDAO(AbstractDAO):
 
         return funcionarios
 
+    def get_all_by_cargo(self, id_cargo) -> [Funcionario]:
+        table = super().get_table()
+        custom_query = f"SELECT * FROM {table} WHERE id_cargo = '{id_cargo}'"
+
+        rows = super().get_all(custom_query)
+        funcionarios = list(map(lambda row: FuncionarioDAO.parse_funcionario(row), rows))
+
+        return funcionarios
+
     def get_by_cpf(self, cpf: str) -> Funcionario | None:
         row = super().get_by_pk("cpf", cpf)
 

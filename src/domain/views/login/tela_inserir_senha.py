@@ -1,5 +1,5 @@
 from src.domain.exceptions.entrada_vazia_exception import EntradaVaziaException
-from src.domain.views.tela_abstrata import Tela
+from src.domain.views.shared.tela_abstrata import Tela
 import PySimpleGUI as sg
 
 

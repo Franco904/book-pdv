@@ -1,6 +1,6 @@
-import datetime
+from datetime import datetime
 
-from src.domain.models.funcionario import Funcionario
+from src.domain.models.operador_caixa import OperadorCaixa
 from src.domain.models.venda_produtos import VendaProduto
 
 
@@ -9,7 +9,7 @@ class Venda:
             self,
             id: int,
             id_caixa_operador: int,
-            funcionario: Funcionario,
+            operador: OperadorCaixa,
             data_horario: datetime,
             valor_pago: float,
             valor_troco: float,
@@ -18,7 +18,7 @@ class Venda:
     ):
         self.__id = None
         self.__id_caixa_operador = None
-        self.__funcionario = None
+        self.__operador = None
         self.__data_horario = None
         self.__valor_pago = None
         self.__valor_troco = 0
@@ -29,9 +29,9 @@ class Venda:
             self.__id = id
         if isinstance(id_caixa_operador, int):
             self.__id_caixa_operador = id_caixa_operador
-        if isinstance(funcionario, Funcionario):
-            self.__funcionario = funcionario
-        if isinstance(data_horario, datetime.datetime):
+        if isinstance(operador, OperadorCaixa):
+            self.__operador = operador
+        if isinstance(data_horario, datetime):
             self.__data_horario = data_horario
         if isinstance(valor_pago, float):
             self.__valor_pago = valor_pago
@@ -43,36 +43,36 @@ class Venda:
             self.__venda_produtos = venda_produtos
 
     @property
-    def id(self):
+    def id(self) -> int:
         return self.__id
 
     @property
-    def id_caixa_operador(self):
+    def id_caixa_operador(self) -> int:
         return self.__id_caixa_operador
 
     @property
-    def funcionario(self):
-        return self.__funcionario
+    def operador(self) -> OperadorCaixa:
+        return self.__operador
 
     @property
-    def data_horario(self):
+    def data_horario(self) -> datetime:
         return self.__data_horario
 
     @property
-    def valor_pago(self):
+    def valor_pago(self) -> float:
         return self.__valor_pago
 
     @property
-    def valor_troco(self):
+    def valor_troco(self) -> float:
         return self.__valor_troco
 
     @property
-    def observacao(self):
+    def observacao(self) -> str:
         return self.__observacao
 
     @property
-    def venda_produtos(self):
+    def venda_produtos(self) -> [VendaProduto]:
         return self.__venda_produtos
 
-    def valor_total(self):
+    def valor_total(self) -> float:
         return self.__valor_pago - self.__valor_troco

@@ -274,3 +274,8 @@ class FiltroRelatorioVendasIntervaloEnum(Enum):
     ultimos_3_meses = "'3' MONTH"
     ultimo_ano = "'1' YEAR"
     ultimos_5_anos = "'5' YEAR"
+
+
+class MovimentacaoCaixaEnum(Enum):
+    venda = 'Venda'
+    sangria = 'Sangria'

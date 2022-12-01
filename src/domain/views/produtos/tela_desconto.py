@@ -1,4 +1,4 @@
-from src.domain.views.tela_abstrata import Tela
+from src.domain.views.shared.tela_abstrata import Tela
 from src.domain.exceptions.entrada_vazia_exception import EntradaVaziaException
 from src.domain.exceptions.desconto_invalido_exception import DescontoInvalidoException
 import PySimpleGUI as sg

@@ -2,7 +2,7 @@ import PySimpleGUI as sg
 from src.domain.models.venda import Venda
 from src.data.dao.vendas_dao import VendasDAO
 from src.data.dao.vendas_produtos_dao import VendasProdutoDAO
-from src.domain.views.tela_buscar_venda import TelaBuscaVenda
+from src.domain.views.shared.tela_buscar_venda import TelaBuscaVenda
 from src.domain.views.vendas.tela_cadastrar_venda import TelaCadastroVenda
 from src.domain.views.vendas.tela_confirmacao_supervisor import TelaConfirmacaoSupervisor
 from src.domain.views.vendas.tela_incluir_produto import TelaIncluirProduto

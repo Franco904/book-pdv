@@ -1,10 +1,10 @@
 from src.domain.exceptions.codigo_invalido_exception import CodigoInvalidoException
 from src.domain.exceptions.entrada_vazia_exception import EntradaVaziaException
-from src.domain.views.tela_abstrata import Tela
+from src.domain.views.shared.tela_abstrata import Tela
 import PySimpleGUI as sg
 
 
-class TelaBuscaVenda(Tela):
+class TelaBuscarCaixa(Tela):
     def __init__(self) -> None:
         pass
 
@@ -12,14 +12,14 @@ class TelaBuscaVenda(Tela):
         sg.theme("Reddit")
         layout = [
             [sg.Text("   ")],
-            [sg.Text("Código da Venda"),
-             sg.InputText(key='codigo_venda', size=(22, 1))],
+            [sg.Text("Código do Caixa"),
+             sg.InputText(key='codigo_caixa', size=(22, 1))],
             [sg.Text("   ")],
             [sg.Cancel("Voltar", key='voltar', button_color='gray', size=(9, 1)),
              sg.Submit("Buscar", key='buscar', size=(20, 1))]
         ]
 
-        super().__init__(sg.Window("Buscar Venda", layout=layout, resizable=False, modal=True, finalize=True,
+        super().__init__(sg.Window("Buscar Caixa", layout=layout, resizable=False, modal=True, finalize=True,
                                    element_justification='c'), (300, 80))
 
     def open(self) -> tuple:
@@ -27,10 +27,10 @@ class TelaBuscaVenda(Tela):
             botao, valores = super().read()
             if botao == 'buscar':
                 try:
-                    if not valores['codigo_venda'] == '':
-                        if not valores['codigo_venda'].isnumeric():
-                            raise CodigoInvalidoException('venda')
-                        valores['codigo_venda'] = int(valores['codigo_venda'])
+                    if not valores['codigo_caixa'] == '':
+                        if not valores['codigo_caixa'].isnumeric():
+                            raise CodigoInvalidoException('caixa')
+                        valores['codigo_caixa'] = int(valores['codigo_caixa'])
                         break
                     else:
                         raise EntradaVaziaException
@@ -44,4 +44,4 @@ class TelaBuscaVenda(Tela):
                 super().close()
                 return 'voltar', 0
 
-        return botao, valores['codigo_venda']
+        return botao, valores['codigo_caixa']
