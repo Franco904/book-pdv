@@ -30,7 +30,7 @@ class ControladorPainelCaixa:
         self.__tela_painel_caixa = TelaPainelCaixa()
         self.__tela_fechar_caixa = TelaFecharCaixa()
         self.__tela_movimentacoes_caixa = TelaMovimentacoesCaixa()
-        self.__tela_sangrias = TelaCadastrarSangrias()
+        self.__tela_cadastrar_sangrias = TelaCadastrarSangrias()
         self.__tela_confirmacao = TelaConfirmacao()
 
         self.__controlador_sistema = controlador_sistema
