@@ -12,6 +12,9 @@ from src.domain.models.movimentacao_caixa import MovimentacaoCaixa
 from src.domain.views.painel_caixa.tela_fechar_caixa import TelaFecharCaixa
 from src.domain.views.painel_caixa.tela_painel_caixa import TelaPainelCaixa
 from src.domain.views.shared.tela_movimentacoes_caixa import TelaMovimentacoesCaixa
+from src.domain.views.sangrias.tela_cadastrar_sangria import TelaCadastrarSangrias
+from src.domain.views.shared.tela_confirmacao import TelaConfirmacao
+from src.domain.models.sangria import Sangria
 
 
 class ControladorPainelCaixa:
@@ -27,6 +30,8 @@ class ControladorPainelCaixa:
         self.__tela_painel_caixa = TelaPainelCaixa()
         self.__tela_fechar_caixa = TelaFecharCaixa()
         self.__tela_movimentacoes_caixa = TelaMovimentacoesCaixa()
+        self.__tela_cadastrar_sangrias = TelaCadastrarSangrias()
+        self.__tela_confirmacao = TelaConfirmacao()
 
         self.__controlador_sistema = controlador_sistema
         self.__controlador_vendas = None
@@ -55,9 +60,35 @@ class ControladorPainelCaixa:
         self.__controlador_vendas.abre_tela()
         pass
 
-    def abrir_sangrias(self) -> None:
-        # Abre módulo de sangrias
-        pass
+    def realizar_sangrias(self) -> None:
+        data_atual = datetime.datetime.now()
+        data_string = data_atual.strftime("%Y-%m-%d %H:%M:%S")
+
+        # Necessario buscar o saldo atualizado a cada sangria nova, por isso a query
+        saldo_atual = self.__caixa_dao.get_by_id(self.__caixa_operador.caixa.id).saldo
+
+        self.__tela_cadastrar_sangrias.init_components(data_string, saldo_atual)
+        botao, valores = self.__tela_cadastrar_sangrias.open(saldo_atual)
+        self.__tela_cadastrar_sangrias.close()
+
+        if botao == 'enviar':
+            if valores is not None:
+                self.__tela_confirmacao.init_components()
+                botao_confirmacao = self.__tela_confirmacao.open()
+                self.__tela_confirmacao.close()
+                if botao_confirmacao == 'confirmar':
+                    new_id = self.__sangrias_dao.get_max_id() + 1
+                    nova_sangria = Sangria(
+                        new_id,
+                        self.__caixa_operador.id,
+                        data_string,
+                        valores['valor_sangria'],
+                        valores['observacao_sangria']
+                    )
+
+                    self.__sangrias_dao.persist_entity(nova_sangria)
+                    novo_saldo = saldo_atual - valores['valor_sangria']
+                    self.__caixa_dao.update_entity(self.__caixa_operador.caixa.id, 'saldo', novo_saldo)
 
     def abrir_movimentacoes(self) -> None:
         movimentacoes = self.__caixas_operadores_dao.get_movimentacoes_by_caixa_id(self.__caixa_operador.caixa.id)
@@ -65,7 +96,7 @@ class ControladorPainelCaixa:
         colunas = [
             'Tipo',
             'Código',
-            'Data de fechamento',
+            'Data',
             'Total movimentado (R$)',
             'Observação',
         ]
@@ -165,7 +196,7 @@ class ControladorPainelCaixa:
 
         opcoes = {
             'vendas': self.abrir_vendas,
-            'sangrias': self.abrir_sangrias,
+            'sangrias': self.realizar_sangrias,
             'movimentacoes': self.abrir_movimentacoes,
             'fechar_caixa': self.fechar_caixa,
         }
