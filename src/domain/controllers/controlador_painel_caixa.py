@@ -67,9 +67,9 @@ class ControladorPainelCaixa:
         # Necessario buscar o saldo atualizado a cada sangria nova, por isso a query
         saldo_atual = self.__caixa_dao.get_by_id(self.__caixa_operador.caixa.id).saldo
 
-        self.__tela_sangrias.init_components(data_string, saldo_atual)
-        botao, valores = self.__tela_sangrias.open(saldo_atual)
-        self.__tela_sangrias.close()
+        self.__tela_cadastrar_sangrias.init_components(data_string, saldo_atual)
+        botao, valores = self.__tela_cadastrar_sangrias.open(saldo_atual)
+        self.__tela_cadastrar_sangrias.close()
 
         if botao == 'enviar':
             if valores is not None:
