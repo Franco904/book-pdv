@@ -183,7 +183,7 @@ class ControladorGerirCaixas:
                 colunas = [
                     'Tipo',
                     'Código',
-                    'Data de fechamento',
+                    'Data',
                     'Total movimentado (R$)',
                     'Observação',
                     'Operador',
