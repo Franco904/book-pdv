@@ -183,7 +183,7 @@ class ControladorGerirCaixas:
                 colunas = [
                     'Tipo',
                     'Código',
-                    'Data de fechamento',
+                    'Data',
                     'Total movimentado (R$)',
                     'Observação',
                     'Operador',
@@ -250,7 +250,7 @@ class ControladorGerirCaixas:
         return [[
             movimentacao.tipo,
             movimentacao.id,
-            movimentacao.data_horario,
+            movimentacao.data_horario.strftime("%d/%m/%Y, %H:%M"),
             round(movimentacao.movimentacao_total, 2),
             ' - ' if movimentacao.observacao in ('', None) else movimentacao.observacao,
             movimentacao.operador.nome,

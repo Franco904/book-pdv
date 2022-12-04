@@ -58,14 +58,15 @@ class ControladorPainelCaixa:
     def abrir_vendas(self) -> None:
         # Abre módulo de vendas
         self.__controlador_vendas.abre_tela()
-        pass
+
+        # Atualiza registro de caixa aberto com as vendas registradas
+        self.__caixa_operador = self.__caixas_operadores_dao.get_by_id(self.__caixa_operador.id)
 
     def realizar_sangrias(self) -> None:
         data_atual = datetime.datetime.now()
-        data_string = data_atual.strftime("%Y-%m-%d %H:%M:%S")
+        data_string = data_atual.strftime("%d/%m/%Y, %H:%M")
 
-        # Necessario buscar o saldo atualizado a cada sangria nova, por isso a query
-        saldo_atual = self.__caixa_dao.get_by_id(self.__caixa_operador.caixa.id).saldo
+        saldo_atual = self.__caixa_operador.caixa.saldo
 
         self.__tela_cadastrar_sangrias.init_components(data_string, saldo_atual)
         botao, valores = self.__tela_cadastrar_sangrias.open(saldo_atual)
@@ -88,6 +89,8 @@ class ControladorPainelCaixa:
 
                     self.__sangrias_dao.persist_entity(nova_sangria)
                     novo_saldo = saldo_atual - valores['valor_sangria']
+
+                    self.__caixa_operador.caixa.saldo = novo_saldo
                     self.__caixa_dao.update_entity(self.__caixa_operador.caixa.id, 'saldo', novo_saldo)
 
     def abrir_movimentacoes(self) -> None:
@@ -129,10 +132,7 @@ class ControladorPainelCaixa:
         dados_caixa = {
             'id_caixa': self.__caixa_operador.caixa.id,
             'data_horario_fechamento': datetime.datetime.now(),
-            'saldo_fechamento': round(self.__caixas_operadores_dao.get_saldo_fechamento(
-                self.__caixa_operador.id,
-                self.__caixa_operador.saldo_abertura,
-            ), 2)
+            'saldo_fechamento': self.__caixa_operador.caixa.saldo,
         }
 
         self.__tela_fechar_caixa.init_components(dados_caixa)
@@ -141,7 +141,7 @@ class ControladorPainelCaixa:
             opcao, dados_tela = self.__tela_fechar_caixa.open()
 
             if opcao == 'fechar_caixa':
-                botao_confirmacao = self.__tela_fechar_caixa.show_form_confirmation('Desejas fechar o caixa?', '')
+                botao_confirmacao = self.__tela_fechar_caixa.show_form_confirmation('Deseja fechar o caixa?', '')
 
                 if botao_confirmacao == 'OK':
                     # Fecha o caixa
@@ -221,7 +221,7 @@ class ControladorPainelCaixa:
         return [[
             movimentacao.tipo,
             movimentacao.id,
-            movimentacao.data_horario,
+            movimentacao.data_horario.strftime("%d/%m/%Y, %H:%M"),
             round(movimentacao.movimentacao_total, 2),
             ' - ' if movimentacao.observacao in ('', None) else movimentacao.observacao,
         ] for movimentacao in movimentacoes]

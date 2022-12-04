@@ -166,35 +166,6 @@ class CaixasOperadoresDAO(AbstractDAO):
         caixa_operador = None if row is None else CaixasOperadoresDAO.__parse_caixa_operador(row)
         return caixa_operador
 
-    def get_saldo_fechamento(self, id_caixa_operador: int, saldo_abertura: float) -> float:
-        table = super().get_table()
-        custom_query_vendas = f"""
-                                    SELECT SUM(v.valor_pago - v.valor_troco)
-                                    FROM {table} AS co
-                                    LEFT OUTER JOIN access_control.vendas AS v
-                                    ON v.id_caixa_operador = co.id
-                                    GROUP BY co.id
-                                    HAVING co.id = '{id_caixa_operador}'
-                              """
-
-        custom_query_sangrias = f"""
-                                    SELECT SUM(s.valor)
-                                    FROM {table} AS co
-                                    LEFT OUTER JOIN access_control.sangrias AS s
-                                    ON s.id_caixa_operador = co.id
-                                    GROUP BY co.id
-                                    HAVING co.id = '{id_caixa_operador}'
-                              """
-
-        row_vendas = super().get_by_pk('', 0, custom_query_vendas)
-        row_sangrias = super().get_by_pk('', 0, custom_query_sangrias)
-
-        total_vendas = row_vendas[0] if row_vendas[0] is not None else 0
-        total_sangrias = row_sangrias[0] if row_sangrias[0] is not None else 0
-
-        saldo_fechamento = saldo_abertura + (total_vendas - total_sangrias)
-        return saldo_fechamento
-
     def get_max_id(self) -> int:
         table = super().get_table()
         custom_query = f"""
