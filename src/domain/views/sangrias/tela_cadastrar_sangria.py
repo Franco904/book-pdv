@@ -15,6 +15,7 @@ class TelaCadastrarSangrias(Tela):
             [sg.Text("Data: "), sg.Text(data)],
             [sg.Text(f'Saldo atual do caixa: {saldo_atual}')],
             [sg.Text("Valor da sangria: "), sg.InputText(key='valor_sangria', size=(10, 1))],
+            [sg.Text("Observação")],
             [sg.Multiline(size=(30, 5), pad=(5, 5), key='observacao_sangria')],
             [sg.Text("  ")],
             [sg.Cancel("Voltar", key='return', button_color='gray', size=(12, 1)),
