@@ -1,9 +1,12 @@
+from datetime import datetime
+
 from src.data.dao.abstract_dao import AbstractDAO
 from src.data.database.database import Database
-from src.domain.enums import TipoProdutoEnum
+from src.domain.enums import TipoProdutoEnum, FiltroRelatorioVendasIntervaloEnum
 from src.domain.models.produto import Produto
 from src.domain.models.livro import Livro
 from src.domain.models.eletronico import Eletronico
+from src.domain.models.produto_relatorio import ProdutoRelatorio
 
 
 class ProdutoDAO(AbstractDAO):
@@ -45,6 +48,37 @@ class ProdutoDAO(AbstractDAO):
 
         produto = None if row is None else ProdutoDAO.parse_produto(row)
         return produto
+
+    def get_most_sold_in_period(
+            self,
+            data_inicio=None,
+            filtroIntervalo=FiltroRelatorioVendasIntervaloEnum.ultima_semana
+    ) -> [ProdutoRelatorio]:
+        table = super().get_table()
+        data_inicio = datetime.now().strftime('%Y-%m-%d') if data_inicio is None else data_inicio
+
+        custom_query = f"""
+                            SELECT * FROM (
+                                SELECT p.id, p.id_tipo_produto, p.titulo, p.descricao,
+                                SUM(p.custo + (((p.margem_lucro - p.desconto) / 100) * p.custo)) AS receita_total,
+                                SUM(vp.quantidade) AS quantidade
+                                FROM {table} AS p
+                                INNER JOIN access_control.vendas_produtos AS vp
+                                ON p.id = vp.id_produto
+                                INNER JOIN access_control.vendas AS v
+                                ON v.id = vp.id_venda
+                                WHERE v.data_horario::date <= '{data_inicio}'
+                                AND v.data_horario::date >= '{data_inicio}'::date - INTERVAL {filtroIntervalo.value}
+                                GROUP BY p.id, p.id_tipo_produto, p.titulo, p.descricao
+                            ) AS s
+                            ORDER BY s.quantidade DESC
+                            LIMIT 5;
+                        """
+
+        rows = super().get_all(custom_query)
+        produtos_relatorio = list(map(lambda row: ProdutoDAO.__parse_produto_relatorio(row), rows))
+
+        return produtos_relatorio
 
     def persist_entity(self, produto: Produto) -> None:
         table = super().get_table()
@@ -133,3 +167,21 @@ class ProdutoDAO(AbstractDAO):
                           margem_lucro,
                           fabricante,
                           desconto)
+
+    @staticmethod
+    def __parse_produto_relatorio(row: dict) -> ProdutoRelatorio:
+        id_produto = row['id']
+        id_tipo_produto = row['id_tipo_produto']
+        titulo = row['titulo']
+        descricao = row['descricao']
+        receita_total = row['receita_total']
+        quantidade = row['quantidade']
+
+        return ProdutoRelatorio(
+            id_produto,
+            id_tipo_produto,
+            titulo,
+            descricao,
+            receita_total,
+            quantidade,
+        )

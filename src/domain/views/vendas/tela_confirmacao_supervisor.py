@@ -1,4 +1,4 @@
-from src.domain.views.tela_abstrata import Tela
+from src.domain.views.shared.tela_abstrata import Tela
 import PySimpleGUI as sg
 
 class TelaConfirmacaoSupervisor(Tela):
@@ -35,6 +35,6 @@ class TelaConfirmacaoSupervisor(Tela):
 
 
 #Remover depois
-tela = TelaConfirmacaoSupervisor()
-tela.init_components('1234123')
-button, values = tela.open()
+# tela = TelaConfirmacaoSupervisor()
+# tela.init_components('1234123')
+# button, values = tela.open()

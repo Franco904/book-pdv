@@ -1,6 +1,6 @@
 import PySimpleGUI as sg
 
-from src.domain.views.tela_abstrata import Tela
+from src.domain.views.shared.tela_abstrata import Tela
 
 
 class TelaPainelCaixa(Tela):
@@ -18,7 +18,7 @@ class TelaPainelCaixa(Tela):
             [sg.Text(id_caixa, size=(20, 1))],
 
             [sg.Submit("Cadastro de vendas", key='vendas', size=(20, 1))],
-            [sg.Submit("Registro de sangrias", key='sangrias', size=(20, 1))],
+            [sg.Submit("Registrar sangria", key='sangrias', size=(20, 1))],
             [sg.Submit("Ver movimentações", key='movimentacoes', size=(20, 1))],
             [sg.Cancel('Fechar caixa', key='fechar_caixa', button_color='green', size=(12, 1))],
             [sg.Text('                 ', size=(20, 1))],

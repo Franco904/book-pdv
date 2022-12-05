@@ -1,6 +1,6 @@
 import PySimpleGUI as sg
 
-from src.domain.views.tela_abstrata import Tela
+from src.domain.views.shared.tela_abstrata import Tela
 
 
 class TelaFecharCaixa(Tela):
@@ -41,7 +41,7 @@ class TelaFecharCaixa(Tela):
     def close(self) -> None:
         super().close()
 
-    def show_form_confirmation(self, titulo: str, msg):
+    def show_form_confirmation(self, titulo: str, msg) -> str:
         while True:
             botao_confirmacao = super().show_form_confirmation(titulo, msg)
 

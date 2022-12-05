@@ -1,6 +1,6 @@
 from src.domain.exceptions.entrada_vazia_exception import EntradaVaziaException
 from src.domain.exceptions.quantidade_invalida_exception import QuantidadeInvalidaException
-from src.domain.views.tela_abstrata import Tela
+from src.domain.views.shared.tela_abstrata import Tela
 import PySimpleGUI as sg
 
 class TelaIncluirProduto(Tela):
@@ -51,6 +51,6 @@ class TelaIncluirProduto(Tela):
 
             return botao
 
-tela = TelaIncluirProduto()
-tela.init_components(quantidade='', produtos='')
-button, values = tela.open()
+# tela = TelaIncluirProduto()
+# tela.init_components(quantidade='', produtos='')
+# button, values = tela.open()

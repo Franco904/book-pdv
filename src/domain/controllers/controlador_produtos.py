@@ -3,7 +3,7 @@ from src.data.dao.produto_dao import ProdutoDAO
 from src.domain.views.produtos.tela_inicial_produtos import TelaIncialProdutos
 from src.domain.views.produtos.tela_cadastrar_produtos import TelaCadastrarProduto
 from src.domain.views.produtos.tela_busca_produto import TelaBuscaProduto
-from src.domain.views.tela_confirmacao import TelaConfirmacao
+from src.domain.views.shared.tela_confirmacao import TelaConfirmacao
 from src.domain.views.produtos.tela_desconto import TelaDesconto
 from src.domain.enums import PaisEnum
 from src.domain.models.livro import Livro

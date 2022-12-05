@@ -19,14 +19,23 @@ class FuncionarioDAO(AbstractDAO):
 
     def get_all(self, custom_query="") -> [Funcionario]:
         rows = super().get_all()
-        funcionarios = list(map(lambda row: FuncionarioDAO.__parse_funcionario(row), rows))
+        funcionarios = list(map(lambda row: FuncionarioDAO.parse_funcionario(row), rows))
+
+        return funcionarios
+
+    def get_all_by_cargo(self, id_cargo) -> [Funcionario]:
+        table = super().get_table()
+        custom_query = f"SELECT * FROM {table} WHERE id_cargo = '{id_cargo}'"
+
+        rows = super().get_all(custom_query)
+        funcionarios = list(map(lambda row: FuncionarioDAO.parse_funcionario(row), rows))
 
         return funcionarios
 
     def get_by_cpf(self, cpf: str) -> Funcionario | None:
         row = super().get_by_pk("cpf", cpf)
 
-        funcionario = None if row is None else FuncionarioDAO.__parse_funcionario(row)
+        funcionario = None if row is None else FuncionarioDAO.parse_funcionario(row)
         return funcionario
 
     def has_opened_caixa(self, cpf: str) -> bool:
@@ -69,7 +78,7 @@ class FuncionarioDAO(AbstractDAO):
         super().update("cpf", cpf, attribute, value)
 
     @staticmethod
-    def __parse_funcionario(row) -> Funcionario | None:
+    def parse_funcionario(row) -> Funcionario | None:
         if row is None:
             return None
 

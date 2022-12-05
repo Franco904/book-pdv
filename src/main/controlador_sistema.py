@@ -14,10 +14,13 @@ from src.data.database.database import Database
 from src.domain.controllers.controlador_abrir_caixa import ControladorAbrirCaixa
 from src.domain.controllers.controlador_autenticacao import ControladorAutenticacao
 from src.domain.controllers.controlador_funcionarios import ControladorFuncionarios
+from src.domain.controllers.controlador_gerir_caixas import ControladorGerirCaixas
 from src.domain.controllers.controlador_inicio import ControladorInicio
 from src.domain.controllers.controlador_painel_caixa import ControladorPainelCaixa
 from src.domain.controllers.controlador_produtos import ControladorProdutos
+from src.domain.controllers.controlador_relatorio_vendas import ControladorRelatorioVendas
 from src.domain.controllers.controlador_vendas import ControladorVendas
+from src.domain.enums import CargoEnum, TipoProdutoEnum
 from src.domain.models.caixa_operador import CaixaOperador
 from src.domain.models.funcionario import Funcionario
 from src.main.tela_home import TelaHome
@@ -91,14 +94,15 @@ class ControladorSistema:
         )
         self.__controladores['vendas'] = ControladorVendas(
             self.__daos['vendas_dao'],
-            self.__daos['vendas-produtos_dao'],
+            self.__daos['vendas_produtos_dao'],
         )
         self.__controladores['painel_caixa'] = ControladorPainelCaixa(
             self,
-            self.__daos["caixa_dao"],
+            self.__daos['caixa_dao'],
             self.__daos['caixas_operadores_dao'],
             self.__daos['sangrias_dao'],
             self.__funcionario_logado,
+            self.__controladores['vendas'],
         )
         self.__controladores['abrir_caixa'] = ControladorAbrirCaixa(
             self.__controladores['painel_caixa'],
@@ -107,23 +111,33 @@ class ControladorSistema:
             self.__funcionario_logado,
         )
         self.__controladores['produtos'] = ControladorProdutos(self.__daos['produto_dao'])
+        self.__controladores['relatorio_vendas'] = ControladorRelatorioVendas(
+            self.__daos['vendas_dao'],
+            self.__daos['produto_dao'],
+        )
+        self.__controladores['gerir_caixas'] = ControladorGerirCaixas(
+            self.__daos['caixa_dao'],
+            self.__daos['caixas_operadores_dao'],
+            self.__daos['funcionario_dao'],
+        )
         self.__controladores["inicio"] = ControladorInicio(
             self,
             self.__controladores['funcionarios'],
             self.__controladores['abrir_caixa'],
+            self.__controladores['gerir_caixas'],
             self.__controladores['produtos'],
+            self.__controladores['relatorio_vendas'],
             self.__daos['funcionario_dao'],
             self.__daos['caixa_dao'],
             self.__funcionario_logado,
         )
 
     def init_inserts(self) -> None:
-        # self.__daos['cargos_dao'].persist_entity(CargoEnum.operador_caixa)
-        # self.__daos['cargos_dao'].persist_entity(CargoEnum.supervisor)
+        self.__daos['cargos_dao'].persist_entity(CargoEnum.operador_caixa)
+        self.__daos['cargos_dao'].persist_entity(CargoEnum.supervisor)
 
-        # self.__daos['tipos_produto_dao'].persist_entity(TipoProdutoEnum.livro)
-        # self.__daos['tipos_produto_dao'].persist_entity(TipoProdutoEnum.eletronico)
-        pass
+        self.__daos['tipos_produto_dao'].persist_entity(TipoProdutoEnum.livro)
+        self.__daos['tipos_produto_dao'].persist_entity(TipoProdutoEnum.eletronico)
 
     def entrar(self) -> None:
         self.__controladores['autenticacao'].abrir_tela_autenticacao()

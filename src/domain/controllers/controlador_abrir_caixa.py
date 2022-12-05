@@ -1,5 +1,4 @@
 import datetime
-from random import randint
 
 import PySimpleGUI as sg
 
@@ -11,7 +10,7 @@ from src.domain.models.caixa import Caixa
 from src.domain.models.caixa_operador import CaixaOperador
 from src.domain.models.funcionario import Funcionario
 from src.domain.views.abrir_caixa.tela_abrir_caixa import TelaAbrirCaixa
-from src.domain.views.tela_confirmacao import TelaConfirmacao
+from src.domain.views.shared.tela_confirmacao import TelaConfirmacao
 
 
 class ControladorAbrirCaixa:
@@ -81,30 +80,35 @@ class ControladorAbrirCaixa:
         # Atualiza na memória os caixas disponíveis para abertura
         self.__caixas = list(filter(lambda caixa: caixa.id != dados['caixa_id'], self.__caixas))
 
-        caixa_operadores_ids = [co.id for co in self.__caixas_operadores_dao.get_all()]
+        try:
+            max_id_stored = self.__caixas_operadores_dao.get_max_id()
+            if max_id_stored is None:
+                max_id_stored = 1
 
-        random_integers = [i for i in range(150)]
-        chooseble_ids = [ri for ri in random_integers if ri not in caixa_operadores_ids]
+            new_id = max_id_stored + 1
 
-        caixa_operador = CaixaOperador(
-            randint(1, len(chooseble_ids) - 1),
-            caixa,
-            self.__funcionario_logado,
-            self.__data_horario_abertura,
-            None,
-            caixa.saldo,
-            float(),
-            StatusCaixaAberto.positivo,
-            dados['observacao_abertura'],
-            '',
-            '',
-        )
+            caixa_operador = CaixaOperador(
+                new_id,
+                caixa,
+                self.__funcionario_logado,
+                self.__data_horario_abertura,
+                None,
+                caixa.saldo,
+                float(),
+                StatusCaixaAberto.positivo,
+                dados['observacao_abertura'],
+                '',
+                '',
+            )
 
-        # Persiste no banco as informações do caixa no momento da abertura
-        self.__caixas_operadores_dao.persist_entity(caixa_operador)
+            # Persiste no banco as informações do caixa no momento da abertura
+            self.__caixas_operadores_dao.persist_entity(caixa_operador)
 
-        # Redireciona operador de caixa para o painel do caixa
-        self.__controlador_painel_caixa.abrir_tela(caixa_operador)
+            # Redireciona operador de caixa para o painel do caixa
+            self.__controlador_painel_caixa.abrir_tela(caixa_operador)
+
+        except Exception as e:
+            self.__tela_caixa.show_message('Erro ao salvar registro', e)
 
     def retornar(self) -> None:
         self.__tela_caixa.close()

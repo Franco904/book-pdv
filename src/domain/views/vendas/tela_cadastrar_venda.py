@@ -1,14 +1,15 @@
-from src.domain.views.tela_abstrata import Tela
+from src.domain.views.shared.tela_abstrata import Tela
 import PySimpleGUI as sg
+
 
 class TelaCadastroVenda(Tela):
 
     def __init__(self) -> None:
         pass
 
-    def init_components(self, alterar: bool = False, data_venda = None,
-                        total_venda= None, codigo=None, valor_troco = None, observacoes = None,
-                        product_list =None, head_list=None) -> None:
+    def init_components(self, alterar: bool = False, data_venda=None,
+                        total_venda=None, codigo=None, valor_troco=None, observacoes=None,
+                        product_list=None, head_list=None) -> None:
         sg.theme("Reddit")
 
         data_e_troco = [
@@ -35,24 +36,18 @@ class TelaCadastroVenda(Tela):
             [sg.Multiline(observacoes, key='observacoes', size=(60, 8))]
         ]
 
-
-
-        buttons= [
+        buttons = [
             [
                 sg.Cancel("Descartar", key='descartar', button_color='gray', size=(9, 1)),
                 sg.Submit("Salvar alterações" if alterar else 'Finalizar venda', key='salvar', size=(20, 1)),
                 sg.Submit("Incluir produto", key='incluir', size=(20, 1))
             ]
 
-
         ]
 
-
-        produtos= [
-                [sg.Table()]
-
+        produtos = [
+            [sg.Table([[''], [''], ['']])]
         ]
-
 
         nome_tela = 'Nova Venda'
 
@@ -62,8 +57,7 @@ class TelaCadastroVenda(Tela):
         else:
             pass
 
-
-        layout =[
+        layout = [
             [data_e_troco,
              codigo_venda,
              total_e_observacoes,
@@ -76,7 +70,6 @@ class TelaCadastroVenda(Tela):
         super().__init__(sg.Window(nome_tela, layout=layout, resizable=False, modal=True, finalize=True,
                                    element_justification='c'), (300, 180))
 
-
     def open(self, alterar: bool = False) -> str:
         while True:
             botao, valores = super().read()
@@ -86,6 +79,6 @@ class TelaCadastroVenda(Tela):
 
             return botao
 
-tela = TelaCadastroVenda()
-tela.init_components(data_venda= '04/9/2022', total_venda=245, product_list=[1,2,3], alterar=True)
-button, values = tela.open()
+# tela = TelaCadastroVenda()
+# tela.init_components(data_venda= '04/9/2022', total_venda=245, product_list=[1,2,3], alterar=True)
+# button, values = tela.open()
