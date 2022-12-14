@@ -108,7 +108,7 @@ class ControladorRelatorioVendas:
         )
         self.__tela_relatorio_vendas.update_component(
             'operador_total',
-            f" R$ {operador_com_mais_vendas['total']}" if round(operador_com_mais_vendas['total'], 2) is not None else ' R$ 0.0',
+            f" R$ {operador_com_mais_vendas['total']}" if operador_com_mais_vendas['total'] is not None else ' R$ 0.0',
         )
 
     def abrir_produtos_venda(self) -> None:

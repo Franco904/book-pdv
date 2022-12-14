@@ -1,6 +1,8 @@
+from datetime import datetime
+
 
 class Sangria:
-    def __init__(self, id: int, id_caixa_operador: int, data_horario: str, valor: float | int, observacao: str):
+    def __init__(self, id: int, id_caixa_operador: int, data_horario: datetime, valor: float | int, observacao: str):
         self.__id = None
         self.__id_caixa_operador = None
         self.__data_horario = None
@@ -11,7 +13,7 @@ class Sangria:
             self.__id = id
         if isinstance(id_caixa_operador, int):
             self.__id_caixa_operador = id_caixa_operador
-        if isinstance(data_horario, str):
+        if isinstance(data_horario, datetime):
             self.__data_horario = data_horario
         if isinstance(valor, int) or isinstance(valor, float):
             self.__valor = valor
@@ -19,21 +21,21 @@ class Sangria:
             self.__observacao = observacao
 
     @property
-    def id(self):
+    def id(self) -> int:
         return self.__id
 
     @property
-    def id_caixa_operador(self):
+    def id_caixa_operador(self) -> int:
         return self.__id_caixa_operador
 
     @property
-    def data_horario(self):
+    def data_horario(self) -> datetime:
         return self.__data_horario
 
     @property
-    def valor(self):
+    def valor(self) -> float | int:
         return self.__valor
 
     @property
-    def observacao(self):
+    def observacao(self) -> str:
         return self.__observacao

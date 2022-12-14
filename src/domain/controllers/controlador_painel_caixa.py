@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 import PySimpleGUI as sg
 
@@ -63,7 +63,7 @@ class ControladorPainelCaixa:
         self.__caixa_operador = self.__caixas_operadores_dao.get_by_id(self.__caixa_operador.id)
 
     def realizar_sangrias(self) -> None:
-        data_atual = datetime.datetime.now()
+        data_atual = datetime.now()
         data_string = data_atual.strftime("%d/%m/%Y, %H:%M")
 
         saldo_atual = self.__caixa_operador.caixa.saldo
@@ -82,7 +82,7 @@ class ControladorPainelCaixa:
                     nova_sangria = Sangria(
                         new_id,
                         self.__caixa_operador.id,
-                        data_string,
+                        data_atual,
                         valores['valor_sangria'],
                         valores['observacao_sangria']
                     )
@@ -131,7 +131,7 @@ class ControladorPainelCaixa:
         # Fechamento de caixa
         dados_caixa = {
             'id_caixa': self.__caixa_operador.caixa.id,
-            'data_horario_fechamento': datetime.datetime.now(),
+            'data_horario_fechamento': datetime.now(),
             'saldo_fechamento': self.__caixa_operador.caixa.saldo,
         }
 

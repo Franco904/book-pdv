@@ -59,8 +59,7 @@ class TelaRelatorioVendas(Tela):
                       num_rows=5,
                       key='vendas_table',
                       row_height=35,
-                      tooltip='Vendas no período')]
-            if len(vendas['lista']) else [sg.Text('Não existem vendas cadastradas.')],
+                      tooltip='Vendas no período')],
             [sg.Text('   ')],
             button_group,
         ]
