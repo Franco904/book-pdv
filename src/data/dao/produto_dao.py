@@ -11,7 +11,7 @@ from src.domain.models.produto_relatorio import ProdutoRelatorio
 
 class ProdutoDAO(AbstractDAO):
     def __init__(self, database: Database) -> None:
-        super().__init__(database, 'access_control', 'produtos')
+        super().__init__(database, 'produtos')
         self.__database = database
         self.__schema = super().schema
         self.__table = super().table
@@ -34,7 +34,7 @@ class ProdutoDAO(AbstractDAO):
     def has_product_venda(self, id_produto: int) -> bool:
         table = super().get_table()
         custom_query = f"""
-                           SELECT id_venda FROM {table} p INNER JOIN access_control.vendas_produtos vp
+                           SELECT id_venda FROM {table} p INNER JOIN book_pdv.vendas_produtos vp
                            ON p.id = vp.id_produto WHERE p.id = {id_produto}
                         """
 
@@ -63,9 +63,9 @@ class ProdutoDAO(AbstractDAO):
                                 SUM(p.custo + (((p.margem_lucro - p.desconto) / 100) * p.custo)) AS receita_total,
                                 SUM(vp.quantidade) AS quantidade
                                 FROM {table} AS p
-                                INNER JOIN access_control.vendas_produtos AS vp
+                                INNER JOIN book_pdv.vendas_produtos AS vp
                                 ON p.id = vp.id_produto
-                                INNER JOIN access_control.vendas AS v
+                                INNER JOIN book_pdv.vendas AS v
                                 ON v.id = vp.id_venda
                                 WHERE v.data_horario::date <= '{data_inicio}'
                                 AND v.data_horario::date >= '{data_inicio}'::date - INTERVAL {filtroIntervalo.value}

@@ -5,7 +5,7 @@ from src.domain.enums import TipoProdutoEnum
 
 class TiposProdutoDAO(AbstractDAO):
     def __init__(self, database: Database) -> None:
-        super().__init__(database, 'access_control', 'tipos_produto')
+        super().__init__(database, 'tipos_produto')
         self.__database = database
         self.__schema = super().schema
         self.__table = super().table

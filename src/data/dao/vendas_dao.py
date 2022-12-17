@@ -11,7 +11,7 @@ from src.domain.models.venda_produtos import VendaProduto
 
 class VendasDAO(AbstractDAO):
     def __init__(self, database: Database) -> None:
-        super().__init__(database, 'access_control', 'vendas')
+        super().__init__(database, 'vendas')
         self.__database = database
         self.__schema = super().schema
         self.__table = super().table
@@ -36,13 +36,13 @@ class VendasDAO(AbstractDAO):
 
         custom_query = f"""
                            SELECT {columns} FROM {table} v
-                           INNER JOIN access_control.vendas_produtos AS vp
+                           INNER JOIN book_pdv.vendas_produtos AS vp
                            ON v.id = vp.id_venda
-                           INNER JOIN access_control.produtos AS p
+                           INNER JOIN book_pdv.produtos AS p
                            ON p.id = vp.id_produto
-                           INNER JOIN access_control.caixas_operadores AS co
+                           INNER JOIN book_pdv.caixas_operadores AS co
                            ON v.id_caixa_operador = co.id
-                           INNER JOIN access_control.funcionarios AS f
+                           INNER JOIN book_pdv.funcionarios AS f
                            ON co.cpf_operador = f.cpf
                            {f'WHERE v.id_caixa_operador = {id_caixa_operador}' if id_caixa_operador is not None else ''}
                         """
@@ -67,13 +67,13 @@ class VendasDAO(AbstractDAO):
 
         custom_query = f"""
                            SELECT {columns} FROM {table} v
-                           INNER JOIN access_control.vendas_produtos vp
+                           INNER JOIN book_pdv.vendas_produtos vp
                            ON v.id = vp.id_venda
-                           INNER JOIN access_control.produtos p
+                           INNER JOIN book_pdv.produtos p
                            ON p.id = vp.id_produto
-                           INNER JOIN access_control.caixas_operadores AS co
+                           INNER JOIN book_pdv.caixas_operadores AS co
                            ON v.id_caixa_operador = co.id
-                           INNER JOIN access_control.funcionarios AS f
+                           INNER JOIN book_pdv.funcionarios AS f
                            ON co.cpf_operador = f.cpf
                            WHERE v.data_horario::date <= '{data_inicio}'
                            AND v.data_horario::date >= '{data_inicio}'::date - INTERVAL {filtroIntervalo.value}
@@ -101,9 +101,9 @@ class VendasDAO(AbstractDAO):
                             FROM (
                                 SELECT f.nome AS nome, SUM(v.valor_pago - v.valor_troco) AS total
                                 FROM {table} AS v
-                                INNER JOIN access_control.caixas_operadores AS co
+                                INNER JOIN book_pdv.caixas_operadores AS co
                                 ON v.id_caixa_operador = co.id
-                                INNER JOIN access_control.funcionarios AS f
+                                INNER JOIN book_pdv.funcionarios AS f
                                 ON co.cpf_operador = f.cpf
                                 WHERE v.data_horario::date <= '{data_inicio}'
                                 AND v.data_horario::date >= '{data_inicio}'::date - INTERVAL {filtroIntervalo.value}
@@ -123,13 +123,13 @@ class VendasDAO(AbstractDAO):
 
         custom_query = f"""
                            SELECT {columns} FROM {table} v
-                           INNER JOIN access_control.vendas_produtos vp
+                           INNER JOIN book_pdv.vendas_produtos vp
                            ON v.id = vp.id_venda
-                           INNER JOIN access_control.produtos p
+                           INNER JOIN book_pdv.produtos p
                            ON p.id = vp.id_produto
-                           INNER JOIN access_control.caixas_operadores AS co
+                           INNER JOIN book_pdv.caixas_operadores AS co
                            ON v.id_caixa_operador = co.id
-                           INNER JOIN access_control.funcionarios AS f
+                           INNER JOIN book_pdv.funcionarios AS f
                            ON co.cpf_operador = f.cpf
                            WHERE v.id = {id_venda};
                         """

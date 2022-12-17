@@ -9,7 +9,7 @@ from src.domain.models.supervisor import Supervisor
 
 class FuncionarioDAO(AbstractDAO):
     def __init__(self, database: Database) -> None:
-        super().__init__(database, 'access_control', 'funcionarios')
+        super().__init__(database, 'funcionarios')
         self.__database = database
         self.__schema = super().schema
         self.__table = super().table
@@ -42,7 +42,7 @@ class FuncionarioDAO(AbstractDAO):
         table = super().get_table()
         custom_query = f"""
                             SELECT * FROM {table} AS f
-                            INNER JOIN access_control.caixas_operadores AS co
+                            INNER JOIN book_pdv.caixas_operadores AS co
                             ON f.cpf = co.cpf_operador
                             WHERE co.cpf_operador = '{cpf}'
                         """

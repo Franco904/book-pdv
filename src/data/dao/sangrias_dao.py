@@ -4,7 +4,7 @@ from src.domain.models.sangria import Sangria
 
 class SangriasDAO(AbstractDAO):
     def __init__(self, database: Database) -> None:
-        super().__init__(database, 'access_control', 'sangrias')
+        super().__init__(database, 'sangrias')
         self.__database = database
         self.__schema = super().schema
         self.__table = super().table
@@ -41,12 +41,11 @@ class SangriasDAO(AbstractDAO):
 
     def persist_entity(self, sangria: Sangria) -> None:
         table = super().get_table()
-        columns = "id, id_caixa_operador, data_horario, valor, observacao"
+        columns = "id_caixa_operador, data_horario, valor, observacao"
 
         super().persist(
-            f""" INSERT INTO {table} ({columns}) VALUES (%s, %s, %s, %s, %s)""",
+            f""" INSERT INTO {table} ({columns}) VALUES (%s, %s, %s, %s)""",
             (
-                sangria.id,
                 sangria.id_caixa_operador,
                 sangria.data_horario,
                 sangria.valor,

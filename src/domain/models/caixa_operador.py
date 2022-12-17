@@ -8,7 +8,7 @@ from src.domain.models.operador_caixa import OperadorCaixa
 class CaixaOperador:
     def __init__(
             self,
-            id: int,
+            id,
             caixa: Caixa,
             operador_caixa: OperadorCaixa,
             data_horario_abertura: datetime,
@@ -58,6 +58,10 @@ class CaixaOperador:
     @property
     def id(self):
         return self.__id
+
+    @id.setter
+    def id(self, id: int):
+        self.__id = id
 
     @property
     def caixa(self):

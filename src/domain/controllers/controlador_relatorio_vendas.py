@@ -147,8 +147,11 @@ class ControladorRelatorioVendas:
         produtos: [ProdutoRelatorio] = self.__produto_dao.get_most_sold_in_period(filtroIntervalo=self.__current_filter)
         parsed_produtos = self.__parse_produtos_mais_vendidos_to_show(produtos)
 
-        percentual_livros = (len([p for p in produtos if p.id_tipo_produto == 0]) / len(produtos)) * 100
-        percentual_eletronicos = (len([p for p in produtos if p.id_tipo_produto == 1]) / len(produtos)) * 100
+        if len(produtos) == 0:
+            percentual_livros = percentual_eletronicos = 0
+        else:
+            percentual_livros = (len([p for p in produtos if p.id_tipo_produto == 0]) / len(produtos)) * 100
+            percentual_eletronicos = (len([p for p in produtos if p.id_tipo_produto == 1]) / len(produtos)) * 100
 
         while True:
             self.__tela_produtos_mais_vendidos.init_components({

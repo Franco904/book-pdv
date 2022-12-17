@@ -9,7 +9,7 @@ from src.domain.models.operador_caixa import OperadorCaixa
 
 class CaixasOperadoresDAO(AbstractDAO):
     def __init__(self, database: Database):
-        super().__init__(database, 'access_control', 'caixas_operadores')
+        super().__init__(database, 'caixas_operadores')
         self.__database = database
         self.__schema = super().schema
         self.__table = super().table
@@ -34,9 +34,9 @@ class CaixasOperadoresDAO(AbstractDAO):
 
         custom_query = f"""
                             SELECT {columns} FROM {table} AS co
-                            INNER JOIN access_control.caixas AS c
+                            INNER JOIN book_pdv.caixas AS c
                             ON c.id = co.id_caixa
-                            INNER JOIN access_control.funcionarios AS f
+                            INNER JOIN book_pdv.funcionarios AS f
                             ON f.cpf = co.cpf_operador
                         """
 
@@ -51,9 +51,9 @@ class CaixasOperadoresDAO(AbstractDAO):
 
         custom_query = f"""
                             SELECT {columns} FROM {table} AS co
-                            INNER JOIN access_control.caixas AS c
+                            INNER JOIN book_pdv.caixas AS c
                             ON c.id = co.id_caixa
-                            INNER JOIN access_control.funcionarios AS f
+                            INNER JOIN book_pdv.funcionarios AS f
                             ON f.cpf = co.cpf_operador
                             WHERE co.id_caixa = '{id_caixa}'
                         """
@@ -69,9 +69,9 @@ class CaixasOperadoresDAO(AbstractDAO):
 
         custom_query = f"""
                             SELECT {columns} FROM {table} AS co
-                            INNER JOIN access_control.caixas AS c
+                            INNER JOIN book_pdv.caixas AS c
                             ON c.id = co.id_caixa
-                            INNER JOIN access_control.funcionarios AS f
+                            INNER JOIN book_pdv.funcionarios AS f
                             ON f.cpf = co.cpf_operador
                             WHERE co.id_caixa = '{id_caixa}'
                             {f"AND co.cpf_operador = '{cpf_operador}'" if cpf_operador is not None else ''}
@@ -89,11 +89,11 @@ class CaixasOperadoresDAO(AbstractDAO):
                                     SELECT v.id, v.data_horario, SUM(v.valor_pago - v.valor_troco) AS total_movimentado,
                                     v.observacao, f.cpf, f.nome, f.telefone, f.senha, f.email
                                     FROM {table} AS co
-                                    INNER JOIN access_control.caixas AS c
+                                    INNER JOIN book_pdv.caixas AS c
                                     ON c.id = co.id_caixa
-                                    INNER JOIN access_control.funcionarios AS f
+                                    INNER JOIN book_pdv.funcionarios AS f
                                     ON f.cpf = co.cpf_operador
-                                    INNER JOIN access_control.vendas AS v
+                                    INNER JOIN book_pdv.vendas AS v
                                     ON v.id_caixa_operador = co.id
                                     WHERE co.id_caixa = '{id_caixa}'
                                     GROUP BY v.id, v.data_horario, v.observacao, f.cpf, f.nome, f.telefone, f.senha, f.email
@@ -104,11 +104,11 @@ class CaixasOperadoresDAO(AbstractDAO):
                                     SELECT s.id, s.data_horario, SUM(s.valor) AS total_movimentado,
                                     s.observacao, f.cpf, f.nome, f.telefone, f.senha, f.email
                                     FROM {table} AS co
-                                    INNER JOIN access_control.caixas AS c
+                                    INNER JOIN book_pdv.caixas AS c
                                     ON c.id = co.id_caixa
-                                    INNER JOIN access_control.funcionarios AS f
+                                    INNER JOIN book_pdv.funcionarios AS f
                                     ON f.cpf = co.cpf_operador
-                                    INNER JOIN access_control.sangrias AS s
+                                    INNER JOIN book_pdv.sangrias AS s
                                     ON s.id_caixa_operador = co.id
                                     WHERE co.id_caixa = '{id_caixa}'
                                     GROUP BY s.id, s.data_horario, s.observacao, f.cpf, f.nome, f.telefone, f.senha, f.email
@@ -136,9 +136,9 @@ class CaixasOperadoresDAO(AbstractDAO):
 
         custom_query = f"""
                             SELECT {columns} FROM {table} AS co
-                            INNER JOIN access_control.caixas AS c
+                            INNER JOIN book_pdv.caixas AS c
                             ON c.id = co.id_caixa
-                            INNER JOIN access_control.funcionarios AS f
+                            INNER JOIN book_pdv.funcionarios AS f
                             ON f.cpf = co.cpf_operador
                             WHERE co.id = '{id_caixa_operador}'
                         """
@@ -154,11 +154,11 @@ class CaixasOperadoresDAO(AbstractDAO):
 
         custom_query = f"""
                             SELECT {columns} FROM {table} AS co
-                            INNER JOIN access_control.caixas AS c
+                            INNER JOIN book_pdv.caixas AS c
                             ON c.id = co.id_caixa
-                            INNER JOIN access_control.funcionarios AS f
+                            INNER JOIN book_pdv.funcionarios AS f
                             ON f.cpf = co.cpf_operador
-                            WHERE co.cpf_operador = '{cpf_operador}' AND c.aberto = 'true'
+                            WHERE co.cpf_operador = '{cpf_operador}' AND c.aberto = '1'
                         """
 
         row = super().get_by_pk('', 0, custom_query)
@@ -179,13 +179,12 @@ class CaixasOperadoresDAO(AbstractDAO):
 
     def persist_entity(self, caixa_operador: CaixaOperador):
         table = super().get_table()
-        columns = 'id, cpf_operador, id_caixa, data_horario_abertura, data_horario_fechamento, saldo_abertura, ' \
+        columns = 'cpf_operador, id_caixa, data_horario_abertura, data_horario_fechamento, saldo_abertura, ' \
                   'saldo_fechamento, status, observacao_abertura, erros, observacao_fechamento'
 
-        super().persist(
-            f""" INSERT INTO {table} ({columns}) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+        id = super().persist(
+            f""" INSERT INTO {table} ({columns}) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id""",
             (
-                caixa_operador.id,
                 caixa_operador.operador_caixa.cpf,
                 caixa_operador.caixa.id,
                 caixa_operador.data_horario_abertura,
@@ -197,9 +196,10 @@ class CaixasOperadoresDAO(AbstractDAO):
                 caixa_operador.erros,
                 caixa_operador.observacao_fechamento,
             ),
+            return_id=True,
         )
 
-        return caixa_operador.id
+        return id
 
     def delete_entity(self, id_caixa_operador: int):
         super().delete("id", id_caixa_operador)
