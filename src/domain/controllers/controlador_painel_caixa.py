@@ -63,10 +63,15 @@ class ControladorPainelCaixa:
         self.__caixa_operador = self.__caixas_operadores_dao.get_by_id(self.__caixa_operador.id)
 
     def realizar_sangrias(self) -> None:
+        saldo_atual = self.__caixa_operador.caixa.saldo
+        if saldo_atual == 0:
+            return self.__tela_cadastrar_sangrias.show_message(
+                'Não é possível cadastrar sangrias',
+                'Você não possui dinheiro em caixa para a retirada.',
+            )
+
         data_atual = datetime.now()
         data_string = data_atual.strftime("%d/%m/%Y, %H:%M")
-
-        saldo_atual = self.__caixa_operador.caixa.saldo
 
         self.__tela_cadastrar_sangrias.init_components(data_string, saldo_atual)
         botao, valores = self.__tela_cadastrar_sangrias.open(saldo_atual)
@@ -78,9 +83,8 @@ class ControladorPainelCaixa:
                 botao_confirmacao = self.__tela_confirmacao.open()
                 self.__tela_confirmacao.close()
                 if botao_confirmacao == 'confirmar':
-                    new_id = self.__sangrias_dao.get_max_id() + 1
                     nova_sangria = Sangria(
-                        new_id,
+                        None,
                         self.__caixa_operador.id,
                         data_atual,
                         valores['valor_sangria'],
@@ -145,7 +149,7 @@ class ControladorPainelCaixa:
 
                 if botao_confirmacao == 'OK':
                     # Fecha o caixa
-                    self.__caixa_dao.update_entity(self.__caixa_operador.caixa.id, 'aberto', False)
+                    self.__caixa_dao.close_caixa(self.__caixa_operador.caixa.id)
 
                     # Atualiza o saldo do caixa
                     if self.__caixa_operador.caixa.saldo != dados_caixa['saldo_fechamento']:

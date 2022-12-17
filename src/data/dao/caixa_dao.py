@@ -5,7 +5,7 @@ from src.domain.models.caixa import Caixa
 
 class CaixaDAO(AbstractDAO):
     def __init__(self, database: Database) -> None:
-        super().__init__(database, 'access_control', 'caixas')
+        super().__init__(database, 'caixas')
         self.__database = database
         self.__schema = super().schema
         self.__table = super().table
@@ -21,7 +21,7 @@ class CaixaDAO(AbstractDAO):
 
     def get_all_to_open(self) -> [Caixa]:
         table = super().get_table()
-        custom_query = f"SELECT * FROM {table} WHERE aberto = 'false' AND ativo = 'true'"
+        custom_query = f"SELECT * FROM {table} WHERE aberto = '0' AND ativo = '1'"
 
         rows = super().get_all(custom_query)
         caixas = list(map(lambda row: CaixaDAO.__parse_caixa(row), rows))
@@ -36,7 +36,7 @@ class CaixaDAO(AbstractDAO):
 
     def get_ativo_by_id(self, id: int) -> Caixa | None:
         table = super().get_table()
-        custom_query = f"SELECT * FROM {table} WHERE id = '{id}' AND ativo = 'true'"
+        custom_query = f"SELECT * FROM {table} WHERE id = '{id}' AND ativo = '1'"
 
         row = super().get_by_pk('', 0, custom_query)
 
@@ -53,13 +53,19 @@ class CaixaDAO(AbstractDAO):
                 caixa.id,
                 caixa.data_horario_criacao,
                 caixa.saldo,
-                'false',
-                'true',
+                0,
+                1,
             ),
         )
 
+    def open_caixa(self, id: int):
+        super().update("id", id, 'aberto', 1)
+
+    def close_caixa(self, id: int):
+        super().update("id", id, 'aberto', 0)
+
     def inactivate_entity(self, id: int):
-        super().update("id", id, 'ativo', 'false')
+        super().update("id", id, 'ativo', 0)
 
     def delete_entity(self, id: int) -> None:
         super().delete("id", id)

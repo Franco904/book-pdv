@@ -4,10 +4,10 @@ from psycopg2.extras import DictCursor, DictConnection
 
 class Database:
     def __init__(self):
-        self.__hostname = "54.147.36.107"
-        self.__database = "dfb5983k0abcf8"
-        self.__username = "rusdkrqlyrnzgx"
-        self.__password = "a7b9f182a0e99bf63b4f19c63eee7db3aa5691840897684266ee56796e9d74f8"
+        self.__hostname = "ec2-52-21-136-176.compute-1.amazonaws.com"
+        self.__database = "d7uu5d256mpnp9"
+        self.__username = "fsfxkuufatnhrp"
+        self.__password = "b37a089e4e4128da0ac69de825da428c53862e0e0c67b26f276ef652b5519cc4"
         self.__port = 5432
         self.__connection = None
         self.__cursor = None

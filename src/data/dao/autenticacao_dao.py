@@ -8,7 +8,7 @@ from src.domain.models.supervisor import Supervisor
 
 class AutenticacaoDAO(AbstractDAO):
     def __init__(self, database: Database) -> None:
-        super().__init__(database, 'access_control', 'funcionarios')
+        super().__init__(database, 'funcionarios')
         self.__database = database
         self.__schema = super().schema
         self.__table = super().table

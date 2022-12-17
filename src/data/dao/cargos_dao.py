@@ -5,7 +5,7 @@ from src.domain.enums import CargoEnum
 
 class CargosDAO(AbstractDAO):
     def __init__(self, database: Database) -> None:
-        super().__init__(database, 'access_control', 'cargos')
+        super().__init__(database, 'cargos')
         self.__database = database
         self.__schema = super().schema
         self.__table = super().table

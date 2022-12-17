@@ -7,16 +7,14 @@ from src.data.database.database import Database
 
 class AbstractDAO(ABC):
     @abstractmethod
-    def __init__(self, database: Database, schema: str, table: str) -> None:
+    def __init__(self, database: Database, table: str) -> None:
         self.__database = None
         self.__table = None
-        self.__schema = None
+        self.__schema = "book_pdv"
         if isinstance(database, Database):
             self.__database = database
         if isinstance(table, str):
             self.__table = table
-        if isinstance(schema, str):
-            self.__schema = schema
         self.__column_names = self.get_column_names()
 
     @property
@@ -28,7 +26,7 @@ class AbstractDAO(ABC):
         return self.__table
 
     def get_table(self) -> str:
-        return f"{self.__schema}.{self.__table}" if self.__schema is not None else f"{self.__table}"
+        return f"{self.__schema}.{self.__table}"
 
     def get_column_names(self) -> []:
         if self.__table is not None:
@@ -44,9 +42,9 @@ class AbstractDAO(ABC):
         self.__database.close_all()
         return rows
 
-    def persist(self, query, records, many=False) -> None:
+    def persist(self, query, records, many=False, return_id=False) -> int | None:
+        con, cursor = self.__database.connect()
         try:
-            con, cursor = self.__database.connect()
             if not many:
                 cursor.execute(query, records)
             else:
@@ -54,10 +52,14 @@ class AbstractDAO(ABC):
             con.commit()
             print('Persistido.')
         except (Exception, psycopg2.Error) as error:
-            print('Falha ao persistir.', error)
+            print('Falha ao persistir: ', error)
         finally:
             if con:
+                id = None
+                if return_id:
+                    id = cursor.fetchone()[0]
                 self.__database.close_all()
+                return id
 
     def get_all(self, custom_query=None) -> []:
         con, cursor = self.__database.connect()

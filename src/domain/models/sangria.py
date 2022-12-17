@@ -2,7 +2,7 @@ from datetime import datetime
 
 
 class Sangria:
-    def __init__(self, id: int, id_caixa_operador: int, data_horario: datetime, valor: float | int, observacao: str):
+    def __init__(self, id, id_caixa_operador: int, data_horario: datetime, valor: float | int, observacao: str):
         self.__id = None
         self.__id_caixa_operador = None
         self.__data_horario = None

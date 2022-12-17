@@ -75,20 +75,14 @@ class ControladorAbrirCaixa:
         caixa: Caixa = caixa_filtered[0]
 
         # Atualiza no banco o caixa aberto
-        self.__caixa_dao.update_entity(caixa.id, 'aberto', True)
+        self.__caixa_dao.open_caixa(caixa.id)
 
         # Atualiza na memória os caixas disponíveis para abertura
         self.__caixas = list(filter(lambda caixa: caixa.id != dados['caixa_id'], self.__caixas))
 
         try:
-            max_id_stored = self.__caixas_operadores_dao.get_max_id()
-            if max_id_stored is None:
-                max_id_stored = 1
-
-            new_id = max_id_stored + 1
-
             caixa_operador = CaixaOperador(
-                new_id,
+                None,
                 caixa,
                 self.__funcionario_logado,
                 self.__data_horario_abertura,
@@ -102,7 +96,7 @@ class ControladorAbrirCaixa:
             )
 
             # Persiste no banco as informações do caixa no momento da abertura
-            self.__caixas_operadores_dao.persist_entity(caixa_operador)
+            caixa_operador.id = self.__caixas_operadores_dao.persist_entity(caixa_operador)
 
             # Redireciona operador de caixa para o painel do caixa
             self.__controlador_painel_caixa.abrir_tela(caixa_operador)

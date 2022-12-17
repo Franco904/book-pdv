@@ -1,13 +1,12 @@
 from src.data.dao.abstract_dao import AbstractDAO
 from src.data.dao.produto_dao import ProdutoDAO
 from src.data.database.database import Database
-from src.domain.models.produto import Produto
 from src.domain.models.venda_produtos import VendaProduto
 
 
 class VendasProdutoDAO(AbstractDAO):
     def __init__(self, database: Database) -> None:
-        super().__init__(database, 'access_control', 'vendas_produtos')
+        super().__init__(database, 'vendas_produtos')
         self.__database = database
         self.__schema = super().schema
         self.__table = super().table
@@ -30,7 +29,7 @@ class VendasProdutoDAO(AbstractDAO):
 
         custom_query = f"""
                            SELECT {columns} FROM {table} vp
-                           INNER JOIN access_control.produtos p
+                           INNER JOIN book_pdv.produtos p
                            ON vp.id_produto = p.id
                         """
 
@@ -46,7 +45,7 @@ class VendasProdutoDAO(AbstractDAO):
 
         custom_query = f"""
                            SELECT {columns} FROM {table} vp
-                           INNER JOIN access_control.produtos p
+                           INNER JOIN book_pdv.produtos p
                            ON vp.id_produto = p.id
                            WHERE venda_produto_id = {id_venda_produto}
                         """
